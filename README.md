@@ -2,7 +2,8 @@
 
 This plugin provides a flexible data visualization block using the [Vega-Lite](https://vega.github.io/) declarative JSON visualization grammar.
 
-[Documentation for Vega-Lite](https://vega.github.io/vega-lite/docs/)
+- [Getting Started with Vega-Lite](https://vega.github.io/vega-lite/tutorials/getting_started.html)
+- [Documentation for Vega-Lite](https://vega.github.io/vega-lite/docs/)
 
 ## Development
 
