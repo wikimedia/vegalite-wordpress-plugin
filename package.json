@@ -19,9 +19,18 @@
     "Visualization"
   ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack-dev-server --config=.webpack/webpack.config.dev.js",
+    "build": "webpack --config=.webpack/webpack.config.prod.js"
   },
   "dependencies": {
     "vega-lite": "^5.2.0"
+  },
+  "devDependencies": {
+    "@humanmade/webpack-helpers": "^1.0.0-beta.10",
+    "sass": "^1.52.1",
+    "webpack": "^5.72.1",
+    "webpack-cli": "^4.9.2",
+    "webpack-dev-server": "^4.9.0"
   }
 }
