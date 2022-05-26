@@ -1,3 +1,19 @@
+/* eslint quote-props: [ 'error', 'always' ] */// This file only.
 module.exports = {
-  extends: [ '@humanmade/eslint-config' ],
+	'extends': [ '@humanmade/eslint-config' ],
+	'rules': {
+		'arrow-parens': [ 'error', 'always' ],
+		'space-before-function-paren': [ 'warn', {
+			'anonymous': 'never',
+			'named': 'never',
+			'asyncArrow': 'always',
+		} ],
+		'import/order': 'warn',
+		'jsdoc/check-tag-names': [ 'warn', {
+			// Permit Jest directive for opting in to jsdom environment.
+			'definedTags': [ 'jest-environment' ],
+		} ],
+		'jsdoc/require-jsdoc': 'warn',
+		'react/jsx-sort-props': 'off',
+	},
 };
