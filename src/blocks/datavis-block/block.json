@@ -1,0 +1,8 @@
+{
+	"apiVersion": 2,
+	"name": "datavis-block/datavis-block",
+	"title": "Data Visualization",
+	"textdomain": "datavis-block",
+	"category": "widgets",
+	"icon": "chart-line"
+}
