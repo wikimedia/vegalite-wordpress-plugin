@@ -20,7 +20,8 @@
     "block-editor"
   ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
+    "lint": "eslint src",
     "start": "webpack-dev-server --config=.webpack/webpack.config.dev.js",
     "build": "webpack --config=.webpack/webpack.config.prod.js"
   },
@@ -40,6 +41,7 @@
     "eslint-plugin-react": "^7.30.0",
     "eslint-plugin-react-hooks": "^4.5.0",
     "eslint-plugin-sort-destructure-keys": "^1.4.0",
+    "jest": "^28.1.0",
     "sass": "^1.52.1",
     "webpack": "^5.72.1",
     "webpack-cli": "^4.9.2",
