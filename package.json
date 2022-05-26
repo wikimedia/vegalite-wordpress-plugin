@@ -3,22 +3,25 @@
   "version": "0.0.1",
   "description": "A general-purpose WordPress data visualization block using the Vega visualization grammar",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "author": "Human Made",
+  "license": "GPL-2.0-or-later",
+  "homepage": "https://github.com/humanmade/datavis-block#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/humanmade/datavis-block.git"
+  },
+  "bugs": {
+    "url": "https://github.com/humanmade/datavis-block/issues"
   },
   "keywords": [
     "Gutenberg",
     "Data",
     "Visualization"
   ],
-  "author": "Human Made",
-  "license": "GPL-2.0-or-later",
-  "bugs": {
-    "url": "https://github.com/humanmade/datavis-block/issues"
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "homepage": "https://github.com/humanmade/datavis-block#readme"
+  "dependencies": {
+    "vega-lite": "^5.2.0"
+  }
 }
