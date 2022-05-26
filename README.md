@@ -11,3 +11,16 @@ This project expects Node 16 and Composer 2. We recommend managing the installed
 
 ```sh
 npm install
+npm run build
+```
+
+To start a live-reloading dev server, run
+
+```sh
+npm start
+```
+
+Other useful commands
+
+- `npm run test`: Use Jest to run JS unit tests.
+- `npm run lint`: Use ESLint to check src code for errors.
