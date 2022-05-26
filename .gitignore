@@ -5,3 +5,5 @@ vendor
 *.sql
 composer.lock
 package-lock.json
+
+build/
