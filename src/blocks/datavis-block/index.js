@@ -1,5 +1,5 @@
 /**
- * Placeholder block for a Fact Check claim
+ * Implement Datavis block.
  */
 import React from 'react';
 
@@ -11,6 +11,18 @@ export const name = blockData.name;
 export const settings = {
 	// Apply the block settings from the JSON configuration file.
 	...blockData,
+
+	attributes: {
+		title: {
+			type: 'string',
+		},
+		jsonOverride: {
+			type: 'string',
+		},
+		blockId: {
+			type: 'string',
+		},
+	},
 
 	/**
 	 * Render the editor UI for this block.
