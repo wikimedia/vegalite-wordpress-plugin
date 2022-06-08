@@ -53,7 +53,11 @@ const EditDatavisBlock = ( { attributes, setAttributes } ) => {
 					label={ __( 'JSON Override', 'datavis' ) }
 					help={ __( 'Override all settings to display a custom Vega Model.', 'datavis' ) }
 					value={ jsonOverride }
-					onChange={ ( text ) => setAttributes( { jsonOverride: text } ) }
+					onChange={ ( text ) => {
+						text = text.replace(/\n/g, '');
+						const json = JSON.stringify( text );
+						return setAttributes( { jsonOverride: json } );
+					} }
 				/>
 			</InspectorAdvancedControls>
 		</div>

@@ -52,19 +52,17 @@ function render_callback( $attributes ) {
 
 	// Replace `-` with `_`.
 	$block_id = str_replace( '-', '_', $block_id );
-	$const    = sprintf( '%1$s_config', $block_id );
 
 	ob_start();
 
 	?>
-	<div>
+	<div class="datavis-block" data-datavis="<?php echo esc_attr( $block_id ); ?>">
 		<?php if ( $title ) : ?>
 			<h2><?php echo esc_html( $title ); ?></h2>
 		<?php endif; ?>
 		<?php if ( $json_override ) : ?>
 			<script type="text/javascript">
-				window[ '<?php echo esc_js( $const ); ?>' ] = <?php echo wp_json_encode( $json_override ); ?>;
-				vegaEmbed( '<?php echo esc_js( sprintf( '#%1$s', $block_id ) ); ?>', window.<?php echo esc_js( $const ); ?> );
+				window[ '<?php echo esc_js( $block_id ); ?>' ] = <?php echo wp_kses_post( $json_override ); ?>;
 			</script>
 		<?php endif; ?>
 		<div id="<?php echo esc_attr( $block_id ) ?>"></div>

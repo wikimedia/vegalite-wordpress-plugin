@@ -61,11 +61,16 @@ function enqueue_assets() : void {
  * Enqueue these assets in both the editor and the frontend.
  */
 function enqueue_frontend_assets() : void {
+	// Include Vega Lite. TODO: Move to webpack config.
+	wp_enqueue_script( 'vega', 'https://cdn.jsdelivr.net/npm/vega@5.21.0' );
+	wp_enqueue_script( 'vega-lite', 'https://cdn.jsdelivr.net/npm/vega-lite@5.2.0', [ 'vega' ] );
+	wp_enqueue_script( 'vega-embed', 'https://cdn.jsdelivr.net/npm/vega-embed@6.20.2', [ 'vega-lite' ] );
+
 	enqueue_build_asset(
 		'datavis-block-frontend.js',
 		[
-			'dependencies' => [],
-			'handle'  => 'datavis-block-frontend',
+			'dependencies' => [ 'vega-lite', 'vega-embed' ],
+			'handle'       => 'datavis-block-frontend',
 		]
 	);
 	enqueue_build_asset(
