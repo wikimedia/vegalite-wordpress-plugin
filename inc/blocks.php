@@ -43,29 +43,29 @@ function render_callback( $attributes ) {
 	$json_override = $attributes['jsonOverride'] ?? false;
 	$block_id      = $attributes['blockId'] ?? false;
 
-	// Clean up input.
-	$json_override = preg_replace( '/\r?\n/', '', $json_override );
-
 	if ( empty( $block_id ) ) {
 		return '';
 	}
 
-	// Replace `-` with `_`.
-	$block_id = str_replace( '-', '_', $block_id );
+	$datavis = sprintf( '%1$s-datavis', $block_id );
+	$config   = sprintf( '%1$s-config', $block_id );
+
+	// Clean up input.
+	$json_override = preg_replace( '/\r?\n/', '', $json_override );
 
 	ob_start();
 
 	?>
-	<div class="datavis-block" data-datavis="<?php echo esc_attr( $block_id ); ?>">
+	<div
+			class="datavis-block"
+			data-datavis="<?php echo esc_attr( $datavis ); ?>"
+			data-config="<?php echo esc_attr( $config ); ?>"
+	>
 		<?php if ( $title ) : ?>
 			<h2><?php echo esc_html( $title ); ?></h2>
 		<?php endif; ?>
-		<?php if ( $json_override ) : ?>
-			<script type="text/javascript">
-				window[ '<?php echo esc_js( $block_id ); ?>' ] = <?php echo wp_kses_post( $json_override ); ?>;
-			</script>
-		<?php endif; ?>
-		<div id="<?php echo esc_attr( $block_id ) ?>"></div>
+		<script id="<?php echo esc_attr( $config ); ?>" type="application/json"><?php echo wp_kses_post( $json_override ); ?></script>
+		<div id="<?php echo esc_attr( $datavis ); ?>"></div>
 	</div>
 	<?php
 

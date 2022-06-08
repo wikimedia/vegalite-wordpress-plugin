@@ -6,16 +6,17 @@
  */
 let _instances = [];
 
-function setupDatavisBlock() {
+export function setupDatavisBlocks() {
 	// Get all datavis block ids.
 	_instances = [ ...document.querySelectorAll( '[data-datavis]' ) ];
-	_instances.map( initializeDatavisBlocks );
+	_instances.map( initializeDatavisBlock );
 }
 
-function initializeDatavisBlocks( element ) {
-	vegaEmbed( '#'+element.dataset.datavis, JSON.parse(window[element.dataset.datavis]) );
+function initializeDatavisBlock( element ) {
+	const json = document.getElementById( element.dataset.config ).textContent;
+	vegaEmbed( '#'+element.dataset.datavis, JSON.parse( json ) );
 }
 
 window.onload = function() {
-	setupDatavisBlock();
+	setupDatavisBlocks();
 };
