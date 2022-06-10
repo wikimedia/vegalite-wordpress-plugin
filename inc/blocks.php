@@ -5,6 +5,8 @@
 
 namespace Datavis_Block\Blocks;
 
+use Datavis_Block\Vega_Lite\Specification;
+
 /**
  * Connect namespace functions to actions & hooks.
  */
@@ -22,15 +24,15 @@ function register_blocks() : void {
 			'render_callback' => __NAMESPACE__ . '\\render_callback',
 			'attributes' => [
 				'blockId' => [
-					'type' => 'string',
+					'type'    => 'string',
 					'default' => '',
 				],
 				'title' => [
-					'type' => 'string',
+					'type'    => 'string',
 					'default' => '',
 				],
 				'jsonOverride' => [
-					'type' => 'string',
+					'type'    => 'string',
 					'default' => '',
 				]
 			],
@@ -38,7 +40,14 @@ function register_blocks() : void {
 	);
 }
 
-function render_callback( $attributes ) {
+/**
+ * Render function for block.
+ *
+ * @param array $attributes
+ *
+ * @return string
+ */
+function render_callback( array $attributes ) : string {
 	$title         = $attributes['title'] ?? false;
 	$json_override = $attributes['jsonOverride'] ?? false;
 	$block_id      = $attributes['blockId'] ?? false;
@@ -50,11 +59,20 @@ function render_callback( $attributes ) {
 	$datavis = sprintf( '%1$s-datavis', $block_id );
 	$config   = sprintf( '%1$s-config', $block_id );
 
-	// Clean up input.
-	$json_override = preg_replace( '/\r?\n/', '', $json_override );
+	if ( empty( $json_override ) ) {
+		$json_string = Specification\build_json( $attributes );
+	} else {
+		// Clean up input.
+		$json_override = preg_replace( '/\r?\n/', '', $json_override );
+		$json_string   = $json_override;
+	}
+
+	// Do not continue if we do not have a json string.
+	if ( empty( $json_string ) ) {
+		return '';
+	}
 
 	ob_start();
-
 	?>
 	<div
 			class="datavis-block"
@@ -64,11 +82,10 @@ function render_callback( $attributes ) {
 		<?php if ( $title ) : ?>
 			<h2><?php echo esc_html( $title ); ?></h2>
 		<?php endif; ?>
-		<script id="<?php echo esc_attr( $config ); ?>" type="application/json"><?php echo wp_kses_post( $json_override ); ?></script>
+		<script id="<?php echo esc_attr( $config ); ?>" type="application/json"><?php echo wp_kses_post( $json_string ); ?></script>
 		<div id="<?php echo esc_attr( $datavis ); ?>"></div>
 	</div>
 	<?php
-
 	$output = ob_get_contents();
 	ob_end_clean();
 	return $output;
