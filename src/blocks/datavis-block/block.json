@@ -4,5 +4,34 @@
 	"title": "Data Visualization",
 	"textdomain": "datavis-block",
 	"category": "widgets",
-	"icon": "chart-line"
+	"icon": "chart-line",
+	"attributes": {
+	  "blockId": {
+		"type": "string"
+	  },
+	  "data": {
+		"type": "string"
+	  },
+	  "description": {
+		"type": "string"
+	  },
+	  "jsonOverride": {
+		"type": "string"
+	  },
+	  "mark": {
+		"type": "string"
+	  },
+	  "name": {
+		"type": "string"
+	  },
+	  "title": {
+		"type": "string"
+	  },
+	  "x": {
+		"type": "string"
+	  },
+	  "y": {
+		"type": "string"
+	  }
+	}
 }

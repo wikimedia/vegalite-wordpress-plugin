@@ -1,6 +1,6 @@
 <?php
 /**
- * Define the Name property.
+ * Define the Name property. Name of the visualization for later reference.
  */
 
 namespace Datavis_Block\Vega_Lite\Properties\Name;

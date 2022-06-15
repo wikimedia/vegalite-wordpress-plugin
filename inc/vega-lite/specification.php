@@ -14,7 +14,7 @@ use Datavis_Block\Vega_Lite\Properties;
  *
  * @param array $specification
  *
- * @return array
+ * @return string
  */
 function build_json( array $specification ) {
 	$properties = [
@@ -29,7 +29,7 @@ function build_json( array $specification ) {
 		Properties\Name\PROPERTY        => Properties\Name\format( $specification[ Properties\Name\PROPERTY ] ?? '' ),
 		Properties\Description\PROPERTY => Properties\Description\format( $specification[ Properties\Description\PROPERTY ] ?? '' ),
 		Properties\Title\PROPERTY       => Properties\Title\format( $specification[ Properties\Title\PROPERTY  ] ?? '' ),
-		Properties\Data\PROPERTY        => Properties\Title\format( $specification[ Properties\Data\PROPERTY ] ?? '' ),
+		Properties\Data\PROPERTY        => Properties\Data\format( $specification[ Properties\Data\PROPERTY ] ?? '' ),
 		Properties\Transform\PROPERTY   => Properties\Transform\format( $specification[ Properties\Transform\PROPERTY ] ?? '' ),
 		Properties\Params\PROPERTY      => Properties\Params\format( $specification[ Properties\Params\PROPERTY ] ?? '' ),
 	];
@@ -44,5 +44,7 @@ function build_json( array $specification ) {
 		Properties\Projection\PROPERTY => Properties\Projection\format( $specification[ Properties\Projection\PROPERTY ] ?? '' ),
 	];
 
-	return array_merge( $properties, $single_view );
+	$json = wp_json_encode( array_filter( array_merge( $properties, $single_view ) ) );
+
+	return is_string( $json ) ? $json : '';
 }

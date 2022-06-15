@@ -12,18 +12,6 @@ export const settings = {
 	// Apply the block settings from the JSON configuration file.
 	...blockData,
 
-	attributes: {
-		title: {
-			type: 'string',
-		},
-		jsonOverride: {
-			type: 'string',
-		},
-		blockId: {
-			type: 'string',
-		},
-	},
-
 	/**
 	 * Render the editor UI for this block.
 	 *

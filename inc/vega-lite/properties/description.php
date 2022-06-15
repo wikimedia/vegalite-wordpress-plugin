@@ -1,6 +1,6 @@
 <?php
 /**
- * Define the Description property.
+ * Define the Description property. Description of this mark for commenting purpose.
  */
 
 namespace Datavis_Block\Vega_Lite\Properties\Description;

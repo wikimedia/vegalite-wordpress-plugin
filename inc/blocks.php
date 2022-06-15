@@ -27,13 +27,37 @@ function register_blocks() : void {
 					'type'    => 'string',
 					'default' => '',
 				],
+				'data' => [
+						'type'    => 'string',
+						'default' => '',
+				],
+				'description' => [
+						'type'    => 'string',
+						'default' => '',
+				],
+				'jsonOverride' => [
+						'type'    => 'string',
+						'default' => '',
+				],
+				'mark' => [
+						'type'    => 'string',
+						'default' => '',
+				],
+				'name' => [
+						'type'    => 'string',
+						'default' => '',
+				],
 				'title' => [
 					'type'    => 'string',
 					'default' => '',
 				],
-				'jsonOverride' => [
-					'type'    => 'string',
-					'default' => '',
+				'x' => [
+						'type'    => 'string',
+						'default' => '',
+				],
+				'y' => [
+						'type'    => 'string',
+						'default' => '',
 				]
 			],
 		]
@@ -48,7 +72,6 @@ function register_blocks() : void {
  * @return string
  */
 function render_callback( array $attributes ) : string {
-	$title         = $attributes['title'] ?? false;
 	$json_override = $attributes['jsonOverride'] ?? false;
 	$block_id      = $attributes['blockId'] ?? false;
 
@@ -79,9 +102,6 @@ function render_callback( array $attributes ) : string {
 			data-datavis="<?php echo esc_attr( $datavis ); ?>"
 			data-config="<?php echo esc_attr( $config ); ?>"
 	>
-		<?php if ( $title ) : ?>
-			<h2><?php echo esc_html( $title ); ?></h2>
-		<?php endif; ?>
 		<script id="<?php echo esc_attr( $config ); ?>" type="application/json"><?php echo wp_kses_post( $json_string ); ?></script>
 		<div id="<?php echo esc_attr( $datavis ); ?>"></div>
 	</div>

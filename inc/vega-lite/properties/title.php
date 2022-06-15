@@ -1,6 +1,6 @@
 <?php
 /**
- * Define the Title property.
+ * Define the Title property. Title for the plot.
  */
 
 namespace Datavis_Block\Vega_Lite\Properties\Title;
