@@ -13,10 +13,11 @@ import {
 	TextareaControl,
 	PanelBody,
 	SelectControl,
-	ServerSideRender,
 } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
+import ServerSideRender from '@wordpress/server-side-render';
 
+import ErrorBoundary from '../../components/ErrorBoundary';
 import { setupDatavisBlocks } from '../../index';
 
 /**
@@ -92,10 +93,12 @@ const EditDatavisBlock = ( { attributes, setAttributes } ) => {
 	return (
 		<div { ...blockProps }>
 			<h2>{ __( 'Datavis Block', 'datavis' ) }</h2>
-			<ServerSideRender
-				block="datavis-block/datavis-block"
-				attributes={ attributes }
-			/>
+			<ErrorBoundary>
+				<ServerSideRender
+					block="datavis-block/datavis-block"
+					attributes={ attributes }
+				/>
+			</ErrorBoundary>
 			<InspectorControls>
 				<PanelBody
 					initialOpen
