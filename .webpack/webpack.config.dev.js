@@ -10,6 +10,9 @@ module.exports = choosePort( 9090 ).then( ( port ) => {
 	return presets.development( {
         name: 'datavis-block',
 		devServer: {
+			client: {
+				webSocketURL: `ws://localhost:${ port }/ws`,
+			},
 			port,
 			// Reduce watcher overhead and prevent PHP changes from triggering rebuild.
 			watchOptions: {
