@@ -9,29 +9,8 @@
 	  "blockId": {
 		"type": "string"
 	  },
-	  "data": {
-		"type": "string"
-	  },
-	  "description": {
-		"type": "string"
-	  },
-	  "jsonOverride": {
-		"type": "string"
-	  },
-	  "mark": {
-		"type": "string"
-	  },
-	  "name": {
-		"type": "string"
-	  },
-	  "title": {
-		"type": "string"
-	  },
-	  "x": {
-		"type": "string"
-	  },
-	  "y": {
-		"type": "string"
+	  "json": {
+		"type": "object"
 	  }
 	}
 }

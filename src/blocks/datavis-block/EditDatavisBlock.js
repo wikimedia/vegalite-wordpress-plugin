@@ -1,16 +1,16 @@
 /**
  * Edit function for Datavis block.
  */
+import { JsonEditor as Editor } from 'jsoneditor-react';
+import 'jsoneditor-react/es/editor.min.css';
 import React from 'react';
 
 import {
 	useBlockProps,
 	InspectorControls,
-	InspectorAdvancedControls,
 } from '@wordpress/block-editor';
 import {
 	TextControl,
-	TextareaControl,
 	PanelBody,
 	SelectControl,
 } from '@wordpress/components';
@@ -19,6 +19,8 @@ import ServerSideRender from '@wordpress/server-side-render';
 
 import ErrorBoundary from '../../components/ErrorBoundary';
 import { setupDatavisBlocks } from '../../index';
+
+import specification from './specification.json';
 
 /**
  * Editor UI component for the datavis block.
@@ -32,14 +34,7 @@ import { setupDatavisBlocks } from '../../index';
 const EditDatavisBlock = ( { attributes, setAttributes } ) => {
 	const blockProps = useBlockProps();
 	const {
-		data,
-		description,
-		jsonOverride,
-		mark,
-		name,
-		title,
-		x,
-		y,
+		json,
 	} = attributes;
 
 	const markOptions = [
@@ -87,6 +82,7 @@ const EditDatavisBlock = ( { attributes, setAttributes } ) => {
 
 	const blockId = blockProps.id;
 	setAttributes( { blockId } );
+	setAttributes( { json: ( ( json ) ? json : specification ) } );
 
 	PreviewDatavis( blockId );
 
@@ -95,10 +91,14 @@ const EditDatavisBlock = ( { attributes, setAttributes } ) => {
 			<h2>{ __( 'Datavis Block', 'datavis' ) }</h2>
 			<ErrorBoundary>
 				<ServerSideRender
-					block="datavis-block/datavis-block"
+					block='datavis-block/datavis-block'
 					attributes={ attributes }
 				/>
 			</ErrorBoundary>
+			<Editor
+				value={ json }
+				onChange={ ( json ) => setAttributes( { json } ) }
+			/>
 			<InspectorControls>
 				<PanelBody
 					initialOpen
@@ -106,62 +106,32 @@ const EditDatavisBlock = ( { attributes, setAttributes } ) => {
 				>
 					<TextControl
 						label={ __( 'Name', 'datavis' ) }
-						value={ name }
+						value={ json['name'] }
 						onChange={ ( name ) => setAttributes( { name } ) }
 						help={ __( 'Name of the visualization for later reference.', 'datavis' ) }
 					/>
 					<TextControl
 						label={ __( 'Title', 'datavis' ) }
-						value={ title }
+						value={ json['title'] }
 						onChange={ ( title ) => setAttributes( { title } ) }
 						help={ __( 'Title for the plot.', 'datavis' ) }
 					/>
 					<TextControl
 						label={ __( 'Description', 'datavis' ) }
-						value={ description }
+						value={ json['description'] }
 						onChange={ ( description ) => setAttributes( { description } ) }
 						help={ __( 'Description of this mark for commenting purpose.', 'datavis' ) }
-					/>
-				</PanelBody>
-				<PanelBody title={ __( 'Data' ) }>
-					<TextareaControl
-						label={ __( 'Data', 'datavis' ) }
-						help={ __( 'CSV Formatted Data.', 'datavis' ) }
-						value={ data }
-						onChange={ ( text ) => setAttributes( { data: text } ) }
 					/>
 				</PanelBody>
 				<PanelBody title={ __( 'Mark' ) }>
 					<SelectControl
 						label={ __( 'Mark', 'datavis' ) }
-						value={ mark ? mark : markOptions[0] }
+						value={ json['mark'] }
 						options={ markOptions }
 						onChange={ ( mark ) => setAttributes( { mark } ) }
 					/>
 				</PanelBody>
-				<PanelBody title={ __( 'Encoding' ) }>
-					<TextControl
-						label={ __( 'X', 'datavis' ) }
-						value={ x }
-						onChange={ ( x ) => setAttributes( { x } ) }
-						help={ __( 'X coordinates of the marks', 'datavis' ) }
-					/>
-					<TextControl
-						label={ __( 'Y', 'datavis' ) }
-						value={ y }
-						onChange={ ( y ) => setAttributes( { y } ) }
-						help={ __( 'Y coordinates of the marks', 'datavis' ) }
-					/>
-				</PanelBody>
 			</InspectorControls>
-			<InspectorAdvancedControls>
-				<TextareaControl
-					label={ __( 'JSON Override', 'datavis' ) }
-					help={ __( 'Override all settings to display a custom Vega Model.', 'datavis' ) }
-					value={ jsonOverride }
-					onChange={ ( text ) => setAttributes( { jsonOverride: text } ) }
-				/>
-			</InspectorAdvancedControls>
 		</div>
 	);
 };
