@@ -1,5 +1,5 @@
 /**
- * Placeholder block for a Fact Check claim
+ * Implement Datavis block.
  */
 import React from 'react';
 

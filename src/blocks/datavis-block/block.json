@@ -4,5 +4,13 @@
 	"title": "Data Visualization",
 	"textdomain": "datavis-block",
 	"category": "widgets",
-	"icon": "chart-line"
+	"icon": "chart-line",
+	"attributes": {
+	  "blockId": {
+		"type": "string"
+	  },
+	  "json": {
+		"type": "object"
+	  }
+	}
 }
