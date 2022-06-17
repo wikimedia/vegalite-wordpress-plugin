@@ -4,6 +4,10 @@
  * directory with hot-reloading enabled.
  */
 import { autoloadBlocks } from '@humanmade/webpack-helpers/hmr';
+import { JsonEditor } from 'jsoneditor-react';
+import React, { useEffect, useRef } from 'react';
+
+import 'jsoneditor-react/es/editor.min.css';
 
 /**
  * Callback function to handle DevServer hot updates.
@@ -30,3 +34,36 @@ autoloadBlocks(
 	},
 	reloadOnHMRUpdate
 );
+
+/* eslint-disable jsdoc/check-param-names */
+/* eslint-disable jsdoc/require-param */
+/**
+ * Create a JSONEditor where the reference is tracked in order to update the editor component value outside of the editor.
+ *
+ * @param {object} value Value to use in the JSON Editor.
+ * @param {Function} onChange Callback.
+ * @returns {Element} JSONEditor component where the reference is tracked.
+ * @class
+ */
+export const ControlledJsonEditor = ( { value, onChange } ) => {
+	const jsonEditorRef = useRef();
+	useEffect(
+		() => {
+			const editor = jsonEditorRef && jsonEditorRef.current && jsonEditorRef.current.jsonEditor;
+			if ( editor && value ) {
+				editor.update( value );
+			}
+		},
+		[ jsonEditorRef, value ]
+	);
+
+	return (
+		<JsonEditor
+			ref={ jsonEditorRef }
+			value={ value }
+			onChange={ onChange }
+		/>
+	);
+};
+/* eslint-enable jsdoc/check-param-names */
+/* eslint-enable jsdoc/require-param */

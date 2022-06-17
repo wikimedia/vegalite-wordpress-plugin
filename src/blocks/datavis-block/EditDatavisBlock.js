@@ -1,8 +1,6 @@
 /**
  * Edit function for Datavis block.
  */
-import { JsonEditor as Editor } from 'jsoneditor-react';
-import 'jsoneditor-react/es/editor.min.css';
 import React from 'react';
 
 import {
@@ -18,7 +16,8 @@ import { __ } from '@wordpress/i18n';
 import ServerSideRender from '@wordpress/server-side-render';
 
 import ErrorBoundary from '../../components/ErrorBoundary';
-import { setupDatavisBlocks } from '../../index';
+import { ControlledJsonEditor } from '../../editor';
+import { debounce, setupDatavisBlocks } from '../../index';
 
 import specification from './specification.json';
 
@@ -33,7 +32,7 @@ import specification from './specification.json';
  */
 const EditDatavisBlock = ( { attributes, setAttributes } ) => {
 	const blockProps = useBlockProps();
-	const {
+	let {
 		json,
 	} = attributes;
 
@@ -82,9 +81,10 @@ const EditDatavisBlock = ( { attributes, setAttributes } ) => {
 
 	const blockId = blockProps.id;
 	setAttributes( { blockId } );
-	setAttributes( { json: ( ( json ) ? json : specification ) } );
 
 	PreviewDatavis( blockId );
+
+	json = ( typeof json === 'undefined' ) ? { ...specification } : json;
 
 	return (
 		<div { ...blockProps }>
@@ -95,7 +95,7 @@ const EditDatavisBlock = ( { attributes, setAttributes } ) => {
 					attributes={ attributes }
 				/>
 			</ErrorBoundary>
-			<Editor
+			<ControlledJsonEditor
 				value={ json }
 				onChange={ ( json ) => setAttributes( { json } ) }
 			/>
@@ -107,19 +107,37 @@ const EditDatavisBlock = ( { attributes, setAttributes } ) => {
 					<TextControl
 						label={ __( 'Name', 'datavis' ) }
 						value={ json['name'] }
-						onChange={ ( name ) => setAttributes( { name } ) }
+						onChange={ ( name ) => {
+							const updatedJSON = {
+								...json,
+								name: name,
+							};
+							debounce( setAttributes( { json: updatedJSON } ), 1000 );
+						} }
 						help={ __( 'Name of the visualization for later reference.', 'datavis' ) }
 					/>
 					<TextControl
 						label={ __( 'Title', 'datavis' ) }
 						value={ json['title'] }
-						onChange={ ( title ) => setAttributes( { title } ) }
+						onChange={ ( title ) => {
+							const updatedJSON = {
+								...json,
+								title: title,
+							};
+							debounce( setAttributes( { json: updatedJSON } ), 1000 );
+						} }
 						help={ __( 'Title for the plot.', 'datavis' ) }
 					/>
 					<TextControl
 						label={ __( 'Description', 'datavis' ) }
 						value={ json['description'] }
-						onChange={ ( description ) => setAttributes( { description } ) }
+						onChange={ ( description ) => {
+							const updatedJSON = {
+								...json,
+								description: description,
+							};
+							debounce( setAttributes( { json: updatedJSON } ), 1000 );
+						} }
 						help={ __( 'Description of this mark for commenting purpose.', 'datavis' ) }
 					/>
 				</PanelBody>
@@ -128,7 +146,13 @@ const EditDatavisBlock = ( { attributes, setAttributes } ) => {
 						label={ __( 'Mark', 'datavis' ) }
 						value={ json['mark'] }
 						options={ markOptions }
-						onChange={ ( mark ) => setAttributes( { mark } ) }
+						onChange={ ( mark ) => {
+							const updatedJSON = {
+								...json,
+								mark: mark,
+							};
+							debounce( setAttributes( { json: updatedJSON } ), 1000 );
+						} }
 					/>
 				</PanelBody>
 			</InspectorControls>
