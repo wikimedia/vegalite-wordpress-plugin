@@ -2,6 +2,8 @@
  * Front-end functionality for datavis blocks.
  */
 
+import './styles.scss';
+
 /**
  * Debounce function.
  *
