@@ -35,10 +35,12 @@ function enqueue_build_asset( $asset, $options = [] ) : void {
  * Enqueue the JS bundle in the block editor.
  */
 function enqueue_assets() : void {
+	wp_enqueue_script( 'ace-editor', plugin_dir_url( __DIR__ ) . 'vendor/ace.js', [], '10.06.22' );
+
 	// Include Vega Lite. TODO: Move to webpack config.
-	wp_enqueue_script( 'vega', 'https://cdn.jsdelivr.net/npm/vega@5.21.0' );
-	wp_enqueue_script( 'vega-lite', 'https://cdn.jsdelivr.net/npm/vega-lite@5.2.0', [ 'vega' ] );
-	wp_enqueue_script( 'vega-embed', 'https://cdn.jsdelivr.net/npm/vega-embed@6.20.2', [ 'vega-lite' ] );
+	// wp_enqueue_script( 'vega', 'https://cdn.jsdelivr.net/npm/vega@5.21.0' );
+	// wp_enqueue_script( 'vega-lite', 'https://cdn.jsdelivr.net/npm/vega-lite@5.2.0', [ 'vega' ] );
+	// wp_enqueue_script( 'vega-embed', 'https://cdn.jsdelivr.net/npm/vega-embed@6.20.2', [ 'vega-lite' ] );
 
 	enqueue_build_asset(
 		'datavis-block-editor.js',
@@ -49,8 +51,9 @@ function enqueue_assets() : void {
 				'wp-edit-post',
 				'wp-element',
 				'wp-i18n',
-				'vega-lite',
-				'vega-embed',
+				// 'vega-lite',
+				// 'vega-embed',
+				'ace-editor',
 			],
 			'handle'  => 'datavis-block-editor',
 		]
