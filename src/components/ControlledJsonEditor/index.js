@@ -1,7 +1,11 @@
 import { JsonEditor } from 'jsoneditor-react';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+
+import { ToggleControl } from '@wordpress/components';
+import { __ } from '@wordpress/i18n';
 
 import 'jsoneditor-react/es/editor.min.css';
+import './jsoneditor.css';
 
 /**
  * Create a JSONEditor where the reference is tracked in order to update the editor component value outside of the editor.
@@ -14,6 +18,8 @@ import 'jsoneditor-react/es/editor.min.css';
 export const ControlledJsonEditor = ( { value, onChange } ) => {
 	const jsonEditorRef = useRef();
 
+	const [ isCodeMode, setCodeMode ] = useState( false );
+
 	useEffect(
 		() => {
 			const editor = jsonEditorRef?.current?.jsonEditor;
@@ -24,12 +30,29 @@ export const ControlledJsonEditor = ( { value, onChange } ) => {
 		[ jsonEditorRef, value ]
 	);
 
+	useEffect(
+		() => {
+			const editor = jsonEditorRef?.current?.jsonEditor;
+			if ( editor ) {
+				editor.setMode( isCodeMode ? 'text' : 'tree' );
+			}
+		},
+		[ jsonEditorRef, isCodeMode ]
+	);
+
 	return (
-		<JsonEditor
-			ref={ jsonEditorRef }
-			value={ value }
-			onChange={ onChange }
-		/>
+		<>
+			<ToggleControl
+				label={ __( 'Edit raw JSON' ) }
+				checked={ isCodeMode }
+				onChange={ () => setCodeMode( ! isCodeMode ) }
+			/>
+			<JsonEditor
+				ref={ jsonEditorRef }
+				value={ value }
+				onChange={ onChange }
+			/>
+		</>
 	);
 };
 

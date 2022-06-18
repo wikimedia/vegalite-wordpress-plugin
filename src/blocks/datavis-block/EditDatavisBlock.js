@@ -19,7 +19,7 @@ import ControlledJsonEditor from '../../components/ControlledJsonEditor';
 import ErrorBoundary from '../../components/ErrorBoundary';
 import { debounce, setupDatavisBlocks } from '../../index';
 
-import specification from './specification.json';
+import defaultSpecification from './specification.json';
 
 /**
  * Editor UI component for the datavis block.
@@ -33,9 +33,7 @@ import specification from './specification.json';
  */
 const EditDatavisBlock = ( { attributes, setAttributes, isSelected } ) => {
 	const blockProps = useBlockProps();
-	let {
-		json,
-	} = attributes;
+	const json = attributes.json || defaultSpecification;
 
 	const markOptions = [
 		{
@@ -84,8 +82,6 @@ const EditDatavisBlock = ( { attributes, setAttributes, isSelected } ) => {
 	setAttributes( { blockId } );
 
 	PreviewDatavis( blockId );
-
-	json = ( typeof json === 'undefined' ) ? { ...specification } : json;
 
 	return (
 		<div { ...blockProps }>
