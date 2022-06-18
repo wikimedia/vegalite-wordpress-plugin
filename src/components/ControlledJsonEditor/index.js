@@ -4,8 +4,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ToggleControl } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
-import vegaLiteSchema from '../../schema/vega-lite.v5.json';
-
 import 'jsoneditor-react/es/editor.min.css';
 import './jsoneditor.css';
 
@@ -53,7 +51,6 @@ export const ControlledJsonEditor = ( { value, onChange } ) => {
 				ref={ jsonEditorRef }
 				value={ value }
 				onChange={ onChange }
-				schema={ vegaLiteSchema }
 			/>
 		</>
 	);
