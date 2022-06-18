@@ -14,10 +14,6 @@ module.exports = choosePort( 9090 ).then( ( port ) => {
 				webSocketURL: `ws://localhost:${ port }/ws`,
 			},
 			port,
-			// Reduce watcher overhead and prevent PHP changes from triggering rebuild.
-			watchOptions: {
-				ignored: [ /.*\.php/, /node_modules/ ],
-			},
 		},
         externals,
         entry: {
