@@ -12,6 +12,7 @@ module.exports = choosePort( 9090 ).then( ( port ) => {
 		devServer: {
 			client: {
 				webSocketURL: `ws://localhost:${ port }/ws`,
+				overlay: false,
 			},
 			port,
 		},
