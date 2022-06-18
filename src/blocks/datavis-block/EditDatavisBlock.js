@@ -13,10 +13,9 @@ import {
 	SelectControl,
 } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import ServerSideRender from '@wordpress/server-side-render';
 
 import ControlledJsonEditor from '../../components/ControlledJsonEditor';
-import ErrorBoundary from '../../components/ErrorBoundary';
+import VegaChart from '../../components/VegaChart';
 import { debounce, setupDatavisBlocks } from '../../index';
 
 import defaultSpecification from './specification.json';
@@ -86,12 +85,7 @@ const EditDatavisBlock = ( { attributes, setAttributes, isSelected } ) => {
 	return (
 		<div { ...blockProps }>
 			<h2>{ __( 'Datavis Block', 'datavis' ) }</h2>
-			<ErrorBoundary>
-				<ServerSideRender
-					block='datavis-block/datavis-block'
-					attributes={ attributes }
-				/>
-			</ErrorBoundary>
+			<VegaChart spec={ json } />
 			{ isSelected ? (
 				<>
 					<ControlledJsonEditor
