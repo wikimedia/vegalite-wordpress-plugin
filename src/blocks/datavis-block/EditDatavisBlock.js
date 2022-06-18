@@ -15,8 +15,8 @@ import {
 import { __ } from '@wordpress/i18n';
 import ServerSideRender from '@wordpress/server-side-render';
 
+import ControlledJsonEditor from '../../components/ControlledJsonEditor';
 import ErrorBoundary from '../../components/ErrorBoundary';
-import { ControlledJsonEditor } from '../../editor';
 import { debounce, setupDatavisBlocks } from '../../index';
 
 import specification from './specification.json';
