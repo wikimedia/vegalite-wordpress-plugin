@@ -1,4 +1,3 @@
-import Ajv from 'ajv';
 import { JsonEditor } from 'jsoneditor-react';
 import React, { useEffect, useRef, useState } from 'react';
 
@@ -9,12 +8,6 @@ import vegaLiteSchema from '../../schema/vega-lite.v5.json';
 
 import 'jsoneditor-react/es/editor.min.css';
 import './jsoneditor.css';
-
-const ajv = new Ajv( {
-	allErrors: true,
-	verbose: true,
-	$data: true,
-} );
 
 /**
  * Create a JSONEditor where the reference is tracked in order to update the editor component value outside of the editor.
@@ -58,7 +51,6 @@ export const ControlledJsonEditor = ( { value, onChange } ) => {
 			/>
 			<JsonEditor
 				ref={ jsonEditorRef }
-				ajv={ ajv }
 				value={ value }
 				onChange={ onChange }
 				schema={ vegaLiteSchema }
