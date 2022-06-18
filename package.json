@@ -29,6 +29,7 @@
     "build": "webpack --config=.webpack/webpack.config.prod.js"
   },
   "dependencies": {
+    "ajv": "^8.11.0",
     "jsoneditor": "^9.9.0",
     "jsoneditor-react": "^3.1.2",
     "vega-lite": "^5.2.0"
