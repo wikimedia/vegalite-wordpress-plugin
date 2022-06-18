@@ -24,13 +24,14 @@ import specification from './specification.json';
 /**
  * Editor UI component for the datavis block.
  *
- * @param {object} props Props
- * @param {object} props.attributes The attributes for the selected block.
+ * @param {object}   props               React component props.
+ * @param {object}   props.attributes    The attributes for the selected block.
  * @param {Function} props.setAttributes The attributes setter for the selected block.
+ * @param {boolean}  props.isSelected    Whether the block is selected in the editor.
  * @returns {React.ReactNode} Rendered editorial UI.
  * @class
  */
-const EditDatavisBlock = ( { attributes, setAttributes } ) => {
+const EditDatavisBlock = ( { attributes, setAttributes, isSelected } ) => {
 	const blockProps = useBlockProps();
 	let {
 		json,
@@ -95,67 +96,71 @@ const EditDatavisBlock = ( { attributes, setAttributes } ) => {
 					attributes={ attributes }
 				/>
 			</ErrorBoundary>
-			<ControlledJsonEditor
-				value={ json }
-				onChange={ ( json ) => setAttributes( { json } ) }
-			/>
-			<InspectorControls>
-				<PanelBody
-					initialOpen
-					title={ __( 'General' ) }
-				>
-					<TextControl
-						label={ __( 'Name', 'datavis' ) }
-						value={ json['name'] }
-						onChange={ ( name ) => {
-							const updatedJSON = {
-								...json,
-								name: name,
-							};
-							debounce( setAttributes( { json: updatedJSON } ), 1000 );
-						} }
-						help={ __( 'Name of the visualization for later reference.', 'datavis' ) }
+			{ isSelected ? (
+				<>
+					<ControlledJsonEditor
+						value={ json }
+						onChange={ ( json ) => setAttributes( { json } ) }
 					/>
-					<TextControl
-						label={ __( 'Title', 'datavis' ) }
-						value={ json['title'] }
-						onChange={ ( title ) => {
-							const updatedJSON = {
-								...json,
-								title: title,
-							};
-							debounce( setAttributes( { json: updatedJSON } ), 1000 );
-						} }
-						help={ __( 'Title for the plot.', 'datavis' ) }
-					/>
-					<TextControl
-						label={ __( 'Description', 'datavis' ) }
-						value={ json['description'] }
-						onChange={ ( description ) => {
-							const updatedJSON = {
-								...json,
-								description: description,
-							};
-							debounce( setAttributes( { json: updatedJSON } ), 1000 );
-						} }
-						help={ __( 'Description of this mark for commenting purpose.', 'datavis' ) }
-					/>
-				</PanelBody>
-				<PanelBody title={ __( 'Mark' ) }>
-					<SelectControl
-						label={ __( 'Mark', 'datavis' ) }
-						value={ json['mark'] }
-						options={ markOptions }
-						onChange={ ( mark ) => {
-							const updatedJSON = {
-								...json,
-								mark: mark,
-							};
-							debounce( setAttributes( { json: updatedJSON } ), 1000 );
-						} }
-					/>
-				</PanelBody>
-			</InspectorControls>
+					<InspectorControls>
+						<PanelBody
+							initialOpen
+							title={ __( 'General' ) }
+						>
+							<TextControl
+								label={ __( 'Name', 'datavis' ) }
+								value={ json['name'] }
+								onChange={ ( name ) => {
+									const updatedJSON = {
+										...json,
+										name: name,
+									};
+									debounce( setAttributes( { json: updatedJSON } ), 1000 );
+								} }
+								help={ __( 'Name of the visualization for later reference.', 'datavis' ) }
+							/>
+							<TextControl
+								label={ __( 'Title', 'datavis' ) }
+								value={ json['title'] }
+								onChange={ ( title ) => {
+									const updatedJSON = {
+										...json,
+										title: title,
+									};
+									debounce( setAttributes( { json: updatedJSON } ), 1000 );
+								} }
+								help={ __( 'Title for the plot.', 'datavis' ) }
+							/>
+							<TextControl
+								label={ __( 'Description', 'datavis' ) }
+								value={ json['description'] }
+								onChange={ ( description ) => {
+									const updatedJSON = {
+										...json,
+										description: description,
+									};
+									debounce( setAttributes( { json: updatedJSON } ), 1000 );
+								} }
+								help={ __( 'Description of this mark for commenting purpose.', 'datavis' ) }
+							/>
+						</PanelBody>
+						<PanelBody title={ __( 'Mark' ) }>
+							<SelectControl
+								label={ __( 'Mark', 'datavis' ) }
+								value={ json['mark'] }
+								options={ markOptions }
+								onChange={ ( mark ) => {
+									const updatedJSON = {
+										...json,
+										mark: mark,
+									};
+									debounce( setAttributes( { json: updatedJSON } ), 1000 );
+								} }
+							/>
+						</PanelBody>
+					</InspectorControls>
+				</>
+			) : null }
 		</div>
 	);
 };
