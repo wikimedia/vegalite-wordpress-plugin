@@ -1,14 +1,13 @@
 /**
  * Edit function for Datavis block.
  */
-import React, { useState } from 'react';
+import React from 'react';
 
 import {
 	useBlockProps,
 	InspectorControls,
 } from '@wordpress/block-editor';
 import {
-	TabPanel,
 	TextControl,
 	PanelBody,
 	SelectControl,
@@ -17,8 +16,8 @@ import { __ } from '@wordpress/i18n';
 
 import ControlledJsonEditor from '../../components/ControlledJsonEditor';
 import VegaChart from '../../components/VegaChart';
+import useTabPanel from '../../hooks/useTabPanel.js';
 import { debounce, setupDatavisBlocks } from '../../index';
-// import useTabs from '../../hooks/useTabPanel.js';
 
 import defaultSpecification from './specification.json';
 
@@ -150,7 +149,18 @@ const EditDatavisBlock = ( { attributes, setAttributes, isSelected } ) => {
 	const blockId = blockProps.id;
 	setAttributes( { blockId } );
 
-	const [ activeTab, setActiveTab ] = useState( 'spec' );
+	const { activeTab, TabPanel } = useTabPanel( [
+		{
+			name: 'spec',
+			title: __( 'Chart Specification' ),
+			className: 'edit-post-sidebar__panel-tab',
+		},
+		{
+			name: 'data',
+			title: __( 'Data' ),
+			className: 'edit-post-sidebar__panel-tab',
+		},
+	] );
 
 	PreviewDatavis( blockId );
 
@@ -159,25 +169,7 @@ const EditDatavisBlock = ( { attributes, setAttributes, isSelected } ) => {
 			<VegaChart spec={ json } />
 			{ isSelected ? (
 				<>
-					<TabPanel
-						className="my-tab-panel"
-						activeClass="active-tab"
-						onSelect={ setActiveTab }
-						tabs={ [
-							{
-								name: 'spec',
-								title: __( 'Chart Specification' ),
-								className: 'edit-post-sidebar__panel-tab',
-							},
-							{
-								name: 'data',
-								title: __( 'Data' ),
-								className: 'edit-post-sidebar__panel-tab',
-							},
-						] }
-					>
-						{ ( tab ) => <p key={ tab.name }>{ tab.title }</p> }
-					</TabPanel>
+					<TabPanel />
 					{ activeTab === 'spec' ? (
 						<ControlledJsonEditor
 							value={ json }
