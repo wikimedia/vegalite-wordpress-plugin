@@ -13,149 +13,175 @@ import {
 	SelectControl,
 } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import ServerSideRender from '@wordpress/server-side-render';
 
-import ErrorBoundary from '../../components/ErrorBoundary';
-import { ControlledJsonEditor } from '../../editor';
+import ControlledJsonEditor from '../../components/ControlledJsonEditor';
+import VegaChart from '../../components/VegaChart';
+import useTabPanel from '../../hooks/useTabPanel.js';
 import { debounce, setupDatavisBlocks } from '../../index';
 
-import specification from './specification.json';
+import defaultSpecification from './specification.json';
+
+const markOptions = [
+	{
+		label: __( 'Area', 'datavis' ),
+		value: 'area',
+	},
+	{
+		label: __( 'Bar', 'datavis' ),
+		value: 'bar',
+	},
+	{
+		label: __( 'Circle', 'datavis' ),
+		value: 'circle',
+	},
+	{
+		label: __( 'Line', 'datavis' ),
+		value: 'line',
+	},
+	{
+		label: __( 'Point', 'datavis' ),
+		value: 'point',
+	},
+	{
+		label: __( 'Rect', 'datavis' ),
+		value: 'rect',
+	},
+	{
+		label: __( 'Rule', 'datavis' ),
+		value: 'rule',
+	},
+	{
+		label: __( 'Square', 'datavis' ),
+		value: 'square',
+	},
+	{
+		label: __( 'Text', 'datavis' ),
+		value: 'text',
+	},
+	{
+		label: __( 'Tick', 'datavis' ),
+		value: 'tick',
+	},
+];
+
+/**
+ * Sidebar panels
+ *
+ * @param {object} props                 React component props.
+ * @param {object} props.json            Vega Lite specification.
+ * @param {Function} props.setAttributes Block editor setAttributes function.
+ * @returns {React.ReactNode} Rendered sidebar panel.
+ */
+const SidebarEditor = ( { json, setAttributes } ) => (
+	<InspectorControls>
+		<PanelBody
+			initialOpen
+			title={ __( 'General' ) }
+		>
+			<TextControl
+				label={ __( 'Name', 'datavis' ) }
+				value={ json['name'] }
+				onChange={ ( name ) => {
+					const updatedJSON = {
+						...json,
+						name: name,
+					};
+					debounce( setAttributes( { json: updatedJSON } ), 1000 );
+				} }
+				help={ __( 'Name of the visualization for later reference.', 'datavis' ) }
+			/>
+			<TextControl
+				label={ __( 'Title', 'datavis' ) }
+				value={ json['title'] }
+				onChange={ ( title ) => {
+					const updatedJSON = {
+						...json,
+						title: title,
+					};
+					debounce( setAttributes( { json: updatedJSON } ), 1000 );
+				} }
+				help={ __( 'Title for the plot.', 'datavis' ) }
+			/>
+			<TextControl
+				label={ __( 'Description', 'datavis' ) }
+				value={ json['description'] }
+				onChange={ ( description ) => {
+					const updatedJSON = {
+						...json,
+						description: description,
+					};
+					debounce( setAttributes( { json: updatedJSON } ), 1000 );
+				} }
+				help={ __( 'Description of this mark for commenting purpose.', 'datavis' ) }
+			/>
+		</PanelBody>
+		<PanelBody title={ __( 'Mark' ) }>
+			<SelectControl
+				label={ __( 'Mark', 'datavis' ) }
+				value={ json['mark'] }
+				options={ markOptions }
+				onChange={ ( mark ) => {
+					const updatedJSON = {
+						...json,
+						mark: mark,
+					};
+					debounce( setAttributes( { json: updatedJSON } ), 1000 );
+				} }
+			/>
+		</PanelBody>
+	</InspectorControls>
+);
 
 /**
  * Editor UI component for the datavis block.
  *
- * @param {object} props Props
- * @param {object} props.attributes The attributes for the selected block.
+ * @param {object}   props               React component props.
+ * @param {object}   props.attributes    The attributes for the selected block.
  * @param {Function} props.setAttributes The attributes setter for the selected block.
+ * @param {boolean}  props.isSelected    Whether the block is selected in the editor.
  * @returns {React.ReactNode} Rendered editorial UI.
  * @class
  */
-const EditDatavisBlock = ( { attributes, setAttributes } ) => {
+const EditDatavisBlock = ( { attributes, setAttributes, isSelected } ) => {
 	const blockProps = useBlockProps();
-	let {
-		json,
-	} = attributes;
-
-	const markOptions = [
-		{
-			label: __( 'Area', 'datavis' ),
-			value: 'area',
-		},
-		{
-			label: __( 'Bar', 'datavis' ),
-			value: 'bar',
-		},
-		{
-			label: __( 'Circle', 'datavis' ),
-			value: 'circle',
-		},
-		{
-			label: __( 'Line', 'datavis' ),
-			value: 'line',
-		},
-		{
-			label: __( 'Point', 'datavis' ),
-			value: 'point',
-		},
-		{
-			label: __( 'Rect', 'datavis' ),
-			value: 'rect',
-		},
-		{
-			label: __( 'Rule', 'datavis' ),
-			value: 'rule',
-		},
-		{
-			label: __( 'Square', 'datavis' ),
-			value: 'square',
-		},
-		{
-			label: __( 'Text', 'datavis' ),
-			value: 'text',
-		},
-		{
-			label: __( 'Tick', 'datavis' ),
-			value: 'tick',
-		},
-	];
+	const json = attributes.json || defaultSpecification;
 
 	const blockId = blockProps.id;
 	setAttributes( { blockId } );
 
-	PreviewDatavis( blockId );
+	const { activeTab, TabPanel } = useTabPanel( [
+		{
+			name: 'spec',
+			title: __( 'Chart Specification' ),
+			className: 'edit-post-sidebar__panel-tab',
+		},
+		{
+			name: 'data',
+			title: __( 'Data' ),
+			className: 'edit-post-sidebar__panel-tab',
+		},
+	] );
 
-	json = ( typeof json === 'undefined' ) ? { ...specification } : json;
+	PreviewDatavis( blockId );
 
 	return (
 		<div { ...blockProps }>
-			<h2>{ __( 'Datavis Block', 'datavis' ) }</h2>
-			<ErrorBoundary>
-				<ServerSideRender
-					block='datavis-block/datavis-block'
-					attributes={ attributes }
-				/>
-			</ErrorBoundary>
-			<ControlledJsonEditor
-				value={ json }
-				onChange={ ( json ) => setAttributes( { json } ) }
-			/>
-			<InspectorControls>
-				<PanelBody
-					initialOpen
-					title={ __( 'General' ) }
-				>
-					<TextControl
-						label={ __( 'Name', 'datavis' ) }
-						value={ json['name'] }
-						onChange={ ( name ) => {
-							const updatedJSON = {
-								...json,
-								name: name,
-							};
-							debounce( setAttributes( { json: updatedJSON } ), 1000 );
-						} }
-						help={ __( 'Name of the visualization for later reference.', 'datavis' ) }
-					/>
-					<TextControl
-						label={ __( 'Title', 'datavis' ) }
-						value={ json['title'] }
-						onChange={ ( title ) => {
-							const updatedJSON = {
-								...json,
-								title: title,
-							};
-							debounce( setAttributes( { json: updatedJSON } ), 1000 );
-						} }
-						help={ __( 'Title for the plot.', 'datavis' ) }
-					/>
-					<TextControl
-						label={ __( 'Description', 'datavis' ) }
-						value={ json['description'] }
-						onChange={ ( description ) => {
-							const updatedJSON = {
-								...json,
-								description: description,
-							};
-							debounce( setAttributes( { json: updatedJSON } ), 1000 );
-						} }
-						help={ __( 'Description of this mark for commenting purpose.', 'datavis' ) }
-					/>
-				</PanelBody>
-				<PanelBody title={ __( 'Mark' ) }>
-					<SelectControl
-						label={ __( 'Mark', 'datavis' ) }
-						value={ json['mark'] }
-						options={ markOptions }
-						onChange={ ( mark ) => {
-							const updatedJSON = {
-								...json,
-								mark: mark,
-							};
-							debounce( setAttributes( { json: updatedJSON } ), 1000 );
-						} }
-					/>
-				</PanelBody>
-			</InspectorControls>
+			<VegaChart spec={ json } />
+			{ isSelected ? (
+				<>
+					<TabPanel />
+					{ activeTab === 'spec' ? (
+						<ControlledJsonEditor
+							value={ json }
+							onChange={ ( json ) => setAttributes( { json } ) }
+						/>
+					) : null }
+					{ activeTab === 'data' ? (
+						<p>Data goes here</p>
+					) : null }
+					<SidebarEditor json={ json } setAttributes={ setAttributes } />
+				</>
+			) : null }
 		</div>
 	);
 };

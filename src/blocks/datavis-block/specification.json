@@ -57,6 +57,10 @@
 	"y": {
 	  "field": "b",
 	  "type": "quantitative"
-	}
+	},
+    "tooltip": [
+      { "field": "a" },
+      { "field": "b" }
+    ]
   }
 }

@@ -12,4 +12,7 @@ module.exports = presets.production( {
     plugins: [
         plugins.clean(),
     ],
+	cache: {
+		type: 'filesystem',
+	},
 } );

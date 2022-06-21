@@ -1,0 +1,7 @@
+// Styles used both on frontend and within the editor.
+
+.chart-wrapper,
+.chart-wrapper canvas {
+	max-width: 100%; // Never overflow container.
+	height: auto !important; // Use object dimension props for aspect ratio when width-constrained.
+}
