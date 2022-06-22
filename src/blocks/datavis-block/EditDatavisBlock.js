@@ -1,13 +1,14 @@
 /**
  * Edit function for Datavis block.
  */
-import React from 'react';
+import React, { useState } from 'react';
 
 import {
 	useBlockProps,
 	InspectorControls,
 } from '@wordpress/block-editor';
 import {
+	TabPanel,
 	TextControl,
 	PanelBody,
 	SelectControl,
@@ -16,7 +17,6 @@ import { __ } from '@wordpress/i18n';
 
 import ControlledJsonEditor from '../../components/ControlledJsonEditor';
 import VegaChart from '../../components/VegaChart';
-import useTabPanel from '../../hooks/useTabPanel.js';
 import { debounce, setupDatavisBlocks } from '../../index';
 
 import defaultSpecification from './specification.json';
@@ -132,6 +132,20 @@ const SidebarEditor = ( { json, setAttributes } ) => (
 	</InspectorControls>
 );
 
+// Tabs to use in the editor view.
+const tabs = [
+	{
+		name: 'spec',
+		title: __( 'Chart Specification' ),
+		className: 'edit-post-sidebar__panel-tab',
+	},
+	{
+		name: 'data',
+		title: __( 'Data' ),
+		className: 'edit-post-sidebar__panel-tab',
+	},
+];
+
 /**
  * Editor UI component for the datavis block.
  *
@@ -149,19 +163,6 @@ const EditDatavisBlock = ( { attributes, setAttributes, isSelected } ) => {
 	const blockId = blockProps.id;
 	setAttributes( { blockId } );
 
-	const { activeTab, TabPanel } = useTabPanel( [
-		{
-			name: 'spec',
-			title: __( 'Chart Specification' ),
-			className: 'edit-post-sidebar__panel-tab',
-		},
-		{
-			name: 'data',
-			title: __( 'Data' ),
-			className: 'edit-post-sidebar__panel-tab',
-		},
-	] );
-
 	PreviewDatavis( blockId );
 
 	return (
@@ -169,16 +170,28 @@ const EditDatavisBlock = ( { attributes, setAttributes, isSelected } ) => {
 			<VegaChart spec={ json } />
 			{ isSelected ? (
 				<>
-					<TabPanel />
-					{ activeTab === 'spec' ? (
-						<ControlledJsonEditor
-							value={ json }
-							onChange={ ( json ) => setAttributes( { json } ) }
-						/>
-					) : null }
-					{ activeTab === 'data' ? (
-						<p>Data goes here</p>
-					) : null }
+					<TabPanel
+						className="my-tab-panel"
+						activeClass="active-tab"
+						tabs={ tabs }
+					>
+						{ ( activeTab ) => {
+							if ( activeTab.name === 'spec' ) {
+								return (
+									<ControlledJsonEditor
+										value={ json }
+										onChange={ ( json ) => setAttributes( { json } ) }
+									/>
+								);
+							}
+							if ( activeTab.name === 'data' ) {
+								return (
+									<p>Data goes here</p>
+								);
+							}
+							return null;
+						} }
+					</TabPanel>
 					<SidebarEditor json={ json } setAttributes={ setAttributes } />
 				</>
 			) : null }

@@ -8,6 +8,8 @@ import EditDatavisBlock from './EditDatavisBlock';
 
 export const name = blockData.name;
 
+console.log( 'loaded' ); // eslint-disable-line
+
 export const settings = {
 	// Apply the block settings from the JSON configuration file.
 	...blockData,
