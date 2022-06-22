@@ -21,6 +21,39 @@ function bootstrap() : void {
 }
 
 /**
+ * Return the argument schema for a dataset.
+ *
+ * @return array Dataset schema as array.
+ */
+function get_dataset_schema() : array {
+	return [
+		'id' => [
+			'description' => __( 'Filename to use for the dataset.' ),
+			'type'        => 'string',
+			'default'     => 'data.csv',
+			'required'    => true
+		],
+		'content' => [
+			'description' => __( 'CSV file contents as string.' ),
+			'type'        => 'string',
+			'required'    => true,
+		],
+		'url' => [
+			'description' => __( 'Public URL endpoint at which this CSV may be downloaded.' ),
+			'type'        => 'string',
+			'readonly'    => true,
+			'required'    => false,
+		],
+		'rows' => [
+			'description' => __( 'Number of rows in the dataset.' ),
+			'type'        => 'integer',
+			'readonly'    => true,
+			'required'    => false,
+		],
+	];
+}
+
+/**
  * Register dataset sub-routes for all post types which support datasets.
  *
  * @return void
@@ -43,7 +76,13 @@ function register_dataset_routes() : void {
 				'methods'             => WP_REST_Server::READABLE,
 				'callback'            => __NAMESPACE__ . '\\get_datasets',
 				'permission_callback' => '__return_true',
-			]
+			],
+			[
+				'methods'             => WP_REST_Server::CREATABLE,
+				'callback'            => __NAMESPACE__ . '\\create_dataset',
+				'permission_callback' => '__return_true', // TODO: Only permit editing if can edit $post_id.
+				'args'                => get_dataset_schema(),
+			],
 		);
 
 		register_rest_route(
@@ -59,6 +98,7 @@ function register_dataset_routes() : void {
 					'methods'             => WP_REST_Server::EDITABLE,
 					'callback'            => __NAMESPACE__ . '\\update_dataset_item',
 					'permission_callback' => '__return_true', // TODO: Only permit editing if can edit $post_id.
+					'args'                => get_dataset_schema(),
 				],
 				[
 					'methods'             => WP_REST_Server::DELETABLE,
@@ -124,6 +164,7 @@ function get_datasets( WP_REST_Request $request ) {
 				return [
 					'id'  => $dataset['id'],
 					'url' => get_rest_url( null, trailingslashit( $request->get_route() ) . $dataset['id'] ),
+					'rows' => count( explode( "\n", $dataset['content'] ) ) - 1,
 				];
 			},
 			$datasets

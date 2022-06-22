@@ -91,6 +91,50 @@ function get_dataset( int $post_id, string $dataset_id ) : ?array {
 }
 
 /**
+ * Create or update a dataset on a post.
+ *
+ * @param int    $post_id  ID of post for which to edit datasets.
+ * @param string $filename String filename of the data.
+ * @param string $content  CSV string contents of the dataset.
+ * @return bool True on successful update, false on failure.
+ */
+function create_dataset( int $post_id, string $filename, string $content ) : bool {
+	$meta_value = get_dataset_meta( $post_id );
+
+	$meta_value[$filename] = $content;
+
+	$updated = update_post_meta( $post_id, META_KEY, $meta_value );
+
+	// update_post_meta returns the meta ID when creating a brand new record, which we don't need.
+	return is_int( $updated ) ? true : $updated;
+}
+
+/**
+ * Delete a dataset from a post.
+ *
+ * @param int    $post_id  ID of post for which to edit meta.
+ * @param string $filename String filename of dataset to delete.
+ * @param bool True on successful delete, false on failure.
+ */
+function delete_dataset( int $post_id, string $filename ) : bool {
+	$meta_value = get_dataset_meta( $post_id );
+
+	if ( empty( $meta_value ) || ! isset( $meta_value[$filename] ) ) {
+		// No dataset, cannot delete.
+		return false;
+	}
+
+	unset( $meta_value, $filename );
+
+	if ( empty( $meta_value ) ) {
+		// All datasets removed: delete wholesale.
+		return delete_post_meta( $post_id, META_KEY );
+	}
+
+	return update_post_meta( $post_id, META_KEY, $meta_value );
+}
+
+/**
  * Exclude dataset metadata from ElasticPress for indexing and search performance.
  *
  * @param array $meta Metadata to index in EP.
