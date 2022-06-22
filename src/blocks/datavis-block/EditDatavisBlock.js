@@ -20,6 +20,7 @@ import VegaChart from '../../components/VegaChart';
 import { debounce, setupDatavisBlocks } from '../../index';
 
 import defaultSpecification from './specification.json';
+import DatasetEditor from '../../components/DatasetEditor';
 
 const markOptions = [
 	{
@@ -186,7 +187,10 @@ const EditDatavisBlock = ( { attributes, setAttributes, isSelected } ) => {
 							}
 							if ( activeTab.name === 'data' ) {
 								return (
-									<p>Data goes here</p>
+									<DatasetEditor
+										json={ json }
+										setAttributes={ setAttributes }
+									/>
 								);
 							}
 							return null;

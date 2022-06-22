@@ -97,6 +97,15 @@ function register_dataset_routes() : void {
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => __NAMESPACE__ . '\\get_dataset_item',
 					'permission_callback' => '__return_true',
+					'args'                => [
+						'format' => [
+							'description' => __( 'Format in which to return dataset' ),
+							'type'        => 'string',
+							'enum'        => [ 'csv', 'json' ],
+							'default'     => 'csv',
+							'required'    => false,
+						],
+					],
 				],
 				[
 					'methods'             => WP_REST_Server::EDITABLE,
@@ -245,7 +254,7 @@ function get_dataset_item( WP_REST_Request $request ) {
  * @return true
  */
 function deliver_dataset_as_csv( $served, $result, $request, $server ) {
-	if ( strpos( $request->get_route(), '/datasets/' ) === false || $request->get_method() !== 'GET' ) {
+	if ( $request['format'] !== 'csv' || strpos( $request->get_route(), '/datasets/' ) === false || $request->get_method() !== 'GET' ) {
 		return $served;
 	}
 
