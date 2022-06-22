@@ -89,13 +89,17 @@ const DatasetEditor = ( { json, setAttributes } ) => {
 	const onChangeSelected = useCallback( ( selected ) => {
 		setSelectedDataset( selected );
 		const selectedDatasetObj = datasets.find( ( dataset ) => dataset.filename === selected );
-		if ( selected === INLINE || ! selectedDatasetObj ) {
+		if ( selected === INLINE || ! selectedDatasetObj || ! selectedDatasetObj.url ) {
 			if ( json.data?.url ) {
 				// Wipe out any URL property to set back to inline mode.
 				json.data = [];
-				setAttributes( { json } );
+				setAttributes( { json: { ...json } } );
 			}
+			return;
 		}
+
+		json.data = { url: selectedDatasetObj.url };
+		setAttributes( { json: { ...json } } );
 	}, [ datasets, json, setAttributes ] );
 
 	return (
