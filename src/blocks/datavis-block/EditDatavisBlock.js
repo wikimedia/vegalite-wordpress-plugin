@@ -1,7 +1,7 @@
 /**
  * Edit function for Datavis block.
  */
-import React, { useState } from 'react';
+import React from 'react';
 
 import {
 	useBlockProps,
@@ -16,11 +16,11 @@ import {
 import { __ } from '@wordpress/i18n';
 
 import ControlledJsonEditor from '../../components/ControlledJsonEditor';
+import DatasetEditor from '../../components/DatasetEditor';
 import VegaChart from '../../components/VegaChart';
-import { debounce, setupDatavisBlocks } from '../../index';
+import { setupDatavisBlocks } from '../../index';
 
 import defaultSpecification from './specification.json';
-import DatasetEditor from '../../components/DatasetEditor';
 
 const markOptions = [
 	{
@@ -83,11 +83,12 @@ const SidebarEditor = ( { json, setAttributes } ) => (
 				label={ __( 'Name', 'datavis' ) }
 				value={ json['name'] }
 				onChange={ ( name ) => {
-					const updatedJSON = {
-						...json,
-						name: name,
-					};
-					debounce( setAttributes( { json: updatedJSON } ), 1000 );
+					setAttributes( {
+						json: {
+							...json,
+							name,
+						},
+					} );
 				} }
 				help={ __( 'Name of the visualization for later reference.', 'datavis' ) }
 			/>
@@ -95,11 +96,12 @@ const SidebarEditor = ( { json, setAttributes } ) => (
 				label={ __( 'Title', 'datavis' ) }
 				value={ json['title'] }
 				onChange={ ( title ) => {
-					const updatedJSON = {
-						...json,
-						title: title,
-					};
-					debounce( setAttributes( { json: updatedJSON } ), 1000 );
+					setAttributes( {
+						json: {
+							...json,
+							title,
+						},
+					} );
 				} }
 				help={ __( 'Title for the plot.', 'datavis' ) }
 			/>
@@ -107,11 +109,12 @@ const SidebarEditor = ( { json, setAttributes } ) => (
 				label={ __( 'Description', 'datavis' ) }
 				value={ json['description'] }
 				onChange={ ( description ) => {
-					const updatedJSON = {
-						...json,
-						description: description,
-					};
-					debounce( setAttributes( { json: updatedJSON } ), 1000 );
+					setAttributes( {
+						json: {
+							...json,
+							description,
+						},
+					} );
 				} }
 				help={ __( 'Description of this mark for commenting purpose.', 'datavis' ) }
 			/>
@@ -122,11 +125,12 @@ const SidebarEditor = ( { json, setAttributes } ) => (
 				value={ json['mark'] }
 				options={ markOptions }
 				onChange={ ( mark ) => {
-					const updatedJSON = {
-						...json,
-						mark: mark,
-					};
-					debounce( setAttributes( { json: updatedJSON } ), 1000 );
+					setAttributes( {
+						json: {
+							...json,
+							mark,
+						},
+					} );
 				} }
 			/>
 		</PanelBody>
