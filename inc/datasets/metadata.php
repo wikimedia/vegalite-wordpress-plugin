@@ -60,10 +60,10 @@ function get_datasets( int $post_id ) : array {
 	$datasets = get_dataset_meta( $post_id );
 
 	return array_map(
-		function( $dataset_key ) use ( $datasets ) : array {
+		function( $filename ) use ( $datasets ) : array {
 			return [
-				'id'      => $dataset_key,
-				'content' => $datasets[ $dataset_key ],
+				'filename' => $filename,
+				'content'  => $datasets[ $filename ],
 			];
 		},
 		array_keys( $datasets )
@@ -73,17 +73,17 @@ function get_datasets( int $post_id ) : array {
 /**
  * Get a single dataset for a post.
  *
- * @param int   $post_id     Post ID.
- * @param string $dataset_id ID (filename) of the dataset to return.
- * @return ?array [ id: string, content: string ] array, or null if no match.
+ * @param int   $post_id   Post ID.
+ * @param string $filename Filename (key) of the dataset to return.
+ * @return ?array [ filename, content ] array, or null if no match.
  */
-function get_dataset( int $post_id, string $dataset_id ) : ?array {
+function get_dataset( int $post_id, string $filename ) : ?array {
 	$datasets = get_dataset_meta( $post_id );
 
-	if ( isset( $datasets[ $dataset_id ] ) && is_string( $datasets[ $dataset_id ] ) ) {
+	if ( isset( $datasets[ $filename ] ) && is_string( $datasets[ $filename ] ) ) {
 		return [
-			'id'      => $dataset_id,
-			'content' => $datasets[ $dataset_id ],
+			'filename' => $filename,
+			'content'  => $datasets[ $filename ],
 		];
 	}
 

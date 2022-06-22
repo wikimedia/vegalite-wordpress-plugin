@@ -27,7 +27,7 @@ function bootstrap() : void {
  */
 function get_dataset_schema() : array {
 	return [
-		'id' => [
+		'filename' => [
 			'description' => __( 'Filename to use for the dataset.' ),
 			'type'        => 'string',
 			'default'     => 'data.csv',
@@ -87,7 +87,7 @@ function register_dataset_routes() : void {
 
 		register_rest_route(
 			$namespace,
-			$rest_base . '/(?P<post_id>[\\d]+)/datasets/(?P<id>[a-z0-9-_.]+)',
+			$rest_base . '/(?P<post_id>[\\d]+)/datasets/(?P<filename>[a-z0-9-_.]+)',
 			[
 				[
 					'methods'             => WP_REST_Server::READABLE,
@@ -115,7 +115,7 @@ function register_dataset_routes() : void {
  *
  * Adapted from WP_REST_Posts_Controller.
  *
- * @param int $id Supplied ID.
+ * @param int $post_id Supplied ID.
  * @return WP_Post|WP_Error Post object if ID is valid, WP_Error otherwise.
  */
 function get_post( $post_id ) {
@@ -162,8 +162,8 @@ function get_datasets( WP_REST_Request $request ) {
 			function( $dataset ) use ( $request ) : array {
 				// Return a no-content version of the dataset.
 				return [
-					'id'  => $dataset['id'],
-					'url' => get_rest_url( null, trailingslashit( $request->get_route() ) . $dataset['id'] ),
+					'filename'  => $dataset['filename'],
+					'url' => get_rest_url( null, trailingslashit( $request->get_route() ) . $dataset['filename'] ),
 					'rows' => count( explode( "\n", $dataset['content'] ) ) - 1,
 				];
 			},
@@ -175,7 +175,7 @@ function get_datasets( WP_REST_Request $request ) {
 function get_dataset_item( WP_REST_Request $request ) {
 	$error = new WP_Error(
 		'rest_dataset_invalid_id',
-		__( 'Invalid dataset ID.' ),
+		__( 'Invalid dataset filename.' ),
 		[ 'status' => 404 ]
 	);
 
@@ -186,9 +186,9 @@ function get_dataset_item( WP_REST_Request $request ) {
 		return $valid_check;
 	}
 
-	$dataset = Metadata\get_dataset( $post_id, $request['id'] );
+	$dataset = Metadata\get_dataset( $post_id, $request['filename'] );
 
-	if ( empty( $dataset ) ) {
+	if ( $request['filename'] !== $dataset['filename'] || empty( $dataset ) ) {
 		return $error;
 	}
 
@@ -209,10 +209,10 @@ function deliver_dataset_as_csv( $served, $result, $request, $server ) {
 		return $served;
 	}
 
-	$probably_csv = implode( ',', array_keys( $result->get_data() ) ) === 'id,content';
-	$csv_content  = $result->get_data()['content'] ?? null;
+	$csv_data = $result->get_data();
 
-	if ( ! $probably_csv || empty( $csv_content ) ) {
+	if ( empty( $csv_data['filename'] ) || empty( $csv_data['content'] ) ) {
+		// This may not be a CSV metadata object response. For safety, do nothing.
 		return $served;
 	}
 
@@ -220,7 +220,7 @@ function deliver_dataset_as_csv( $served, $result, $request, $server ) {
 		$server->send_header( 'Content-Type', 'text/csv; charset=' . get_option( 'blog_charset' ) );
 	}
 
-	echo $csv_content;
+	echo $csv_data['content'];
 
 	return true;
 }
