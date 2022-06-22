@@ -11,7 +11,6 @@ namespace Datavis_Block;
 
 require_once __DIR__ . '/inc/assets.php';
 require_once __DIR__ . '/inc/blocks.php';
-require_once __DIR__ . '/inc/vega-lite/namespace.php';
 
 Assets\bootstrap();
 Blocks\bootstrap();
