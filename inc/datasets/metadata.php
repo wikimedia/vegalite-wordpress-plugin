@@ -14,7 +14,7 @@ const META_KEY = 'csv_datasets';
  */
 function bootstrap() : void {
 	add_action( 'init', __NAMESPACE__ . '\\register_dataset_meta' );
-	add_filter( 'ep_prepare_meta_data', '\\do_not_index_dataset_meta' );
+	add_filter( 'ep_prepare_meta_data', __NAMESPACE__ . '\\do_not_index_dataset_meta' );
 }
 
 /**
@@ -98,8 +98,14 @@ function get_dataset( int $post_id, string $filename ) : ?array {
  * @param string $content  CSV string contents of the dataset.
  * @return bool True on successful update, false on failure.
  */
-function create_dataset( int $post_id, string $filename, string $content ) : bool {
+function update_dataset( int $post_id, string $filename, string $content ) : bool {
 	$meta_value = get_dataset_meta( $post_id );
+
+	$filename = strtolower( $filename );
+	if ( trim( $meta_value[$filename] ) === trim( $content ) ) {
+		// No update needed.
+		return true;
+	}
 
 	$meta_value[$filename] = $content;
 

@@ -13,6 +13,8 @@ use WP_REST_Response;
 use WP_REST_Server;
 use WP_Error;
 
+use function Datavis_Block\Datasets\Metadata\get_dataset;
+
 use const Datavis_Block\Datasets\Metadata\META_KEY;
 
 function bootstrap() : void {
@@ -73,16 +75,18 @@ function register_dataset_routes() : void {
 			$namespace,
 			$rest_base . '/(?P<post_id>[\\d]+)/datasets',
 			[
-				'methods'             => WP_REST_Server::READABLE,
-				'callback'            => __NAMESPACE__ . '\\get_datasets',
-				'permission_callback' => '__return_true',
-			],
-			[
-				'methods'             => WP_REST_Server::CREATABLE,
-				'callback'            => __NAMESPACE__ . '\\create_dataset',
-				'permission_callback' => '__return_true', // TODO: Only permit editing if can edit $post_id.
-				'args'                => get_dataset_schema(),
-			],
+				[
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => __NAMESPACE__ . '\\get_datasets',
+					'permission_callback' => '__return_true',
+				],
+				[
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => __NAMESPACE__ . '\\update_dataset_item',
+					'permission_callback' => '__return_true', // TODO: Only permit editing if can edit $post_id.
+					'args'                => get_dataset_schema(),
+				],
+			]
 		);
 
 		register_rest_route(
@@ -172,6 +176,42 @@ function get_datasets( WP_REST_Request $request ) {
 	);
 }
 
+/**
+ * Create or update a dataset item.
+ *
+ * @param WP_REST_Request $request POST or PUT request.
+ * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+ */
+function update_dataset_item( WP_REST_Request $request ) {
+	$error = new WP_Error(
+		'rest_dataset_update_error',
+		__( 'Could not write CSV.' ),
+		[ 'status' => 400 ]
+	);
+
+	$post_id = $request['post_id'];
+
+	$valid_check = get_post( $post_id );
+	if ( is_wp_error( $valid_check ) ) {
+		return $valid_check;
+	}
+
+	$updated = Metadata\update_dataset( $post_id, $request['filename'], $request['content'] );
+
+	if ( ! $updated ) {
+		return $error;
+	}
+
+	// Respond with the object as it was saved.
+	return rest_ensure_response( Metadata\get_dataset( $post_id, $request['filename'] ) );
+}
+
+/**
+ * Retrieve a single dataset item.
+ *
+ * @param WP_REST_Request $request Full details about the request.
+ * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+ */
 function get_dataset_item( WP_REST_Request $request ) {
 	$error = new WP_Error(
 		'rest_dataset_invalid_id',
