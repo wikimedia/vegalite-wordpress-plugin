@@ -2,7 +2,7 @@
 import React, { useCallback, useEffect, useState, useMemo } from 'react';
 
 // eslint-disable-next-line
-import { TextControl, SelectControl, TextareaControl } from '@wordpress/components';
+import { TextControl, Button, SelectControl, TextareaControl } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
 
@@ -12,15 +12,19 @@ const INLINE = 'inline';
 
 const defaultDatasets = [];
 
+/** No-op function for use as argument default. */
+const noop = () => {};
+
 /**
  * Render an editor for a specific CSV file.
  *
- * @param {object} props          React component props.
- * @param {string} props.filename Filename of CSV being edited.
- * @param {number} props.postId   ID of post being edited.
+ * @param {object}   props          React component props.
+ * @param {string}   props.filename Filename of CSV being edited.
+ * @param {number}   props.postId   ID of post being edited.
+ * @param {Function} props.onSave   Callback to run when CSV changes.
  * @returns {React.ReactNode} Rendered react UI.
  */
-const CSVEditor = ( { filename, postId } ) => {
+const CSVEditor = ( { filename, postId, onSave = noop } ) => {
 	const [ datasetContent, setDatasetContent ] = useState( '' );
 
 	useEffect( () => {
@@ -33,22 +37,25 @@ const CSVEditor = ( { filename, postId } ) => {
 		}
 	}, [ datasetContent, postId, filename, setDatasetContent ] );
 
-	useEffect( () => {
+	const onSaveButton = useCallback( () => {
 		if ( datasetContent && filename ) {
 			updateDataset( {
 				filename,
 				content: datasetContent,
-			}, { id: postId } );
+			}, { id: postId } ).then( onSave );
 		}
-	}, [ datasetContent, postId, filename ] );
+	}, [ datasetContent, postId, filename, onSave ] );
 
 	return (
-		<TextareaControl
-			label="Text"
-			help="Enter some text"
-			value={ datasetContent }
-			onChange={ setDatasetContent }
-		/>
+		<>
+			<TextareaControl
+				label="Text"
+				help="Enter some text"
+				value={ datasetContent }
+				onChange={ setDatasetContent }
+			/>
+			<Button onClick={ onSaveButton }>Save</Button>
+		</>
 	);
 };
 
@@ -102,6 +109,10 @@ const DatasetEditor = ( { json, setAttributes } ) => {
 		setAttributes( { json: { ...json } } );
 	}, [ datasets, json, setAttributes ] );
 
+	const forceChartUpdate = useCallback( () => {
+		setAttributes( { json: { ...json } } );
+	}, [ json, setAttributes ] );
+
 	return (
 		<div>
 			<SelectControl
@@ -116,6 +127,7 @@ const DatasetEditor = ( { json, setAttributes } ) => {
 				<CSVEditor
 					postId={ postId }
 					filename={ selectedDataset }
+					onChange={ forceChartUpdate }
 				/>
 			) : (
 				<p>Edit values in the Specification Editor</p>
