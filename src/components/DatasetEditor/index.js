@@ -6,7 +6,7 @@ import { Icon, TextControl, Button, PanelRow, SelectControl, TextareaControl } f
 import { useSelect } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
 
-import { createDataset, deleteDataset, getDataset, getDatasets, updateDataset } from '../util/datasets';
+import { createDataset, deleteDataset, getDataset, getDatasets, updateDataset } from '../../util/datasets';
 
 import './dataset-editor.scss';
 
@@ -23,10 +23,10 @@ const noop = () => {};
  * @param {object}   props          React component props.
  * @param {string}   props.filename Filename of CSV being edited.
  * @param {number}   props.postId   ID of post being edited.
- * @param {Function} props.onSave   Callback to run when CSV changes.
+ * @param {Function} props.onAddDataset   Callback to run when CSV changes.
  * @returns {React.ReactNode} Rendered react UI.
  */
-const CSVEditor = ( { filename, postId, onSave = noop } ) => {
+const CSVEditor = ( { filename, postId, onAddDataset = noop } ) => {
 	const [ dataset, setDataset ] = useState( { filename } );
 	// const [ csvContent, setCsvContent ] = useState( '' );
 
@@ -52,9 +52,9 @@ const CSVEditor = ( { filename, postId, onSave = noop } ) => {
 
 	const onSaveButton = useCallback( () => {
 		if ( dataset?.content && dataset?.filename ) {
-			updateDataset.throttled( dataset, { id: postId } ).then( onSave );
+			updateDataset.throttled( dataset, { id: postId } ).then( onAddDataset );
 		}
-	}, [ dataset, postId, onSave ] );
+	}, [ dataset, postId, onAddDataset ] );
 
 	return (
 		<>
@@ -85,30 +85,33 @@ const toLowerKebabCase = ( str ) => str
 /**
  * Render a New Dataset form.
  *
- * @param {object} props        React component props.
- * @param {object} props.onSave List of available datasets.
+ * @param {object} props              React component props.
+ * @param {object} props.onAddDataset Callback after new dataset gets saved.
  * @returns {React.ReactNode} Rendered form.
  */
-const NewDatasetForm = ( { onSave } ) => {
+const NewDatasetForm = ( { onAddDataset } ) => {
 	const [ filename, setFilename ] = useState( '' );
 	const { postId } = useSelect( ( select ) => ( {
 		postId: select( 'core/editor' ).getEditedPostAttribute( 'id' ),
 	} ) );
+	const [ hasFormError, setHasFormError ] = useState( false );
+
+	const onChangeContent = useCallback( ( content ) => {
+		setFilename( content );
+		setHasFormError( false );
+	}, [ setFilename, setHasFormError ] );
 
 	const onSubmit = useCallback( () => {
 		if ( ! filename.trim() || ! postId ) {
-			// TODO: Show an error.
+			setHasFormError( true );
 			return;
 		}
 		const dataset = {
 			filename: `${ toLowerKebabCase( filename.replace( /\.csv$/i, '' ) ) }.csv`,
 			content: '',
 		};
-		createDataset( dataset, { id: postId } ).then( ( result ) => {
-			console.log( result );
-			onSave( result );
-		} );
-	}, [ filename, postId, onSave ] );
+		createDataset( dataset, { id: postId } ).then( onAddDataset );
+	}, [ filename, postId, onAddDataset ] );
 
 	const submitOnEnter = useCallback( ( evt ) => {
 		if ( evt.code === 'Enter' ) {
@@ -117,18 +120,23 @@ const NewDatasetForm = ( { onSave } ) => {
 	}, [ onSubmit ] );
 
 	return (
-		<PanelRow className="datasets-control-row">
-			<TextControl
-				label={ __( 'CSV dataset name', 'datavis' ) }
-				value={ filename }
-				onChange={ setFilename }
-				onKeyDown={ submitOnEnter }
-			/>
-			<Button
-				className="dataset-control-button is-primary"
-				onClick={ onSubmit }
-			>{ __( 'Save dataset', 'dataset' ) }</Button>
-		</PanelRow>
+		<>
+			<PanelRow className="datasets-control-row">
+				<TextControl
+					label={ __( 'CSV dataset name', 'datavis' ) }
+					value={ filename }
+					onChange={ onChangeContent }
+					onKeyDown={ submitOnEnter }
+				/>
+				<Button
+					className="dataset-control-button is-primary"
+					onClick={ onSubmit }
+				>{ __( 'Save dataset', 'dataset' ) }</Button>
+			</PanelRow>
+			{ hasFormError ? (
+				<p class="dataset-form-error"><em>Name is required when creating a dataset.</em></p>
+			) : null }
+		</>
 	);
 };
 
@@ -143,6 +151,7 @@ const NewDatasetForm = ( { onSave } ) => {
 const DatasetEditor = ( { json, setAttributes } ) => {
 	const [ datasets, setDatasets ] = useState( defaultDatasets );
 	const [ selectedDataset, setSelectedDataset ] = useState( INLINE );
+	const [ isAddingNewDataset, setIsAddingNewDataset ] = useState( false );
 
 	const { postId } = useSelect( ( select ) => ( {
 		postId: select( 'core/editor' ).getEditedPostAttribute( 'id' ),
@@ -198,7 +207,6 @@ const DatasetEditor = ( { json, setAttributes } ) => {
 		setAttributes( { json: { ...json } } );
 	}, [ json, setAttributes ] );
 
-	const [ isAddingNewDataset, setIsAddingNewDataset ] = useState( false );
 	const onAddNewDataset = useCallback( ( result ) => {
 		setIsAddingNewDataset( false );
 		if ( result && result.filename ) {
@@ -218,7 +226,7 @@ const DatasetEditor = ( { json, setAttributes } ) => {
 	return (
 		<div>
 			{ isAddingNewDataset ? (
-				<NewDatasetForm onSave={ onAddNewDataset } />
+				<NewDatasetForm onAddDataset={ onAddNewDataset } />
 			) : (
 				<PanelRow className="datasets-control-row">
 					<SelectControl
@@ -247,14 +255,16 @@ const DatasetEditor = ( { json, setAttributes } ) => {
 				</PanelRow>
 			) }
 
-			{ selectedDataset !== INLINE ? (
-				<CSVEditor
-					postId={ postId }
-					filename={ selectedDataset }
-					onChange={ forceChartUpdate }
-				/>
-			) : (
-				<p>{ __( 'Edit data values as JSON in the Chart Specification tab.', 'datavis' ) }</p>
+			{ isAddingNewDataset ? null : (
+				selectedDataset !== INLINE ? (
+					<CSVEditor
+						postId={ postId }
+						filename={ selectedDataset }
+						onChange={ forceChartUpdate }
+					/>
+				) : (
+					<p>{ __( 'Edit data values as JSON in the Chart Specification tab.', 'datavis' ) }</p>
+				)
 			) }
 		</div>
 	);
