@@ -151,13 +151,17 @@ const SidebarEditor = ( { json, setAttributes } ) => {
 			<PanelBody title={ __( 'Layout', 'datavis' ) }>
 				<SelectControl
 					label={ __( 'Mark', 'datavis' ) }
-					value={ json.mark }
+					value={ json.mark?.type || json.mark }
 					options={ markOptions }
 					onChange={ ( mark ) => {
 						setAttributes( {
 							json: {
 								...json,
-								mark,
+								mark: {
+									...( typeof json.mark === 'object' ? json.mark : {} ),
+									type: mark,
+									tooltip: true,
+								},
 							},
 						} );
 					} }
@@ -199,6 +203,32 @@ const SidebarEditor = ( { json, setAttributes } ) => {
 												field,
 												type: getType( field ),
 											},
+										},
+									},
+								} );
+							} }
+						/>
+						<SelectControl
+							label={ __( 'Color', 'datavis' ) }
+							value={ json?.encoding?.color?.field || 'none' }
+							options={ [ {
+								label: 'None',
+								value: 'none',
+							} ].concat( fieldOptions ) }
+							onChange={ ( field ) => {
+								setAttributes( {
+									json: {
+										...json,
+										encoding: {
+											...json.encoding,
+											color: field !== 'none'
+												? {
+													...json.color,
+													field,
+													type: getType( field ),
+													legend: null,
+												}
+												: undefined,
 										},
 									},
 								} );
