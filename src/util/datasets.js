@@ -1,5 +1,7 @@
 import apiFetch from '@wordpress/api-fetch';
 
+import debounce from './debounce';
+
 /**
  * Get a list of available datasets.
  *
@@ -76,4 +78,15 @@ export const deleteDataset = ( { filename }, post ) => apiFetch( {
 	// TODO: Get the collection slug for the relevant post type by using the post object.
 	path: `/wp/v2/posts/${ post.id }/datasets/${ filename }`,
 	method: 'DELETE',
+} );
+
+// Create debounced versions of all public methods.
+[
+	getDatasets,
+	getDataset,
+	createDataset,
+	updateDataset,
+	deleteDataset,
+].forEach( ( method ) => {
+	method.debounced = debounce( method, 200 );
 } );

@@ -25,34 +25,44 @@ const noop = () => {};
  * @returns {React.ReactNode} Rendered react UI.
  */
 const CSVEditor = ( { filename, postId, onSave = noop } ) => {
-	const [ datasetContent, setDatasetContent ] = useState( '' );
+	const [ dataset, setDataset ] = useState( '' );
 
 	useEffect( () => {
-		if ( filename !== INLINE && ! datasetContent ) {
-			getDataset( postId, filename ).then( ( dataset ) => {
-				if ( dataset.content ) {
-					setDatasetContent( dataset.content );
+		if ( filename !== INLINE && ( ! dataset || ! dataset.content ) ) {
+			getDataset( postId, filename ).then( ( datasetResponse ) => {
+				if ( datasetResponse.content ) {
+					setDataset( datasetResponse );
 				}
 			} );
 		}
-	}, [ datasetContent, postId, filename, setDatasetContent ] );
+	}, [ dataset, postId, filename, setDataset ] );
+
+	const onChange = useCallback( ( content ) => {
+		if ( content === dataset.content ) {
+			return;
+		}
+		setDataset( {
+			...dataset,
+			content,
+		} );
+	}, [ dataset, setDataset ] );
 
 	const onSaveButton = useCallback( () => {
-		if ( datasetContent && filename ) {
+		if ( dataset.content && dataset.filename ) {
 			updateDataset( {
 				filename,
-				content: datasetContent,
+				content: dataset,
 			}, { id: postId } ).then( onSave );
 		}
-	}, [ datasetContent, postId, filename, onSave ] );
+	}, [ dataset, postId, filename, onSave ] );
 
 	return (
 		<>
 			<TextareaControl
-				label="Text"
-				help="Enter some text"
-				value={ datasetContent }
-				onChange={ setDatasetContent }
+				label={ __( 'Data', 'datavis' ) }
+				help={ __( 'Edit dataset as CSV', 'datavis' ) }
+				value={ dataset.content }
+				onChange={ onChange }
 			/>
 			<Button onClick={ onSaveButton }>Save</Button>
 		</>
@@ -85,7 +95,7 @@ const DatasetEditor = ( { json, setAttributes } ) => {
 
 	const options = useMemo( () => {
 		return [ {
-			label: __( 'Inline data' ),
+			label: __( 'Inline data', 'datavis' ),
 			value: INLINE,
 		} ].concat( datasets.map( ( dataset ) => ( {
 			label: dataset.filename,
@@ -116,7 +126,7 @@ const DatasetEditor = ( { json, setAttributes } ) => {
 	return (
 		<div>
 			<SelectControl
-				label={ __( 'Datasets' ) }
+				label={ __( 'Datasets', 'datavis' ) }
 				value={ selectedDataset }
 				options={ options }
 				onChange={ onChangeSelected }
