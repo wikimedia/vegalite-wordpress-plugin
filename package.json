@@ -50,6 +50,7 @@
     "eslint-plugin-react-hooks": "^4.5.0",
     "eslint-plugin-sort-destructure-keys": "^1.4.0",
     "jest": "^28.1.0",
+    "lodash.throttle": "^4.1.1",
     "react": "^17.0.2",
     "sass": "^1.52.1",
     "webpack": "^5.73.0",
