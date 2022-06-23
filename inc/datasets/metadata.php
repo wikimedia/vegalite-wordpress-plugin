@@ -102,7 +102,7 @@ function update_dataset( int $post_id, string $filename, string $content ) : boo
 	$meta_value = get_dataset_meta( $post_id );
 
 	$filename = strtolower( $filename );
-	if ( trim( $meta_value[$filename] ) === trim( $content ) ) {
+	if ( isset( $meta_value[$filename] ) && trim( $meta_value[$filename] ) === trim( $content ) ) {
 		// No update needed.
 		return true;
 	}
