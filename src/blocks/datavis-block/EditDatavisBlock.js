@@ -73,69 +73,84 @@ const markOptions = [
  * @param {Function} props.setAttributes Block editor setAttributes function.
  * @returns {React.ReactNode} Rendered sidebar panel.
  */
-const SidebarEditor = ( { json, setAttributes } ) => (
-	<InspectorControls>
-		<PanelBody
-			initialOpen
-			title={ __( 'General', 'datavis' ) }
-		>
-			<TextControl
-				label={ __( 'Name', 'datavis' ) }
-				value={ json['name'] }
-				onChange={ ( name ) => {
-					setAttributes( {
-						json: {
-							...json,
-							name,
-						},
-					} );
-				} }
-				help={ __( 'Name of the visualization for later reference.', 'datavis' ) }
-			/>
-			<TextControl
-				label={ __( 'Title', 'datavis' ) }
-				value={ json['title'] }
-				onChange={ ( title ) => {
-					setAttributes( {
-						json: {
-							...json,
-							title,
-						},
-					} );
-				} }
-				help={ __( 'Title for the plot.', 'datavis' ) }
-			/>
-			<TextControl
-				label={ __( 'Description', 'datavis' ) }
-				value={ json['description'] }
-				onChange={ ( description ) => {
-					setAttributes( {
-						json: {
-							...json,
-							description,
-						},
-					} );
-				} }
-				help={ __( 'Description of this mark for commenting purpose.', 'datavis' ) }
-			/>
-		</PanelBody>
-		<PanelBody title={ __( 'Mark', 'datavis' ) }>
-			<SelectControl
-				label={ __( 'Mark', 'datavis' ) }
-				value={ json['mark'] }
-				options={ markOptions }
-				onChange={ ( mark ) => {
-					setAttributes( {
-						json: {
-							...json,
-							mark,
-						},
-					} );
-				} }
-			/>
-		</PanelBody>
-	</InspectorControls>
-);
+const SidebarEditor = ( { json, setAttributes } ) => {
+	return (
+		<InspectorControls>
+			<PanelBody
+				initialOpen
+				title={ __( 'General', 'datavis' ) }
+			>
+				<TextControl
+					label={ __( 'Name', 'datavis' ) }
+					value={ json['name'] }
+					onChange={ ( name ) => {
+						setAttributes( {
+							json: {
+								...json,
+								name,
+							},
+						} );
+					} }
+					help={ __( 'Name of the visualization for later reference.', 'datavis' ) }
+				/>
+				<TextControl
+					label={ __( 'Title', 'datavis' ) }
+					value={ json['title'] }
+					onChange={ ( title ) => {
+						setAttributes( {
+							json: {
+								...json,
+								title,
+							},
+						} );
+					} }
+					help={ __( 'Title for the plot.', 'datavis' ) }
+				/>
+				<TextControl
+					label={ __( 'Description', 'datavis' ) }
+					value={ json['description'] }
+					onChange={ ( description ) => {
+						setAttributes( {
+							json: {
+								...json,
+								description,
+							},
+						} );
+					} }
+					help={ __( 'Description of this mark for commenting purpose.', 'datavis' ) }
+				/>
+			</PanelBody>
+			<PanelBody title={ __( 'Layout', 'datavis' ) }>
+				<SelectControl
+					label={ __( 'Mark', 'datavis' ) }
+					value={ json.mark }
+					options={ markOptions }
+					onChange={ ( mark ) => {
+						setAttributes( {
+							json: {
+								...json,
+								mark,
+							},
+						} );
+					} }
+				/>
+				<SelectControl
+					label={ __( 'X Axis Field', 'datavis' ) }
+					value={ json['mark'] }
+					options={ markOptions }
+					onChange={ ( mark ) => {
+						setAttributes( {
+							json: {
+								...json,
+								mark,
+							},
+						} );
+					} }
+				/>
+			</PanelBody>
+		</InspectorControls>
+	);
+};
 
 // Tabs to use in the editor view.
 const tabs = [
