@@ -221,7 +221,8 @@ const DatasetEditor = ( { json, setAttributes } ) => {
 				filename: selectedDataset,
 			}, { id: postId } ).then( updateDatasets );
 		}
-	}, [ selectedDataset, updateDatasets, postId ] );
+		setSelectedDataset( INLINE );
+	}, [ selectedDataset, updateDatasets, setSelectedDataset, postId ] );
 
 	return (
 		<div>
