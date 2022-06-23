@@ -27,7 +27,7 @@ const noop = () => {};
  * @returns {React.ReactNode} Rendered react UI.
  */
 const CSVEditor = ( { filename, postId, onSave = noop } ) => {
-	const [ dataset, setDataset ] = useState( null );
+	const [ dataset, setDataset ] = useState( { filename } );
 
 	useEffect( () => {
 		if ( filename !== INLINE && ! dataset?.content ) {
@@ -62,7 +62,7 @@ const CSVEditor = ( { filename, postId, onSave = noop } ) => {
 				value={ dataset?.content || '' }
 				onChange={ onChange }
 			/>
-			<Button onClick={ onSaveButton }>Save</Button>
+			<Button onClick={ onSaveButton }>{ __( 'Save', 'datavis' ) }</Button>
 		</>
 	);
 };
