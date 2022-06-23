@@ -261,8 +261,9 @@ function deliver_dataset_as_csv( $served, $result, $request, $server ) {
 
 	$csv_data = $result->get_data();
 
-	if ( empty( $csv_data['filename'] ) || empty( $csv_data['content'] ) ) {
+	if ( empty( $csv_data['filename'] ) || ! isset( $csv_data['content'] ) ) {
 		// This may not be a CSV metadata object response. For safety, do nothing.
+		// Note that empty "content" is acceptable, but the property must exist.
 		return $served;
 	}
 
