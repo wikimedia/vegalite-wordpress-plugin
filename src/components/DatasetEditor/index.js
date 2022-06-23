@@ -59,12 +59,11 @@ const CSVEditor = ( { filename, postId, onSave = noop } ) => {
 	return (
 		<>
 			<TextareaControl
-				label={ __( 'Data', 'datavis' ) }
-				help={ __( 'Edit dataset as CSV', 'datavis' ) }
+				label={ __( 'Edit CSV dataset', 'datavis' ) }
 				value={ dataset?.content || '' }
 				onChange={ onChange }
 			/>
-			<Button onClick={ onSaveButton }>{ __( 'Save', 'datavis' ) }</Button>
+			<Button className="is-primary" onClick={ onSaveButton }>{ __( 'Save', 'datavis' ) }</Button>
 		</>
 	);
 };
