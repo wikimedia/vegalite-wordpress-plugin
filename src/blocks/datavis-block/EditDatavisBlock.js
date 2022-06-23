@@ -20,6 +20,7 @@ import DatasetEditor from '../../components/DatasetEditor';
 import VegaChart from '../../components/VegaChart';
 
 import defaultSpecification from './specification.json';
+import './edit-datavis-block.scss';
 
 const markOptions = [
 	{
@@ -139,13 +140,13 @@ const SidebarEditor = ( { json, setAttributes } ) => (
 // Tabs to use in the editor view.
 const tabs = [
 	{
-		name: 'data',
-		title: __( 'Data', 'datavis' ),
+		name: 'spec',
+		title: __( 'Chart Specification', 'datavis' ),
 		className: 'edit-post-sidebar__panel-tab',
 	},
 	{
-		name: 'spec',
-		title: __( 'Chart Specification', 'datavis' ),
+		name: 'data',
+		title: __( 'Data', 'datavis' ),
 		className: 'edit-post-sidebar__panel-tab',
 	},
 ];
@@ -169,7 +170,7 @@ const EditDatavisBlock = ( { attributes, setAttributes, isSelected } ) => {
 			<VegaChart spec={ json } />
 			<>
 				<TabPanel
-					className="my-tab-panel"
+					className="datavis-block-tabs"
 					activeClass="active-tab"
 					tabs={ tabs }
 				>
