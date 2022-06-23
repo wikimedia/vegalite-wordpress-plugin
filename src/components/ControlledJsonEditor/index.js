@@ -18,7 +18,7 @@ import './jsoneditor.css';
 export const ControlledJsonEditor = ( { value, onChange } ) => {
 	const jsonEditorRef = useRef();
 
-	const [ isCodeMode, setCodeMode ] = useState( false );
+	const [ isJsonMode, setIsJsonMode ] = useState( false );
 
 	useEffect(
 		() => {
@@ -34,18 +34,18 @@ export const ControlledJsonEditor = ( { value, onChange } ) => {
 		() => {
 			const editor = jsonEditorRef?.current?.jsonEditor;
 			if ( editor ) {
-				editor.setMode( isCodeMode ? 'text' : 'tree' );
+				editor.setMode( isJsonMode ? 'tree' : 'text' );
 			}
 		},
-		[ jsonEditorRef, isCodeMode ]
+		[ jsonEditorRef, isJsonMode ]
 	);
 
 	return (
 		<>
 			<ToggleControl
-				label={ __( 'Edit raw JSON', 'datavis' ) }
-				checked={ isCodeMode }
-				onChange={ () => setCodeMode( ! isCodeMode ) }
+				label={ __( 'Use JSON tree editor', 'datavis' ) }
+				checked={ isJsonMode }
+				onChange={ () => setIsJsonMode( ! isJsonMode ) }
 			/>
 			<JsonEditor
 				ref={ jsonEditorRef }
