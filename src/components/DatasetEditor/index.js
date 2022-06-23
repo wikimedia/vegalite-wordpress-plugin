@@ -23,10 +23,10 @@ const noop = () => {};
  * @param {object}   props          React component props.
  * @param {string}   props.filename Filename of CSV being edited.
  * @param {number}   props.postId   ID of post being edited.
- * @param {Function} props.onAddDataset   Callback to run when CSV changes.
+ * @param {Function} props.onSave   Callback to run when CSV changes.
  * @returns {React.ReactNode} Rendered react UI.
  */
-const CSVEditor = ( { filename, postId, onAddDataset = noop } ) => {
+const CSVEditor = ( { filename, postId, onSave = noop } ) => {
 	const [ dataset, setDataset ] = useState( { filename } );
 	// const [ csvContent, setCsvContent ] = useState( '' );
 
@@ -52,9 +52,9 @@ const CSVEditor = ( { filename, postId, onAddDataset = noop } ) => {
 
 	const onSaveButton = useCallback( () => {
 		if ( dataset?.content && dataset?.filename ) {
-			updateDataset.throttled( dataset, { id: postId } ).then( onAddDataset );
+			updateDataset.throttled( dataset, { id: postId } ).then( onSave );
 		}
-	}, [ dataset, postId, onAddDataset ] );
+	}, [ dataset, postId, onSave ] );
 
 	return (
 		<>
@@ -204,7 +204,9 @@ const DatasetEditor = ( { json, setAttributes } ) => {
 	}, [ datasets, json, setAttributes ] );
 
 	const forceChartUpdate = useCallback( () => {
-		setAttributes( { json: { ...json } } );
+		setAttributes( {
+			json: { ...json },
+		} );
 	}, [ json, setAttributes ] );
 
 	const onAddNewDataset = useCallback( ( result ) => {
@@ -261,7 +263,7 @@ const DatasetEditor = ( { json, setAttributes } ) => {
 					<CSVEditor
 						postId={ postId }
 						filename={ selectedDataset }
-						onChange={ forceChartUpdate }
+						onSave={ forceChartUpdate }
 					/>
 				) : (
 					<p>{ __( 'Edit data values as JSON in the Chart Specification tab.', 'datavis' ) }</p>
