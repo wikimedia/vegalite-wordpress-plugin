@@ -6,7 +6,7 @@ import { Icon, TextControl, Button, PanelRow, SelectControl, TextareaControl } f
 import { useSelect } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
 
-import { createDataset, deleteDataset, getDataset, getDatasets, updateDataset } from '../util/datasets';
+import { createDataset, deleteDataset, getDataset, getDatasets, updateDataset } from '../../util/datasets';
 
 import './dataset-editor.scss';
 
@@ -59,12 +59,11 @@ const CSVEditor = ( { filename, postId, onSave = noop } ) => {
 	return (
 		<>
 			<TextareaControl
-				label={ __( 'Data', 'datavis' ) }
-				help={ __( 'Edit dataset as CSV', 'datavis' ) }
+				label={ __( 'Edit CSV dataset', 'datavis' ) }
 				value={ dataset?.content || '' }
 				onChange={ onChange }
 			/>
-			<Button onClick={ onSaveButton }>{ __( 'Save', 'datavis' ) }</Button>
+			<Button className="is-primary" onClick={ onSaveButton }>{ __( 'Save', 'datavis' ) }</Button>
 		</>
 	);
 };
@@ -85,30 +84,33 @@ const toLowerKebabCase = ( str ) => str
 /**
  * Render a New Dataset form.
  *
- * @param {object} props        React component props.
- * @param {object} props.onSave List of available datasets.
+ * @param {object} props              React component props.
+ * @param {object} props.onAddDataset Callback after new dataset gets saved.
  * @returns {React.ReactNode} Rendered form.
  */
-const NewDatasetForm = ( { onSave } ) => {
+const NewDatasetForm = ( { onAddDataset } ) => {
 	const [ filename, setFilename ] = useState( '' );
 	const { postId } = useSelect( ( select ) => ( {
 		postId: select( 'core/editor' ).getEditedPostAttribute( 'id' ),
 	} ) );
+	const [ hasFormError, setHasFormError ] = useState( false );
+
+	const onChangeContent = useCallback( ( content ) => {
+		setFilename( content );
+		setHasFormError( false );
+	}, [ setFilename, setHasFormError ] );
 
 	const onSubmit = useCallback( () => {
 		if ( ! filename.trim() || ! postId ) {
-			// TODO: Show an error.
+			setHasFormError( true );
 			return;
 		}
 		const dataset = {
 			filename: `${ toLowerKebabCase( filename.replace( /\.csv$/i, '' ) ) }.csv`,
 			content: '',
 		};
-		createDataset( dataset, { id: postId } ).then( ( result ) => {
-			console.log( result );
-			onSave( result );
-		} );
-	}, [ filename, postId, onSave ] );
+		createDataset( dataset, { id: postId } ).then( onAddDataset );
+	}, [ filename, postId, onAddDataset ] );
 
 	const submitOnEnter = useCallback( ( evt ) => {
 		if ( evt.code === 'Enter' ) {
@@ -117,18 +119,23 @@ const NewDatasetForm = ( { onSave } ) => {
 	}, [ onSubmit ] );
 
 	return (
-		<PanelRow className="datasets-control-row">
-			<TextControl
-				label={ __( 'CSV dataset name', 'datavis' ) }
-				value={ filename }
-				onChange={ setFilename }
-				onKeyDown={ submitOnEnter }
-			/>
-			<Button
-				className="dataset-control-button is-primary"
-				onClick={ onSubmit }
-			>{ __( 'Save dataset', 'dataset' ) }</Button>
-		</PanelRow>
+		<>
+			<PanelRow className="datasets-control-row">
+				<TextControl
+					label={ __( 'CSV dataset name', 'datavis' ) }
+					value={ filename }
+					onChange={ onChangeContent }
+					onKeyDown={ submitOnEnter }
+				/>
+				<Button
+					className="dataset-control-button is-primary"
+					onClick={ onSubmit }
+				>{ __( 'Save dataset', 'dataset' ) }</Button>
+			</PanelRow>
+			{ hasFormError ? (
+				<p class="dataset-form-error"><em>Name is required when creating a dataset.</em></p>
+			) : null }
+		</>
 	);
 };
 
@@ -143,6 +150,7 @@ const NewDatasetForm = ( { onSave } ) => {
 const DatasetEditor = ( { json, setAttributes } ) => {
 	const [ datasets, setDatasets ] = useState( defaultDatasets );
 	const [ selectedDataset, setSelectedDataset ] = useState( INLINE );
+	const [ isAddingNewDataset, setIsAddingNewDataset ] = useState( false );
 
 	const { postId } = useSelect( ( select ) => ( {
 		postId: select( 'core/editor' ).getEditedPostAttribute( 'id' ),
@@ -161,7 +169,7 @@ const DatasetEditor = ( { json, setAttributes } ) => {
 	}, [ postId, json?.data?.url ] );
 
 	useEffect( () => {
-		if ( ! datasets.length ) {
+		if ( datasets === defaultDatasets ) {
 			updateDatasets();
 		}
 	}, [ datasets, updateDatasets ] );
@@ -195,10 +203,11 @@ const DatasetEditor = ( { json, setAttributes } ) => {
 	}, [ datasets, json, setAttributes ] );
 
 	const forceChartUpdate = useCallback( () => {
-		setAttributes( { json: { ...json } } );
+		setAttributes( {
+			json: { ...json },
+		} );
 	}, [ json, setAttributes ] );
 
-	const [ isAddingNewDataset, setIsAddingNewDataset ] = useState( false );
 	const onAddNewDataset = useCallback( ( result ) => {
 		setIsAddingNewDataset( false );
 		if ( result && result.filename ) {
@@ -213,12 +222,13 @@ const DatasetEditor = ( { json, setAttributes } ) => {
 				filename: selectedDataset,
 			}, { id: postId } ).then( updateDatasets );
 		}
-	}, [ selectedDataset, updateDatasets, postId ] );
+		setSelectedDataset( INLINE );
+	}, [ selectedDataset, updateDatasets, setSelectedDataset, postId ] );
 
 	return (
 		<div>
 			{ isAddingNewDataset ? (
-				<NewDatasetForm onSave={ onAddNewDataset } />
+				<NewDatasetForm onAddDataset={ onAddNewDataset } />
 			) : (
 				<PanelRow className="datasets-control-row">
 					<SelectControl
@@ -242,19 +252,21 @@ const DatasetEditor = ( { json, setAttributes } ) => {
 						className="dataset-control-button is-primary"
 						onClick={ () => setIsAddingNewDataset( true ) }
 					>
-						{ __( 'New', 'datavis' ) }
+						{ __( 'New dataset', 'datavis' ) }
 					</Button>
 				</PanelRow>
 			) }
 
-			{ selectedDataset !== INLINE ? (
-				<CSVEditor
-					postId={ postId }
-					filename={ selectedDataset }
-					onChange={ forceChartUpdate }
-				/>
-			) : (
-				<p>{ __( 'Edit data values as JSON in the Chart Specification tab.', 'datavis' ) }</p>
+			{ isAddingNewDataset ? null : (
+				selectedDataset !== INLINE ? (
+					<CSVEditor
+						postId={ postId }
+						filename={ selectedDataset }
+						onSave={ forceChartUpdate }
+					/>
+				) : (
+					<p>{ __( 'Edit data values as JSON in the Chart Specification tab.', 'datavis' ) }</p>
+				)
 			) }
 		</div>
 	);

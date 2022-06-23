@@ -1,5 +1,6 @@
 .datasets-control-row {
 	align-items: flex-end;
+	margin-bottom: 0.5rem;
 
 	> :first-child {
 		flex: auto;
@@ -16,4 +17,9 @@
 
 .dataset-control-button {
 	height: 30px;
+}
+
+.dataset-form-error {
+	font-size: 0.9rem;
+	color: #cc1818;
 }
