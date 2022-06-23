@@ -140,10 +140,8 @@ const DatasetEditor = ( { json, setAttributes } ) => {
 					onChange={ forceChartUpdate }
 				/>
 			) : (
-				<p>Edit values in the Specification Editor</p>
+				<p>{ __( 'Edit data values as JSON in the Chart Specification tab.', 'datavis' ) }</p>
 			) }
-
-			<p>Selected: { selectedDataset }</p>
 		</div>
 	);
 };
