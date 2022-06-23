@@ -170,7 +170,7 @@ const DatasetEditor = ( { json, setAttributes } ) => {
 	}, [ postId, json?.data?.url ] );
 
 	useEffect( () => {
-		if ( ! datasets.length ) {
+		if ( datasets === defaultDatasets ) {
 			updateDatasets();
 		}
 	}, [ datasets, updateDatasets ] );
@@ -251,7 +251,7 @@ const DatasetEditor = ( { json, setAttributes } ) => {
 						className="dataset-control-button is-primary"
 						onClick={ () => setIsAddingNewDataset( true ) }
 					>
-						{ __( 'New', 'datavis' ) }
+						{ __( 'New dataset', 'datavis' ) }
 					</Button>
 				</PanelRow>
 			) }
