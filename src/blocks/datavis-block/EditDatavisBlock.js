@@ -76,7 +76,7 @@ const SidebarEditor = ( { json, setAttributes } ) => (
 	<InspectorControls>
 		<PanelBody
 			initialOpen
-			title={ __( 'General' ) }
+			title={ __( 'General', 'datavis' ) }
 		>
 			<TextControl
 				label={ __( 'Name', 'datavis' ) }
@@ -118,7 +118,7 @@ const SidebarEditor = ( { json, setAttributes } ) => (
 				help={ __( 'Description of this mark for commenting purpose.', 'datavis' ) }
 			/>
 		</PanelBody>
-		<PanelBody title={ __( 'Mark' ) }>
+		<PanelBody title={ __( 'Mark', 'datavis' ) }>
 			<SelectControl
 				label={ __( 'Mark', 'datavis' ) }
 				value={ json['mark'] }
@@ -140,12 +140,12 @@ const SidebarEditor = ( { json, setAttributes } ) => (
 const tabs = [
 	{
 		name: 'spec',
-		title: __( 'Chart Specification' ),
+		title: __( 'Chart Specification', 'datavis' ),
 		className: 'edit-post-sidebar__panel-tab',
 	},
 	{
 		name: 'data',
-		title: __( 'Data' ),
+		title: __( 'Data', 'datavis' ),
 		className: 'edit-post-sidebar__panel-tab',
 	},
 ];

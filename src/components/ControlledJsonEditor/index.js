@@ -43,7 +43,7 @@ export const ControlledJsonEditor = ( { value, onChange } ) => {
 	return (
 		<>
 			<ToggleControl
-				label={ __( 'Edit raw JSON' ) }
+				label={ __( 'Edit raw JSON', 'datavis' ) }
 				checked={ isCodeMode }
 				onChange={ () => setCodeMode( ! isCodeMode ) }
 			/>

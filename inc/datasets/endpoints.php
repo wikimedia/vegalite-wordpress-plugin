@@ -30,24 +30,24 @@ function bootstrap() : void {
 function get_dataset_schema() : array {
 	return [
 		'filename' => [
-			'description' => __( 'Filename to use for the dataset.' ),
+			'description' => __( 'Filename to use for the dataset.', 'datavis' ),
 			'type'        => 'string',
 			'default'     => 'data.csv',
 			'required'    => true
 		],
 		'content' => [
-			'description' => __( 'CSV file contents as string.' ),
+			'description' => __( 'CSV file contents as string.', 'datavis' ),
 			'type'        => 'string',
 			'required'    => true,
 		],
 		'url' => [
-			'description' => __( 'Public URL endpoint at which this CSV may be downloaded.' ),
+			'description' => __( 'Public URL endpoint at which this CSV may be downloaded.', 'datavis' ),
 			'type'        => 'string',
 			'readonly'    => true,
 			'required'    => false,
 		],
 		'rows' => [
-			'description' => __( 'Number of rows in the dataset.' ),
+			'description' => __( 'Number of rows in the dataset.', 'datavis' ),
 			'type'        => 'integer',
 			'readonly'    => true,
 			'required'    => false,
@@ -134,6 +134,7 @@ function register_dataset_routes() : void {
 function get_post( $post_id ) {
 	$error = new WP_Error(
 		'rest_post_invalid_id',
+		// Core WP text, no translation domain needed.
 		__( 'Invalid post ID.' ),
 		[ 'status' => 404 ]
 	);
@@ -194,7 +195,7 @@ function get_datasets( WP_REST_Request $request ) {
 function update_dataset_item( WP_REST_Request $request ) {
 	$error = new WP_Error(
 		'rest_dataset_update_error',
-		__( 'Could not write CSV.' ),
+		__( 'Could not write CSV.', 'datavis' ),
 		[ 'status' => 400 ]
 	);
 
@@ -224,7 +225,7 @@ function update_dataset_item( WP_REST_Request $request ) {
 function get_dataset_item( WP_REST_Request $request ) {
 	$error = new WP_Error(
 		'rest_dataset_invalid_id',
-		__( 'Invalid dataset filename.' ),
+		__( 'Invalid dataset filename.', 'datavis' ),
 		[ 'status' => 404 ]
 	);
 
