@@ -2,11 +2,13 @@
 import React, { useCallback, useEffect, useState, useMemo } from 'react';
 
 // eslint-disable-next-line
-import { TextControl, Button, SelectControl, TextareaControl } from '@wordpress/components';
+import { Icon, TextControl, Button, PanelRow, SelectControl, TextareaControl } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
 
-import { getDataset, getDatasets, updateDataset } from '../util/datasets';
+import { createDataset, getDataset, getDatasets, updateDataset } from '../util/datasets';
+
+import './dataset-editor.scss';
 
 const INLINE = 'inline';
 
@@ -25,10 +27,10 @@ const noop = () => {};
  * @returns {React.ReactNode} Rendered react UI.
  */
 const CSVEditor = ( { filename, postId, onSave = noop } ) => {
-	const [ dataset, setDataset ] = useState( '' );
+	const [ dataset, setDataset ] = useState( null );
 
 	useEffect( () => {
-		if ( filename !== INLINE && ( ! dataset || ! dataset.content ) ) {
+		if ( filename !== INLINE && ! dataset?.content ) {
 			getDataset( postId, filename ).then( ( datasetResponse ) => {
 				if ( datasetResponse.content ) {
 					setDataset( datasetResponse );
@@ -38,34 +40,93 @@ const CSVEditor = ( { filename, postId, onSave = noop } ) => {
 	}, [ dataset, postId, filename, setDataset ] );
 
 	const onChange = useCallback( ( content ) => {
-		if ( content === dataset.content ) {
-			return;
+		if ( content !== dataset?.content ) {
+			setDataset( {
+				...dataset,
+				content,
+			} );
 		}
-		setDataset( {
-			...dataset,
-			content,
-		} );
 	}, [ dataset, setDataset ] );
 
 	const onSaveButton = useCallback( () => {
-		if ( dataset.content && dataset.filename ) {
-			updateDataset( {
-				filename,
-				content: dataset,
-			}, { id: postId } ).then( onSave );
+		if ( dataset?.content && dataset?.filename ) {
+			updateDataset.throttled( dataset, { id: postId } ).then( onSave );
 		}
-	}, [ dataset, postId, filename, onSave ] );
+	}, [ dataset, postId, onSave ] );
 
 	return (
 		<>
 			<TextareaControl
 				label={ __( 'Data', 'datavis' ) }
 				help={ __( 'Edit dataset as CSV', 'datavis' ) }
-				value={ dataset.content }
+				value={ dataset?.content || '' }
 				onChange={ onChange }
 			/>
 			<Button onClick={ onSaveButton }>Save</Button>
 		</>
+	);
+};
+
+/**
+ * Sanitize a string for use as a filename.
+ *
+ * @param {string} str Input string.
+ * @returns {string} kebab-case string.
+ */
+const toLowerKebabCase = ( str ) => str
+	.trim()
+	.toLowerCase()
+	.split( /[^A-Za-z0-9_]+/ )
+	.filter( Boolean )
+	.join( '-' );
+
+/**
+ * Render a New Dataset form.
+ *
+ * @param {object} props        React component props.
+ * @param {object} props.onSave List of available datasets.
+ * @returns {React.ReactNode} Rendered form.
+ */
+const NewDatasetForm = ( { onSave } ) => {
+	const [ filename, setFilename ] = useState( '' );
+	const { postId } = useSelect( ( select ) => ( {
+		postId: select( 'core/editor' ).getEditedPostAttribute( 'id' ),
+	} ) );
+
+	const onSubmit = useCallback( () => {
+		if ( ! filename.trim() || ! postId ) {
+			// TODO: Show an error.
+			return;
+		}
+		const dataset = {
+			filename: `${ toLowerKebabCase( filename.replace( /\.csv$/i, '' ) ) }.csv`,
+			content: '',
+		};
+		createDataset( dataset, { id: postId } ).then( ( result ) => {
+			console.log( result );
+			onSave( result );
+		} );
+	}, [ filename, postId, onSave ] );
+
+	const submitOnEnter = useCallback( ( evt ) => {
+		if ( evt.code === 'Enter' ) {
+			onSubmit();
+		}
+	}, [ onSubmit ] );
+
+	return (
+		<PanelRow className="datasets-control-row">
+			<TextControl
+				label={ __( 'CSV dataset name', 'datavis' ) }
+				value={ filename }
+				onChange={ setFilename }
+				onKeyDown={ submitOnEnter }
+			/>
+			<Button
+				className="dataset-control-button is-primary"
+				onClick={ onSubmit }
+			>{ __( 'Save dataset', 'dataset' ) }</Button>
+		</PanelRow>
 	);
 };
 
@@ -85,13 +146,17 @@ const DatasetEditor = ( { json, setAttributes } ) => {
 		postId: select( 'core/editor' ).getEditedPostAttribute( 'id' ),
 	} ) );
 
+	const updateDatasets = useCallback( () => {
+		getDatasets( { id: postId } ).then( ( datasetList ) => {
+			setDatasets( datasetList );
+		} );
+	}, [ postId ] );
+
 	useEffect( () => {
 		if ( ! datasets.length ) {
-			getDatasets( { id: postId } ).then( ( datasetList ) => {
-				setDatasets( datasetList );
-			} );
+			updateDatasets();
 		}
-	}, [ datasets, postId ] );
+	}, [ datasets, updateDatasets ] );
 
 	const options = useMemo( () => {
 		return [ {
@@ -123,15 +188,47 @@ const DatasetEditor = ( { json, setAttributes } ) => {
 		setAttributes( { json: { ...json } } );
 	}, [ json, setAttributes ] );
 
+	const [ isAddingNewDataset, setIsAddingNewDataset ] = useState( false );
+	const onAddNewDataset = useCallback( ( result ) => {
+		setIsAddingNewDataset( false );
+		if ( result && result.filename ) {
+			updateDatasets();
+			setSelectedDataset( result.filename );
+		}
+	}, [ setIsAddingNewDataset, updateDatasets, setSelectedDataset ] );
+
 	return (
 		<div>
-			<SelectControl
-				label={ __( 'Datasets', 'datavis' ) }
-				value={ selectedDataset }
-				options={ options }
-				onChange={ onChangeSelected }
-			/>
-			<small><em>Todo: "new" button (which would show a form to enter the [required] 'filename'); "delete" button (low priority)</em></small>
+			{ isAddingNewDataset ? (
+				<NewDatasetForm onSave={ onAddNewDataset } />
+			) : (
+				<PanelRow className="datasets-control-row">
+					<SelectControl
+						label={ __( 'Datasets', 'datavis' ) }
+						value={ selectedDataset }
+						options={ options }
+						onChange={ onChangeSelected }
+					/>
+					{ selectedDataset !== INLINE ? (
+						<Button
+							className="dataset-control-button is-tertiary is-destructive"
+						>
+							<Icon icon="trash" />
+							<span className="screen-reader-text">
+								{ __( 'Delete dataset', 'datavis' ) }
+							</span>
+						</Button>
+					) : null }
+					<Button
+						className="dataset-control-button is-primary"
+						onClick={ () => setIsAddingNewDataset( true ) }
+					>
+						{ __( 'New', 'datavis' ) }
+					</Button>
+				</PanelRow>
+			) }
+
+			<small><em>"delete" button (low priority)</em></small>
 
 			{ selectedDataset !== INLINE ? (
 				<CSVEditor

@@ -1,6 +1,9 @@
 import apiFetch from '@wordpress/api-fetch';
+// import { dispatch } from '@wordpress/data';
 
-import debounce from './debounce';
+import asyncThrottle from './throttle';
+
+// const initializeDatasetEntities() {}
 
 /**
  * Get a list of available datasets.
@@ -88,5 +91,5 @@ export const deleteDataset = ( { filename }, post ) => apiFetch( {
 	updateDataset,
 	deleteDataset,
 ].forEach( ( method ) => {
-	method.debounced = debounce( method, 200 );
+	method.throttled = asyncThrottle( method, 200 );
 } );

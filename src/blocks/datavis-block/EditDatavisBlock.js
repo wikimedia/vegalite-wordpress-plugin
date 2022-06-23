@@ -139,13 +139,13 @@ const SidebarEditor = ( { json, setAttributes } ) => (
 // Tabs to use in the editor view.
 const tabs = [
 	{
-		name: 'spec',
-		title: __( 'Chart Specification', 'datavis' ),
+		name: 'data',
+		title: __( 'Data', 'datavis' ),
 		className: 'edit-post-sidebar__panel-tab',
 	},
 	{
-		name: 'data',
-		title: __( 'Data', 'datavis' ),
+		name: 'spec',
+		title: __( 'Chart Specification', 'datavis' ),
 		className: 'edit-post-sidebar__panel-tab',
 	},
 ];
@@ -167,36 +167,36 @@ const EditDatavisBlock = ( { attributes, setAttributes, isSelected } ) => {
 	return (
 		<div { ...blockProps }>
 			<VegaChart spec={ json } />
-			{ isSelected ? (
-				<>
-					<TabPanel
-						className="my-tab-panel"
-						activeClass="active-tab"
-						tabs={ tabs }
-					>
-						{ ( activeTab ) => {
-							if ( activeTab.name === 'spec' ) {
-								return (
-									<ControlledJsonEditor
-										value={ json }
-										onChange={ ( json ) => setAttributes( { json } ) }
-									/>
-								);
-							}
-							if ( activeTab.name === 'data' ) {
-								return (
-									<DatasetEditor
-										json={ json }
-										setAttributes={ setAttributes }
-									/>
-								);
-							}
-							return null;
-						} }
-					</TabPanel>
+			<>
+				<TabPanel
+					className="my-tab-panel"
+					activeClass="active-tab"
+					tabs={ tabs }
+				>
+					{ ( activeTab ) => {
+						if ( activeTab.name === 'spec' ) {
+							return (
+								<ControlledJsonEditor
+									value={ json }
+									onChange={ ( json ) => setAttributes( { json } ) }
+								/>
+							);
+						}
+						if ( activeTab.name === 'data' ) {
+							return (
+								<DatasetEditor
+									json={ json }
+									setAttributes={ setAttributes }
+								/>
+							);
+						}
+						return null;
+					} }
+				</TabPanel>
+				{ isSelected ? (
 					<SidebarEditor json={ json } setAttributes={ setAttributes } />
-				</>
-			) : null }
+				) : null }
+			</>
 		</div>
 	);
 };
