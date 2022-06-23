@@ -29,6 +29,30 @@ export const getDataset = ( postId, filename ) => apiFetch( {
 } );
 
 /**
+ * Get the CSV content of a dataset as a JSON object.
+ *
+ * @param {string} url URL of remove CSV dataset.
+ * @returns {object[]} JSON array representation of the CSV.
+ */
+export const getCsvAsJson = ( url ) => window.fetch( url )
+	.then( ( result ) => result.text() )
+	.then( ( csv ) => {
+		const [ columns, ...rows ] = csv.split( '\n' ).map( ( row ) => row.split( /,\s*/ ) );
+		return rows.map( ( row ) => {
+			return row.reduce(
+				( memo, val, idx ) => {
+					const column = columns[ idx ];
+					return {
+						...memo,
+						[ column ]: val,
+					};
+				},
+				{}
+			);
+		} );
+	} );
+
+/**
  * Create a dataset in the API.
  *
  * @param {object} dataset          Dataset object.

@@ -1,7 +1,7 @@
 /**
  * Edit function for Datavis block.
  */
-import React from 'react';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
 
 import {
 	useBlockProps,
@@ -18,6 +18,7 @@ import { __ } from '@wordpress/i18n';
 import ControlledJsonEditor from '../../components/ControlledJsonEditor';
 import DatasetEditor from '../../components/DatasetEditor';
 import VegaChart from '../../components/VegaChart';
+import { getCsvAsJson } from '../../util/datasets';
 
 import defaultSpecification from './specification.json';
 import './edit-datavis-block.scss';
@@ -74,6 +75,33 @@ const markOptions = [
  * @returns {React.ReactNode} Rendered sidebar panel.
  */
 const SidebarEditor = ( { json, setAttributes } ) => {
+
+	const [ data, setData ] = useState( [] );
+
+	useEffect( () => {
+		if ( ! json?.data?.url ) {
+			return;
+		}
+
+		getCsvAsJson( json.data.url ).then( setData );
+	}, [ json?.data?.url, setData ] );
+
+	const fieldOptions = useMemo( () => {
+		return ( Array.isArray( data ) && data.length > 1 )
+			? Object.keys( data[0] ).map( ( field ) => ( {
+				label: field,
+				value: field,
+				field,
+				type: ! isNaN( parseFloat( data[1][field] ) ) ? 'quantitative' : 'nominal',
+			} ) )
+			: [];
+	}, [ data ] );
+
+	const getType = useCallback( ( field ) => {
+		const matchingField = fieldOptions.find( ( option ) => option.field === field );
+		return matchingField?.type || 'quantitative';
+	}, [ fieldOptions ] );
+
 	return (
 		<InspectorControls>
 			<PanelBody
@@ -134,19 +162,50 @@ const SidebarEditor = ( { json, setAttributes } ) => {
 						} );
 					} }
 				/>
-				<SelectControl
-					label={ __( 'X Axis Field', 'datavis' ) }
-					value={ json['mark'] }
-					options={ markOptions }
-					onChange={ ( mark ) => {
-						setAttributes( {
-							json: {
-								...json,
-								mark,
-							},
-						} );
-					} }
-				/>
+				{ data.length < 1 ? null : (
+					<>
+						<SelectControl
+							label={ __( 'X Axis Field', 'datavis' ) }
+							value={ json?.encoding?.x?.field }
+							options={ fieldOptions }
+							onChange={ ( field ) => {
+								setAttributes( {
+									json: {
+										...json,
+										encoding: {
+											...json.encoding,
+											x: {
+												...json.x,
+												field,
+												type: getType( field ),
+											},
+										},
+									},
+								} );
+							} }
+						/>
+						<SelectControl
+							label={ __( 'Y Axis Field', 'datavis' ) }
+							value={ json?.encoding?.y?.field }
+							options={ fieldOptions }
+							onChange={ ( field ) => {
+								setAttributes( {
+									json: {
+										...json,
+										encoding: {
+											...json.encoding,
+											y: {
+												...json.y,
+												field,
+												type: getType( field ),
+											},
+										},
+									},
+								} );
+							} }
+						/>
+					</>
+				) }
 			</PanelBody>
 		</InspectorControls>
 	);
