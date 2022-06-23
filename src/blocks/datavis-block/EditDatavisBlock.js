@@ -168,36 +168,36 @@ const EditDatavisBlock = ( { attributes, setAttributes, isSelected } ) => {
 	return (
 		<div { ...blockProps }>
 			<VegaChart spec={ json } />
-			<>
-				<TabPanel
-					className="datavis-block-tabs"
-					activeClass="active-tab"
-					tabs={ tabs }
-				>
-					{ ( activeTab ) => {
-						if ( activeTab.name === 'spec' ) {
-							return (
-								<ControlledJsonEditor
-									value={ json }
-									onChange={ ( json ) => setAttributes( { json } ) }
-								/>
-							);
-						}
-						if ( activeTab.name === 'data' ) {
-							return (
-								<DatasetEditor
-									json={ json }
-									setAttributes={ setAttributes }
-								/>
-							);
-						}
-						return null;
-					} }
-				</TabPanel>
-				{ isSelected ? (
+			{ isSelected ? (
+				<>
+					<TabPanel
+						className="datavis-block-tabs"
+						activeClass="active-tab"
+						tabs={ tabs }
+					>
+						{ ( activeTab ) => {
+							if ( activeTab.name === 'spec' ) {
+								return (
+									<ControlledJsonEditor
+										value={ json }
+										onChange={ ( json ) => setAttributes( { json } ) }
+									/>
+								);
+							}
+							if ( activeTab.name === 'data' ) {
+								return (
+									<DatasetEditor
+										json={ json }
+										setAttributes={ setAttributes }
+									/>
+								);
+							}
+							return null;
+						} }
+					</TabPanel>
 					<SidebarEditor json={ json } setAttributes={ setAttributes } />
-				) : null }
-			</>
+				</>
+			) : null }
 		</div>
 	);
 };
