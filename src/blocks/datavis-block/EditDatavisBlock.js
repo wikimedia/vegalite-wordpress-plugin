@@ -8,6 +8,7 @@ import {
 	InspectorControls,
 } from '@wordpress/block-editor';
 import {
+	TabPanel,
 	TextControl,
 	PanelBody,
 	SelectControl,
@@ -15,11 +16,11 @@ import {
 import { __ } from '@wordpress/i18n';
 
 import ControlledJsonEditor from '../../components/ControlledJsonEditor';
+import DatasetEditor from '../../components/DatasetEditor';
 import VegaChart from '../../components/VegaChart';
-import useTabPanel from '../../hooks/useTabPanel.js';
-import { debounce, setupDatavisBlocks } from '../../index';
 
 import defaultSpecification from './specification.json';
+import './edit-datavis-block.scss';
 
 const markOptions = [
 	{
@@ -76,17 +77,18 @@ const SidebarEditor = ( { json, setAttributes } ) => (
 	<InspectorControls>
 		<PanelBody
 			initialOpen
-			title={ __( 'General' ) }
+			title={ __( 'General', 'datavis' ) }
 		>
 			<TextControl
 				label={ __( 'Name', 'datavis' ) }
 				value={ json['name'] }
 				onChange={ ( name ) => {
-					const updatedJSON = {
-						...json,
-						name: name,
-					};
-					debounce( setAttributes( { json: updatedJSON } ), 1000 );
+					setAttributes( {
+						json: {
+							...json,
+							name,
+						},
+					} );
 				} }
 				help={ __( 'Name of the visualization for later reference.', 'datavis' ) }
 			/>
@@ -94,11 +96,12 @@ const SidebarEditor = ( { json, setAttributes } ) => (
 				label={ __( 'Title', 'datavis' ) }
 				value={ json['title'] }
 				onChange={ ( title ) => {
-					const updatedJSON = {
-						...json,
-						title: title,
-					};
-					debounce( setAttributes( { json: updatedJSON } ), 1000 );
+					setAttributes( {
+						json: {
+							...json,
+							title,
+						},
+					} );
 				} }
 				help={ __( 'Title for the plot.', 'datavis' ) }
 			/>
@@ -106,31 +109,47 @@ const SidebarEditor = ( { json, setAttributes } ) => (
 				label={ __( 'Description', 'datavis' ) }
 				value={ json['description'] }
 				onChange={ ( description ) => {
-					const updatedJSON = {
-						...json,
-						description: description,
-					};
-					debounce( setAttributes( { json: updatedJSON } ), 1000 );
+					setAttributes( {
+						json: {
+							...json,
+							description,
+						},
+					} );
 				} }
 				help={ __( 'Description of this mark for commenting purpose.', 'datavis' ) }
 			/>
 		</PanelBody>
-		<PanelBody title={ __( 'Mark' ) }>
+		<PanelBody title={ __( 'Mark', 'datavis' ) }>
 			<SelectControl
 				label={ __( 'Mark', 'datavis' ) }
 				value={ json['mark'] }
 				options={ markOptions }
 				onChange={ ( mark ) => {
-					const updatedJSON = {
-						...json,
-						mark: mark,
-					};
-					debounce( setAttributes( { json: updatedJSON } ), 1000 );
+					setAttributes( {
+						json: {
+							...json,
+							mark,
+						},
+					} );
 				} }
 			/>
 		</PanelBody>
 	</InspectorControls>
 );
+
+// Tabs to use in the editor view.
+const tabs = [
+	{
+		name: 'spec',
+		title: __( 'Chart Specification', 'datavis' ),
+		className: 'edit-post-sidebar__panel-tab',
+	},
+	{
+		name: 'data',
+		title: __( 'Data', 'datavis' ),
+		className: 'edit-post-sidebar__panel-tab',
+	},
+];
 
 /**
  * Editor UI component for the datavis block.
@@ -146,83 +165,41 @@ const EditDatavisBlock = ( { attributes, setAttributes, isSelected } ) => {
 	const blockProps = useBlockProps();
 	const json = attributes.json || defaultSpecification;
 
-	const blockId = blockProps.id;
-	setAttributes( { blockId } );
-
-	const { activeTab, TabPanel } = useTabPanel( [
-		{
-			name: 'spec',
-			title: __( 'Chart Specification' ),
-			className: 'edit-post-sidebar__panel-tab',
-		},
-		{
-			name: 'data',
-			title: __( 'Data' ),
-			className: 'edit-post-sidebar__panel-tab',
-		},
-	] );
-
-	PreviewDatavis( blockId );
-
 	return (
 		<div { ...blockProps }>
 			<VegaChart spec={ json } />
 			{ isSelected ? (
 				<>
-					<TabPanel />
-					{ activeTab === 'spec' ? (
-						<ControlledJsonEditor
-							value={ json }
-							onChange={ ( json ) => setAttributes( { json } ) }
-						/>
-					) : null }
-					{ activeTab === 'data' ? (
-						<p>Data goes here</p>
-					) : null }
+					<TabPanel
+						className="datavis-block-tabs"
+						activeClass="active-tab"
+						tabs={ tabs }
+					>
+						{ ( activeTab ) => {
+							if ( activeTab.name === 'spec' ) {
+								return (
+									<ControlledJsonEditor
+										value={ json }
+										onChange={ ( json ) => setAttributes( { json } ) }
+									/>
+								);
+							}
+							if ( activeTab.name === 'data' ) {
+								return (
+									<DatasetEditor
+										json={ json }
+										setAttributes={ setAttributes }
+									/>
+								);
+							}
+							return null;
+						} }
+					</TabPanel>
 					<SidebarEditor json={ json } setAttributes={ setAttributes } />
 				</>
 			) : null }
 		</div>
 	);
-};
-
-/**
- * Hacky way to get the Datavis model to render after updates have been made to the block.
- *
- * This is needed due to the lack of an action when the Server Side render is completed. So we create a interval
- * to check if the block element has been updated, if not it run the Datavis setup.
- *
- * @param {string} blockId Block id.
- * @class
- */
-const PreviewDatavis = ( blockId ) => {
-	let dataVisLoaded = false,
-		killCounter = 0;
-	let dataVisLoadedInterval = setInterval( function() {
-		const element = document.getElementById( blockId+'-datavis' );
-		if ( ! element ) {
-			return;
-		}
-		// To prevent multiple reloads, only run preview if the block element has loaded and the Datavis has not been loaded.
-		let loadedElement = element.dataset.loaded ?? false,
-			loaded = ( loadedElement === 'true' );
-
-		if ( element && ! loaded ) {
-			// Element is present but the dataviz configuration has not yet rendered from the server.
-			dataVisLoaded = true;
-			element.setAttribute( 'data-loaded', true );
-		}
-		// Element exists and the dataviz configuration has rendered from the server so kick off the processing of the dataviz configuration.
-		if ( dataVisLoaded && loaded ) {
-			setupDatavisBlocks();
-			clearInterval( dataVisLoadedInterval );
-		}
-		// If after a period of time kill the interval to not fall into an infinite loop.
-		if ( killCounter > 10 ) {
-			clearInterval( dataVisLoadedInterval );
-		}
-		killCounter += 1;
-	}, 1000 );
 };
 
 export default EditDatavisBlock;

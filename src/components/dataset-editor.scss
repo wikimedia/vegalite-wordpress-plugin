@@ -1,0 +1,19 @@
+.datasets-control-row {
+	align-items: flex-end;
+
+	> :first-child {
+		flex: auto;
+	}
+
+	> * {
+		margin-right: 0.5rem;
+	}
+
+	> :last-child {
+		margin-right: 0;
+	}
+}
+
+.dataset-control-button {
+	height: 30px;
+}

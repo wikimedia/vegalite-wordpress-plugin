@@ -6,12 +6,11 @@ import sufficientlyUniqueId from '../../util/sufficiently-unique-id';
 /**
  * Display a Vega Lite chart.
  *
- * @param {object} props        React component props.
- * @param {object} props.spec   Vega Lite specification object.
- * @param {Array}  [props.data] Optional data property.
+ * @param {object} props      React component props.
+ * @param {object} props.spec Vega Lite specification object.
  * @returns {React.ReactNode} Node for a container into which chart will be rendered.
  */
-const VegaChart = ( { data, spec } ) => {
+const VegaChart = ( { spec } ) => {
 	const container = useRef( null );
 
 	const id = useMemo( () => sufficientlyUniqueId(), [] );
@@ -19,14 +18,9 @@ const VegaChart = ( { data, spec } ) => {
 	useEffect( () => {
 		vegaEmbed( `#${ id }`, {
 			$schema: 'https://vega.github.io/schema/vega-lite/v5.json',
-			...( Array.isArray( data ) ? {
-				data: {
-					values: data,
-				},
-			} : ( data ? { data } : {} ) ),
 			...spec,
 		} );
-	}, [ container, id, data, spec ] );
+	}, [ container, id, spec ] );
 
 	return (
 		<div ref={ container }>
