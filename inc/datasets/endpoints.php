@@ -245,6 +245,27 @@ function get_dataset_item( WP_REST_Request $request ) {
 	return rest_ensure_response( $dataset );
 }
 
+function delete_dataset_item( WP_REST_Request $request ) {
+	$post_id = $request['post_id'];
+
+	$valid_check = get_post( $post_id );
+	if ( is_wp_error( $valid_check ) ) {
+		return $valid_check;
+	}
+
+	$deleted = Metadata\delete_dataset( $post_id, $request['filename'] );
+
+	if ( ! $deleted ) {
+		return new WP_Error(
+			'rest_dataset_deletion_failed',
+			__( 'Could not delete dataset.', 'datavis' ),
+			[ 'status' => 409 ]
+		);
+	}
+
+	return rest_ensure_request( null );
+}
+
 /**
  * Take over delivery of REST response to serve datasets as CSV content.
  *

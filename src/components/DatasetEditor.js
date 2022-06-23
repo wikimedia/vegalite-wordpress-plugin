@@ -6,7 +6,7 @@ import { Icon, TextControl, Button, PanelRow, SelectControl, TextareaControl } f
 import { useSelect } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
 
-import { createDataset, getDataset, getDatasets, updateDataset } from '../util/datasets';
+import { createDataset, deleteDataset, getDataset, getDatasets, updateDataset } from '../util/datasets';
 
 import './dataset-editor.scss';
 
@@ -28,9 +28,11 @@ const noop = () => {};
  */
 const CSVEditor = ( { filename, postId, onSave = noop } ) => {
 	const [ dataset, setDataset ] = useState( { filename } );
+	// const [ csvContent, setCsvContent ] = useState( '' );
 
 	useEffect( () => {
 		if ( filename !== INLINE && ! dataset?.content ) {
+			console.log( 'REQUESTING' );
 			getDataset( postId, filename ).then( ( datasetResponse ) => {
 				if ( datasetResponse.content ) {
 					setDataset( datasetResponse );
@@ -168,6 +170,8 @@ const DatasetEditor = ( { json, setAttributes } ) => {
 		} ) ) ).filter( Boolean );
 	}, [ datasets ] );
 
+	// TODO: When content is empty, switching from another dataset does not refresh the text area.
+
 	const onChangeSelected = useCallback( ( selected ) => {
 		setSelectedDataset( selected );
 		const selectedDatasetObj = datasets.find( ( dataset ) => dataset.filename === selected );
@@ -197,6 +201,14 @@ const DatasetEditor = ( { json, setAttributes } ) => {
 		}
 	}, [ setIsAddingNewDataset, updateDatasets, setSelectedDataset ] );
 
+	const onDeleteDataset = useCallback( () => {
+		if ( selectedDataset !== INLINE ) {
+			deleteDataset( {
+				filename: selectedDataset,
+			}, { id: postId } ).then( updateDatasets );
+		}
+	}, [ selectedDataset, updateDatasets, postId ] );
+
 	return (
 		<div>
 			{ isAddingNewDataset ? (
@@ -212,6 +224,7 @@ const DatasetEditor = ( { json, setAttributes } ) => {
 					{ selectedDataset !== INLINE ? (
 						<Button
 							className="dataset-control-button is-tertiary is-destructive"
+							onClick={ onDeleteDataset }
 						>
 							<Icon icon="trash" />
 							<span className="screen-reader-text">
@@ -227,8 +240,6 @@ const DatasetEditor = ( { json, setAttributes } ) => {
 					</Button>
 				</PanelRow>
 			) }
-
-			<small><em>"delete" button (low priority)</em></small>
 
 			{ selectedDataset !== INLINE ? (
 				<CSVEditor

@@ -130,7 +130,7 @@ function delete_dataset( int $post_id, string $filename ) : bool {
 		return false;
 	}
 
-	unset( $meta_value, $filename );
+	unset( $meta_value[$filename] );
 
 	if ( empty( $meta_value ) ) {
 		// All datasets removed: delete wholesale.
