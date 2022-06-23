@@ -151,8 +151,14 @@ const DatasetEditor = ( { json, setAttributes } ) => {
 	const updateDatasets = useCallback( () => {
 		getDatasets( { id: postId } ).then( ( datasetList ) => {
 			setDatasets( datasetList );
+			if ( json?.data?.url ) {
+				const activeDataset = datasetList.find( ( { url } ) => url === json.data.url );
+				if ( activeDataset ) {
+					setSelectedDataset( activeDataset.filename );
+				}
+			}
 		} );
-	}, [ postId ] );
+	}, [ postId, json?.data?.url ] );
 
 	useEffect( () => {
 		if ( ! datasets.length ) {
