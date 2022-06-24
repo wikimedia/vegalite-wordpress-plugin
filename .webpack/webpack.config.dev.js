@@ -2,6 +2,12 @@ const { externals, helpers, presets } = require( '@humanmade/webpack-helpers' );
 
 const { choosePort, cleanOnExit, filePath } = helpers;
 
+const vegaExternals = {
+	vega: 'vega',
+	vegaLite: 'vegaLite',
+	vegaEmbed: 'vegaEmbed',
+};
+
 cleanOnExit( [
 	filePath( 'build', 'development-asset-manifest.json' ),
 ] );
@@ -16,13 +22,17 @@ module.exports = choosePort( 9090 ).then( ( port ) => [
 			},
 			port,
 		},
-		externals,
+		externals: {
+			...externals,
+			...vegaExternals,
+		},
 		entry: {
 			'datavis-block-editor': filePath( 'src/editor.js' ),
 		},
 	} ),
 	presets.development( {
 		name: 'datavis-block-frontend',
+		externals: vegaExternals,
 		entry: {
 			'datavis-block-frontend': filePath( 'src/index.js' ),
 		},
