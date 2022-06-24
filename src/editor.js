@@ -16,6 +16,7 @@ import './styles.scss';
 const reloadOnHMRUpdate = ( context, loadModules ) => {
 	if ( module.hot ) {
 		module.hot.accept( context.id, loadModules );
+		console.log( `Accepting updated ${ context.id }` ); // eslint-disable-line
 	}
 };
 
