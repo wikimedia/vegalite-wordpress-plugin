@@ -22,6 +22,8 @@ const noop = () => {};
 /**
  * Render an editor for a specific CSV file.
  *
+ * TODO: Refactor to receive a full dataset object instead of only the content string.
+ *
  * @param {object}   props          React component props.
  * @param {string}   props.filename Filename of CSV being edited.
  * @param {Function} props.onSave   Callback to run when CSV changes.
@@ -63,19 +65,6 @@ const CSVEditor = ( { filename, onSave = noop } ) => {
 };
 
 /**
- * Sanitize a string for use as a filename.
- *
- * @param {string} str Input string.
- * @returns {string} kebab-case string.
- */
-const toLowerKebabCase = ( str ) => str
-	.trim()
-	.toLowerCase()
-	.split( /[^A-Za-z0-9_]+/ )
-	.filter( Boolean )
-	.join( '-' );
-
-/**
  * Render a New Dataset form.
  *
  * @param {object} props              React component props.
@@ -84,10 +73,8 @@ const toLowerKebabCase = ( str ) => str
  */
 const NewDatasetForm = ( { onAddDataset } ) => {
 	const [ filename, setFilename ] = useState( '' );
-	const { postId } = useSelect( ( select ) => ( {
-		postId: select( 'core/editor' ).getEditedPostAttribute( 'id' ),
-	} ) );
 	const [ hasFormError, setHasFormError ] = useState( false );
+	const { createDataset } = useDispatch( 'csv-datasets' );
 
 	const onChangeContent = useCallback( ( content ) => {
 		setFilename( content );
@@ -95,16 +82,16 @@ const NewDatasetForm = ( { onAddDataset } ) => {
 	}, [ setFilename, setHasFormError ] );
 
 	const onSubmit = useCallback( () => {
-		if ( ! filename.trim() || ! postId ) {
+		if ( ! filename.trim() ) {
 			setHasFormError( true );
 			return;
 		}
 		const dataset = {
-			filename: `${ toLowerKebabCase( filename.replace( /\.csv$/i, '' ) ) }.csv`,
+			filename,
 			content: '',
 		};
-		createDataset( dataset, { id: postId } ).then( onAddDataset );
-	}, [ filename, postId, onAddDataset ] );
+		createDataset( dataset ).then( onAddDataset );
+	}, [ filename, createDataset, onAddDataset ] );
 
 	const submitOnEnter = useCallback( ( evt ) => {
 		if ( evt.code === 'Enter' ) {
