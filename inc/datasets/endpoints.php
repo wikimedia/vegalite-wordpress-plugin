@@ -6,17 +6,15 @@
 namespace Datavis_Block\Datasets\Endpoints;
 
 use Datavis_Block\Datasets;
+
 use Datavis_Block\Datasets\Metadata;
-
-use WP_REST_Request;
-use WP_REST_Response;
-use WP_REST_Server;
 use WP_Error;
+use WP_REST_Request;
+use WP_REST_Server;
 
-use function Datavis_Block\Datasets\Metadata\get_dataset;
-
-use const Datavis_Block\Datasets\Metadata\META_KEY;
-
+/**
+ * Connect namespace functions to actions and hooks.
+ */
 function bootstrap() : void {
 	add_action( 'rest_api_init', __NAMESPACE__ . '\\register_dataset_routes' );
 	add_action( 'rest_pre_serve_request', __NAMESPACE__ . '\\deliver_dataset_as_csv', 10, 4 );
@@ -33,7 +31,7 @@ function get_dataset_schema() : array {
 			'description' => __( 'Filename to use for the dataset.', 'datavis' ),
 			'type'        => 'string',
 			'default'     => 'data.csv',
-			'required'    => true
+			'required'    => true,
 		],
 		'content' => [
 			'description' => __( 'CSV file contents as string.', 'datavis' ),
@@ -245,6 +243,12 @@ function get_dataset_item( WP_REST_Request $request ) {
 	return rest_ensure_response( $dataset );
 }
 
+/**
+ * Delete a single dataset item.
+ *
+ * @param WP_REST_Request $request Full details about the request.
+ * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+ */
 function delete_dataset_item( WP_REST_Request $request ) {
 	$post_id = $request['post_id'];
 
@@ -276,7 +280,7 @@ function delete_dataset_item( WP_REST_Request $request ) {
  * @return true
  */
 function deliver_dataset_as_csv( $served, $result, $request, $server ) {
-	if ( $request['format'] !== 'csv' || strpos( $request->get_route(), '/datasets/' ) === false || $request->get_method() !== 'GET' ) {
+	if ( strpos( $request->get_route(), '/datasets/' ) === false || $request->get_method() !== 'GET' ) {
 		return $served;
 	}
 
@@ -286,6 +290,14 @@ function deliver_dataset_as_csv( $served, $result, $request, $server ) {
 		// This may not be a CSV metadata object response. For safety, do nothing.
 		// Note that empty "content" is acceptable, but the property must exist.
 		return $served;
+	}
+
+	if ( $request['format'] === 'json' ) {
+		$json = Datasets\csv_to_json( $csv_data['content'] );
+		// TODO: Is there a security implication here, or a proper way to escape this?
+		// phpcs:ignore
+		echo wp_json_encode( $json );
+		return true;
 	}
 
 	if ( ! headers_sent() ) {

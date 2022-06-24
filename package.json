@@ -24,7 +24,9 @@
   ],
   "scripts": {
     "test": "jest",
-    "lint": "eslint src .eslintrc.js",
+    "lint": "npm run eslint; npm run phpcs",
+    "eslint": "eslint src .eslintrc.js",
+    "phpcs": "composer lint",
     "start": "webpack-dev-server --config=.webpack/webpack.config.dev.js",
     "build": "webpack --config=.webpack/webpack.config.prod.js"
   },
