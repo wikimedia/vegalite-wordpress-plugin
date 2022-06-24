@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useState, useMemo } from 'react';
 
 // eslint-disable-next-line
 import { Icon, TextControl, Button, PanelRow, SelectControl, TextareaControl } from '@wordpress/components';
-import { useSelect } from '@wordpress/data';
+import { useSelect, useDispatch } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
 
 // eslint-disable-next-line
@@ -24,51 +24,40 @@ const noop = () => {};
  *
  * @param {object}   props          React component props.
  * @param {string}   props.filename Filename of CSV being edited.
- * @param {number}   props.postId   ID of post being edited.
  * @param {Function} props.onSave   Callback to run when CSV changes.
  * @returns {React.ReactNode} Rendered react UI.
  */
-const CSVEditor = ( { filename, postId, onSave = noop } ) => {
-	const [ dataset, setDataset ] = useState( { filename } );
-	// const [ csvContent, setCsvContent ] = useState( '' );
+const CSVEditor = ( { filename, onSave = noop } ) => {
+	const dataset = useSelect( ( select ) => select( 'csv-datasets' ).getDataset( filename ) );
+	const { updateDataset } = useDispatch( 'csv-datasets' );
+	const [ content, setCsvContent ] = useState( dataset?.content || '' );
 
-	useEffect( () => {
-		if ( filename !== INLINE && ! dataset?.content ) {
-			console.log( 'REQUESTING' );
-			getDataset( postId, filename ).then( ( datasetResponse ) => {
-				if ( datasetResponse.content ) {
-					setDataset( datasetResponse );
-				}
-			} );
-		}
-	}, [ dataset, postId, filename, setDataset ] );
-
-	const onChange = useCallback( ( content ) => {
-		if ( content !== dataset?.content ) {
-			setDataset( {
-				...dataset,
-				content,
-			} );
-		}
-	}, [ dataset, setDataset ] );
+	const onDrop = useCallback( ( { content } ) => {
+		setCsvContent( content );
+	}, [] );
 
 	const onSaveButton = useCallback( () => {
-		if ( dataset?.content && dataset?.filename ) {
-			updateDataset.throttled( dataset, { id: postId } ).then( onSave );
+		if ( filename ) {
+			updateDataset( {
+				filename,
+				content: content,
+			} ).then( onSave );
 		}
-	}, [ dataset, postId, onSave ] );
+	}, [ filename, content, updateDataset, onSave ] );
 
 	return (
 		<FileDropZone
 			message={ __( 'Drop CSV to load data', 'datavis' ) }
-			onDrop={ ( { content } ) => onChange( content ) }
+			onDrop={ onDrop }
 		>
 			<TextareaControl
 				label={ __( 'Edit CSV dataset', 'datavis' ) }
-				value={ dataset?.content || '' }
-				onChange={ onChange }
+				value={ content || '' }
+				onChange={ setCsvContent }
 			/>
-			<Button className="is-primary" onClick={ onSaveButton }>{ __( 'Save', 'datavis' ) }</Button>
+			<Button className="is-primary" onClick={ onSaveButton }>
+				{ __( 'Save', 'datavis' ) }
+			</Button>
 		</FileDropZone>
 	);
 };
@@ -265,7 +254,6 @@ const DatasetEditor = ( { json, setAttributes } ) => {
 			{ isAddingNewDataset ? null : (
 				selectedDataset !== INLINE ? (
 					<CSVEditor
-						postId={ postId }
 						filename={ selectedDataset }
 						onSave={ forceChartUpdate }
 					/>
