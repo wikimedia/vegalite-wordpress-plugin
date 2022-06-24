@@ -53,3 +53,7 @@ function initializeDatavisBlock( element ) {
 window.onload = function() {
 	setupDatavisBlocks();
 };
+
+if ( module.hot ) {
+	module.hot.accept();
+}

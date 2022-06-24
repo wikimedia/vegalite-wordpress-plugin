@@ -6,9 +6,11 @@ import { Icon, TextControl, Button, PanelRow, SelectControl, TextareaControl } f
 import { useSelect } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
 
+// eslint-disable-next-line
 import { createDataset, deleteDataset, getDataset, getDatasets, updateDataset } from '../../util/datasets';
 
 import './dataset-editor.scss';
+import FileDropZone from '../FileDropZone';
 
 const INLINE = 'inline';
 
@@ -57,14 +59,17 @@ const CSVEditor = ( { filename, postId, onSave = noop } ) => {
 	}, [ dataset, postId, onSave ] );
 
 	return (
-		<>
+		<FileDropZone
+			message={ __( 'Drop CSV to load data', 'datavis' ) }
+			onDrop={ ( { content } ) => onChange( content ) }
+		>
 			<TextareaControl
 				label={ __( 'Edit CSV dataset', 'datavis' ) }
 				value={ dataset?.content || '' }
 				onChange={ onChange }
 			/>
 			<Button className="is-primary" onClick={ onSaveButton }>{ __( 'Save', 'datavis' ) }</Button>
-		</>
+		</FileDropZone>
 	);
 };
 
