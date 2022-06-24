@@ -6,16 +6,11 @@
 namespace Datavis_Block\Datasets\Endpoints;
 
 use Datavis_Block\Datasets;
+
 use Datavis_Block\Datasets\Metadata;
-
-use WP_REST_Request;
-use WP_REST_Response;
-use WP_REST_Server;
 use WP_Error;
-
-use function Datavis_Block\Datasets\Metadata\get_dataset;
-
-use const Datavis_Block\Datasets\Metadata\META_KEY;
+use WP_REST_Request;
+use WP_REST_Server;
 
 function bootstrap() : void {
 	add_action( 'rest_api_init', __NAMESPACE__ . '\\register_dataset_routes' );
@@ -33,7 +28,7 @@ function get_dataset_schema() : array {
 			'description' => __( 'Filename to use for the dataset.', 'datavis' ),
 			'type'        => 'string',
 			'default'     => 'data.csv',
-			'required'    => true
+			'required'    => true,
 		],
 		'content' => [
 			'description' => __( 'CSV file contents as string.', 'datavis' ),

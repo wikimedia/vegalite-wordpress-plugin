@@ -24,7 +24,7 @@ function register_blocks() : void {
 				'json' => [
 					'type'    => 'object',
 					'default' => [],
-				]
+				],
 			],
 		]
 	);
@@ -33,7 +33,7 @@ function register_blocks() : void {
 /**
  * Render function for block.
  *
- * @param array $attributes
+ * @param array $attributes Block attributes.
  *
  * @return string
  */

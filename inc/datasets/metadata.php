@@ -102,12 +102,12 @@ function update_dataset( int $post_id, string $filename, string $content ) : boo
 	$meta_value = get_dataset_meta( $post_id );
 
 	$filename = strtolower( $filename );
-	if ( isset( $meta_value[$filename] ) && trim( $meta_value[$filename] ) === trim( $content ) ) {
+	if ( isset( $meta_value[ $filename ] ) && trim( $meta_value[ $filename ] ) === trim( $content ) ) {
 		// No update needed.
 		return true;
 	}
 
-	$meta_value[$filename] = $content;
+	$meta_value[ $filename ] = $content;
 
 	$updated = update_post_meta( $post_id, META_KEY, $meta_value );
 
@@ -125,12 +125,12 @@ function update_dataset( int $post_id, string $filename, string $content ) : boo
 function delete_dataset( int $post_id, string $filename ) : bool {
 	$meta_value = get_dataset_meta( $post_id );
 
-	if ( empty( $meta_value ) || ! isset( $meta_value[$filename] ) ) {
+	if ( empty( $meta_value ) || ! isset( $meta_value[ $filename ] ) ) {
 		// No dataset, cannot delete.
 		return false;
 	}
 
-	unset( $meta_value[$filename] );
+	unset( $meta_value[ $filename ] );
 
 	if ( empty( $meta_value ) ) {
 		// All datasets removed: delete wholesale.
@@ -147,9 +147,9 @@ function delete_dataset( int $post_id, string $filename ) : bool {
  * @return array Filtered metadata fields.
  */
 function do_not_index_dataset_meta( $meta ) {
-	foreach( $meta as $key => $value ) {
+	foreach ( $meta as $key => $value ) {
 		if ( preg_match( '/datasets/', $key ) ) {
-			unset( $meta[$key] );
+			unset( $meta[ $key ] );
 		}
 	}
 	return $meta;
