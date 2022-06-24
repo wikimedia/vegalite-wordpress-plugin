@@ -240,6 +240,10 @@ function get_dataset_item( WP_REST_Request $request ) {
 		return $error;
 	}
 
+	if ( $request['format'] === 'json' ) {
+		$dataset['data'] = Datasets\csv_to_json( $dataset['content'] );
+	}
+
 	return rest_ensure_response( $dataset );
 }
 
@@ -280,7 +284,7 @@ function delete_dataset_item( WP_REST_Request $request ) {
  * @return true
  */
 function deliver_dataset_as_csv( $served, $result, $request, $server ) {
-	if ( strpos( $request->get_route(), '/datasets/' ) === false || $request->get_method() !== 'GET' ) {
+	if ( $request['format'] !== 'csv' || strpos( $request->get_route(), '/datasets/' ) === false || $request->get_method() !== 'GET' ) {
 		return $served;
 	}
 
@@ -290,14 +294,6 @@ function deliver_dataset_as_csv( $served, $result, $request, $server ) {
 		// This may not be a CSV metadata object response. For safety, do nothing.
 		// Note that empty "content" is acceptable, but the property must exist.
 		return $served;
-	}
-
-	if ( $request['format'] === 'json' ) {
-		$json = Datasets\csv_to_json( $csv_data['content'] );
-		// TODO: Is there a security implication here, or a proper way to escape this?
-		// phpcs:ignore
-		echo wp_json_encode( $json );
-		return true;
 	}
 
 	if ( ! headers_sent() ) {
