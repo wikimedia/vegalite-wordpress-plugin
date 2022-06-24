@@ -5,10 +5,6 @@ import vegaEmbed from 'vega-embed';
 
 import './styles.scss';
 
-if ( typeof vegaEmbed === 'undefined' ) {
-	return;
-}
-
 /**
  * A collection of all datavis blocks on the page.
  *
@@ -20,7 +16,7 @@ let _instances = [];
 /**
  * Entry function to initialize all datavis blocks to render the blocks datavis model.
  */
-export function setupDatavisBlocks() {
+function setupDatavisBlocks() {
 	// Get all datavis block ids.
 	_instances = [ ...document.querySelectorAll( '[data-datavis]' ) ];
 	_instances.map( initializeDatavisBlock );
@@ -44,7 +40,9 @@ function initializeDatavisBlock( element ) {
 		return;
 	}
 
-	vegaEmbed( `'#${ element.dataset.datavis }`, JSON.parse( jsonElement.textContent ) );
+	if ( typeof vegaEmbed === 'function' ) {
+		vegaEmbed( document.getElementById( element.dataset.datavis ), JSON.parse( jsonElement.textContent ) );
+	}
 }
 
 // Kick things off after load.
