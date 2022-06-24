@@ -46,6 +46,22 @@ function get_supported_post_types() : array {
 }
 
 /**
+ * Restrict the CSV filename.
+ *
+ * All filenames are lower-kebab-case and end in csv.
+ *
+ * @param string $filename Raw filename.
+ * @return string Sanitized filename.
+ */
+function sanitize_filename( string $filename ) : string {
+	$filename = preg_replace( '/(\.csv)?$/', '', trim( strtolower( $filename ) ) );
+	$filename = preg_replace( '/[^a-z0-9_]+/', '-', $filename );
+	$filename = preg_replace( '/(^-|-$)/', '', $filename );
+	$filename = "$filename.csv";
+	return $filename;
+}
+
+/**
  * Convert a CSV dataset to a JSON object.
  *
  * @todo Is there a more robust existing solution to this problem?
