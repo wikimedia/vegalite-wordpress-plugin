@@ -1,14 +1,16 @@
 /* eslint-disable no-console */
-import React, { useCallback, useEffect, useState, useMemo, useRef } from 'react';
+import React, { useCallback, useEffect, useState, useMemo } from 'react';
 
 // eslint-disable-next-line
 import { Icon, TextControl, Button, PanelRow, SelectControl, TextareaControl } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
 
+// eslint-disable-next-line
 import { createDataset, deleteDataset, getDataset, getDatasets, updateDataset } from '../../util/datasets';
 
 import './dataset-editor.scss';
+import FileDropZone from '../FileDropZone';
 
 const INLINE = 'inline';
 
@@ -29,7 +31,6 @@ const noop = () => {};
 const CSVEditor = ( { filename, postId, onSave = noop } ) => {
 	const [ dataset, setDataset ] = useState( { filename } );
 	// const [ csvContent, setCsvContent ] = useState( '' );
-	const dropRef = useRef( null );
 
 	useEffect( () => {
 		if ( filename !== INLINE && ! dataset?.content ) {
@@ -57,39 +58,18 @@ const CSVEditor = ( { filename, postId, onSave = noop } ) => {
 		}
 	}, [ dataset, postId, onSave ] );
 
-	// Support drag and drop CSV onto text field.
-	const onDrop = useCallback( ( evt ) => {
-		evt.preventDefault();
-		const file = evt.dataTransfer.files[0];
-		const reader = new FileReader();
-		reader.onload = ( event ) => {
-			onChange( event.target.result );
-		};
-		reader.readAsText( file );
-	} );
-
-	useEffect( () => {
-		if ( ! dropRef.current ) {
-			return;
-		}
-
-		dropRef.current.addEventListener( 'drop', onDrop );
-
-		/** Clean up event listeners on unmount. */
-		return () => {
-			dropRef.current.removeEventListener( 'drop', onDrop );
-		};
-	}, [ dropRef.current ] );
-
 	return (
-		<div ref={ dropRef }>
+		<FileDropZone
+			message={ __( 'Drop CSV to load data', 'datavis' ) }
+			onDrop={ ( { content } ) => onChange( content ) }
+		>
 			<TextareaControl
 				label={ __( 'Edit CSV dataset', 'datavis' ) }
 				value={ dataset?.content || '' }
 				onChange={ onChange }
 			/>
 			<Button className="is-primary" onClick={ onSaveButton }>{ __( 'Save', 'datavis' ) }</Button>
-		</div>
+		</FileDropZone>
 	);
 };
 
