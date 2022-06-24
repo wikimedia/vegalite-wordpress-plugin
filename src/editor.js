@@ -5,6 +5,8 @@
  */
 import { autoloadBlocks } from '@humanmade/webpack-helpers/hmr';
 
+import './store';
+
 import './styles.scss';
 
 /**

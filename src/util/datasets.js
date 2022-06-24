@@ -1,9 +1,31 @@
 import apiFetch from '@wordpress/api-fetch';
-// import { dispatch } from '@wordpress/data';
+import { select } from '@wordpress/data';
 
 import asyncThrottle from './throttle';
 
-// const initializeDatasetEntities() {}
+/**
+ * Get the datasets route base for the active post being edited.
+ *
+ * @returns {string} Route string: /wp/v2/{type}/{id}/datasets/.
+ */
+const getPostDatasetsRoute = () => {
+	const postId = select( 'core/editor' ).getCurrentPostId();
+	const postType = select( 'core/editor' ).getCurrentPostType();
+	if ( ! postId || ! postType ) {
+		console.log( 'NOT LOADED YET' ); // eslint-disable-line
+		return '';
+	}
+
+	const postTypeObject = select( 'core' ).getEntity( 'postType', postType );
+	if ( ! postTypeObject ) {
+		console.log( 'NOT LOADED YET' ); // eslint-disable-line
+		return '';
+	}
+
+	console.log( { baseURL: postTypeObject.baseURL } ); // eslint-disable-line
+
+	return [ postTypeObject.baseURL, postId, 'datasets' ].join( '/' );
+};
 
 /**
  * Get a list of available datasets.
@@ -13,19 +35,18 @@ import asyncThrottle from './throttle';
  */
 export const getDatasets = ( post ) => apiFetch( {
 	// TODO: Get the collection slug for the relevant post type by using the post object.
-	path: `/wp/v2/posts/${ post.id }/datasets`,
+	path: getPostDatasetsRoute(),
 } );
 
 /**
- * Get a specific dataset.
+ * Query the current post for a specific dataset by dataset filename.
  *
- * @param {number} postId   Post on which to find this dataset.
  * @param {string} filename Filename of dataset to load.
  * @returns {Promise<object>} Promise resolving to dataset JSON object.
  */
-export const getDataset = ( postId, filename ) => apiFetch( {
+export const getDataset = ( filename ) => apiFetch( {
 	// TODO: Get the collection slug for the relevant post type by using the post object.
-	path: `/wp/v2/posts/${ postId }/datasets/${ filename }?format=json`,
+	path: `${ getPostDatasetsRoute() }/${ filename }?format=json`,
 } );
 
 /**
@@ -64,7 +85,7 @@ export const getCsvAsJson = ( url ) => window.fetch( url )
  */
 export const createDataset = ( { filename, content }, post ) => apiFetch( {
 	// TODO: Get the collection slug for the relevant post type by using the post object.
-	path: `/wp/v2/posts/${ post.id }/datasets`,
+	path: getPostDatasetsRoute(),
 	method: 'POST',
 	data: {
 		filename,
@@ -84,7 +105,7 @@ export const createDataset = ( { filename, content }, post ) => apiFetch( {
  */
 export const updateDataset = ( { filename, content }, post ) => apiFetch( {
 	// TODO: Get the collection slug for the relevant post type by using the post object.
-	path: `/wp/v2/posts/${ post.id }/datasets/${ filename }`,
+	path: `${ getPostDatasetsRoute() }/${ filename }`,
 	method: 'POST',
 	data: {
 		filename,
@@ -103,7 +124,7 @@ export const updateDataset = ( { filename, content }, post ) => apiFetch( {
  */
 export const deleteDataset = ( { filename }, post ) => apiFetch( {
 	// TODO: Get the collection slug for the relevant post type by using the post object.
-	path: `/wp/v2/posts/${ post.id }/datasets/${ filename }`,
+	path: `${ getPostDatasetsRoute() }/${ filename }`,
 	method: 'DELETE',
 } );
 
@@ -117,3 +138,7 @@ export const deleteDataset = ( { filename }, post ) => apiFetch( {
 ].forEach( ( method ) => {
 	method.throttled = asyncThrottle( method, 200 );
 } );
+
+if ( module.hot ) {
+	module.hot.accept();
+}
