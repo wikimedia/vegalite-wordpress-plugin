@@ -10,9 +10,9 @@
         "humanmade/coding-standards": "^1.1.0"
     },
     "scripts": {
-        "lint": "phpcs --standard=vendor/humanmade/coding-standards .",
-        "lint:fix": "phpcbf --standard=vendor/humanmade/coding-standards ."
-    },
+        "lint": "phpcs plugin.php inc",
+        "lint:fix": "phpcbf plugin.php inc"
+	},
     "config": {
         "allow-plugins": {
             "composer/installers": true,
