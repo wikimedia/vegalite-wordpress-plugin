@@ -17,12 +17,13 @@
  */
 
 /**
- * @typedef {object} ReduxAction Redux action object. Can have other arbitrary properties.
- * @property {string} type Redux action name.
- */
-
-/**
- * @typedef {object} DatasetReduxAction
- * @property {string}  type    Redux action name.
- * @property {Dataset} dataset Dataset object related to request action.
+ * Redux action object.
+ *
+ * Each action object has a string type, and one additional optional property.
+ *
+ * @typedef {object} ReduxAction
+ * @property {string}  type       Redux action name.
+ * @property {Dataset} [dataset]  Dataset object.
+ * @property {string}  [url]      Dataset URL.
+ * @property {string}  [filename] Dataset filename.
  */

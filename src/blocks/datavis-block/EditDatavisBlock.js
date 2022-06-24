@@ -18,7 +18,7 @@ import { __ } from '@wordpress/i18n';
 import ControlledJsonEditor from '../../components/ControlledJsonEditor';
 import DatasetEditor from '../../components/DatasetEditor';
 import VegaChart from '../../components/VegaChart';
-import { getCsvAsJson } from '../../util/datasets';
+import { getDatasetByUrl } from '../../util/datasets';
 
 import defaultSpecification from './specification.json';
 import './edit-datavis-block.scss';
@@ -83,7 +83,7 @@ const SidebarEditor = ( { json, setAttributes } ) => {
 			return;
 		}
 
-		getCsvAsJson( json.data.url ).then( setData );
+		getDatasetByUrl( json.data.url ).then( setData );
 	}, [ json?.data?.url, setData ] );
 
 	const fieldOptions = useMemo( () => {
