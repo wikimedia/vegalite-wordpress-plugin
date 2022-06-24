@@ -1,12 +1,7 @@
 const { externals, helpers, presets } = require( '@humanmade/webpack-helpers' );
+const vegaExternals = require( './vega-externals' );
 
 const { choosePort, cleanOnExit, filePath } = helpers;
-
-const vegaExternals = {
-	vega: 'vega',
-	vegaLite: 'vegaLite',
-	vegaEmbed: 'vegaEmbed',
-};
 
 cleanOnExit( [
 	filePath( 'build', 'development-asset-manifest.json' ),

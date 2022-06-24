@@ -1,12 +1,7 @@
 const { externals, helpers, plugins, presets } = require( '@humanmade/webpack-helpers' );
+const vegaExternals = require( './vega-externals' );
 
 const { filePath } = helpers;
-
-const vegaExternals = {
-	vega: 'vega',
-	'vega-lite': 'vegaLite',
-	'vega-embed': 'vegaEmbed',
-};
 
 module.exports = presets.production( {
     name: 'datavis-block',
