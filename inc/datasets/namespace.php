@@ -41,3 +41,31 @@ function get_supported_post_types() : array {
 		}
 	);
 }
+
+/**
+ * Convert a CSV dataset to a JSON object.
+ *
+ * @todo Is there a more robust existing solution to this problem?
+ *
+ * @param string $csv String CSV content.
+ * @return array Array of field details.
+ */
+function csv_to_json( string $csv ) : array {
+	/** @var array rows -- fix in-editor type hinting. */
+	$rows = array_map( 'str_getcsv', array_filter( explode( "\n", $csv ) ) );
+	$headers = $rows[0];
+	$data = array_slice( $rows, 1 );
+	return array_reduce(
+		$data,
+		function( $carry, $row ) use ( $headers ) {
+			$object = [];
+			foreach ( $headers as $idx => $field ) {
+				$value = $row[ $idx ];
+				$object[ $field ] = is_numeric( $value ) ? floatval( $value ) : $value;
+			}
+			$carry[] = $object;
+			return $carry;
+		},
+		[]
+	);
+}
