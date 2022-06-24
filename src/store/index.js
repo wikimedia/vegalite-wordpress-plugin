@@ -1,39 +1,11 @@
-/* eslint-disable jsdoc/require-jsdoc */
 import { createSelector } from 'reselect';
 
 import { createReduxStore, register } from '@wordpress/data';
 
 import * as api from '../util/datasets';
 
-/* eslint-disable jsdoc/require-returns-description */
 const actions = {
-	/**
-	 * @param {Dataset} dataset Dataset to save.
-	 * @returns {ReduxAction}
-	 */
-	createDataset: ( dataset ) => ( {
-		type: 'DATASET_CREATE',
-		dataset,
-	} ),
-
-	/**
-	 * @param {Dataset} dataset Dataset to update.
-	 * @returns {ReduxAction}
-	 */
-	updateDataset: ( dataset ) => ( {
-		type: 'DATASET_UPDATE',
-		dataset,
-	} ),
-
-	/**
-	 * @param {Dataset} dataset Dataset to delete.
-	 * @returns {ReduxAction}
-	 */
-	deleteDataset: ( dataset ) => ( {
-		type: 'DATASET_DELETE',
-		dataset,
-	} ),
-
+	/* eslint-disable jsdoc/require-returns-description */
 	/**
 	 * @param {string} filename Filename of dataset to retrieve.
 	 * @returns {ReduxAction}
@@ -59,6 +31,40 @@ const actions = {
 		type: 'DATASETS_GET_ALL',
 	} ),
 
+	// These functions are Thunks, functions which return actions and sequence
+	// asynchronous behavior. Using Thunks with WordPress data stores requires
+	// an experimental flag opt-in prior to WordPress 6.0.
+
+	/**
+	 * @param {Dataset} dataset Dataset to save.
+	 * @returns {Function} Thunk action function.
+	 */
+	createDataset: ( dataset ) => async ( { dispatch } ) => {
+		const createdDataset = await api.createDataset( dataset );
+		dispatch( actions.setDataset( createdDataset ) );
+	},
+
+	/**
+	 * @param {Dataset} dataset Dataset to update.
+	 * @returns {Function} Thunk action function.
+	 */
+	updateDataset: ( dataset ) => async ( { dispatch } ) => {
+		const updatedDataset = await api.updateDataset( dataset );
+		dispatch( actions.setDataset( updatedDataset ) );
+	},
+
+	/**
+	 * @param {Dataset} dataset Dataset to delete.
+	 * @returns {Function} Thunk action function.
+	 */
+	deleteDataset: ( dataset ) => async ( { dispatch } ) => {
+		const result = await api.deleteDataset( dataset );
+
+		if ( result ) {
+			dispatch( actions.removeDataset( dataset ) );
+		}
+	},
+
 	/**
 	 * @param {Dataset[]} datasets Array of datasets to save in store.
 	 * @returns {ReduxAction}
@@ -81,13 +87,16 @@ const actions = {
 	 * @param {Dataset} dataset Dataset to remove from store.
 	 * @returns {ReduxAction}
 	 */
-	unsetDataset: ( dataset ) => ( {
+	removeDataset: ( dataset ) => ( {
 		type: 'DATASET_UNSET',
 		dataset,
 	} ),
+	/* eslint-enable jsdoc/require-returns-description */
 };
-/* eslint-enable jsdoc/require-returns-description */
 
+// Controls enable asynchronous fulfillment of get requests. A subscribed
+// component (using useState) initiates a request for the data on first
+// render, and then gets re-rendered with the fulfilled data once available.
 const controls = {
 	/* eslint-disable jsdoc/require-returns */
 	DATASETS_GET_ALL: () => api.getDatasets(),
@@ -95,23 +104,24 @@ const controls = {
 	DATASET_GET: ( { filename } ) => api.getDataset( filename ),
 	/** @param {ReduxAction} action Dispatched action */
 	DATASET_GET_BY_URL: ( { url } ) => api.getDatasetByUrl( url ),
-	/** @param {ReduxAction} action Dispatched action */
-	DATASET_CREATE: ( { dataset } ) => api.createDataset( dataset ),
-	/** @param {ReduxAction} action Dispatched action */
-	DATASET_UPDATE: ( { dataset } ) => api.updateDataset( dataset ),
-	/** @param {ReduxAction} action Dispatched action */
-	DATASET_DELETE: ( { dataset } ) => api.deleteDataset( dataset ),
 	/* eslint-enable jsdoc/require-returns */
 };
 
-/* eslint-disable jsdoc/require-returns */
+// Resolvers sequence controls and actions to request data asynchronously.
+// These functions allow select methods to trigger async behavior.
 const resolvers = {
+	/* eslint-disable jsdoc/require-returns */
+	/**
+	 * Sequence the actions necessary to request all datasets.
+	 */
 	*getDatasets() {
 		/** @type {Dataset[]} */
 		const datasets = yield actions.getDatasets();
 		return actions.setDatasets( datasets );
 	},
 	/**
+	 * Sequence the actions necessary to request a dataset by filename.
+	 *
 	 * @param {string} filename Filename of a dataset to retrieve.
 	 */
 	*getDataset( filename ) {
@@ -120,6 +130,8 @@ const resolvers = {
 		return actions.setDataset( dataset );
 	},
 	/**
+	 * Sequence the actions necessary to request a dataset by URL.
+	 *
 	 * @param {string} url Public URL of a dataset to retrieve.
 	 */
 	*getDatasetByUrl( url ) {
@@ -127,34 +139,8 @@ const resolvers = {
 		const dataset = yield actions.getDatasetByUrl( url );
 		return actions.setDataset( dataset );
 	},
-	/**
-	 * @param {Dataset} dataset Dataset to create.
-	 */
-	*createDataset( dataset ) {
-		/** @type {Dataset} */
-		const savedDataset = yield actions.createDataset( dataset );
-		return actions.setDataset( savedDataset );
-	},
-	/**
-	 * @param {Dataset} dataset Dataset to update.
-	 */
-	*updateDataset( dataset ) {
-		/** @type {Dataset} */
-		const savedDataset = yield actions.updateDataset( dataset );
-		return actions.setDataset( savedDataset );
-	},
-	/**
-	 * @param {Dataset} dataset Dataset to delete.
-	 */
-	*deleteDataset( dataset ) {
-		/** @type {bool} */
-		const didDelete = yield actions.deleteDataset( dataset );
-		if ( didDelete ) {
-			return actions.unsetDataset( dataset );
-		}
-	},
+	/* eslint-enable jsdoc/require-returns */
 };
-/* eslint-enable jsdoc/require-returns */
 
 /**
  * Redux dataset store.
@@ -235,50 +221,50 @@ const reducer = ( state = DEFAULT_STATE, action ) => {
 	return state;
 };
 
-const store = createReduxStore( 'csv-datasets', {
-	reducer,
+const selectors = {
+	/**
+	 * Get array of datasets.
+	 *
+	 * @param {DatasetStore} state State tree.
+	 * @returns {Dataset[]} Array of datasets.
+	 */
+	getDatasets: createSelector(
+		( state ) => state.datasets,
+		( datasets ) => Object.values( datasets ).filter( Boolean )
+	),
 
-	actions,
-
-	selectors: {
-		/**
-		 * Get array of datasets.
-		 *
-		 * @param {DatasetStore} state State tree.
-		 * @returns {Dataset[]} Array of datasets.
-		 */
-		getDatasets: createSelector(
-			( state ) => state.datasets,
-			( datasets ) => Object.values( datasets ).filter( Boolean )
-		),
-
-		/**
-		 * Retrieve a dataset by filename string.
-		 *
-		 * @param {DatasetStore} state    State tree.
-		 * @param {string}       filename Filename of requested dataset..
-		 * @returns {?Dataset} Dataset object, or null if not found.
-		 */
-		getDataset( state, filename ) {
-			return state.datasets[ filename ] || null;
-		},
-
-		/**
-		 * Retrieve a dataset by its public URL.
-		 *
-		 * @param {DatasetStore} state State tree.
-		 * @param {string}       url   Dataset public URL.
-		 * @returns {?Dataset} Dataset object, or null if not found.
-		 */
-		getDatasetByUrl( state, url ) {
-			/** @type {Dataset[]} */
-			const datasets = Object.values( state.datasets );
-			return datasets.find( ( dataset ) => dataset.url === url ) || null;
-		},
+	/**
+	 * Retrieve a dataset by filename string.
+	 *
+	 * @param {DatasetStore} state    State tree.
+	 * @param {string}       filename Filename of requested dataset..
+	 * @returns {?Dataset} Dataset object, or null if not found.
+	 */
+	getDataset( state, filename ) {
+		return state.datasets[ filename ] || null;
 	},
 
-	controls,
+	/**
+	 * Retrieve a dataset by its public URL.
+	 *
+	 * @param {DatasetStore} state State tree.
+	 * @param {string}       url   Dataset public URL.
+	 * @returns {?Dataset} Dataset object, or null if not found.
+	 */
+	getDatasetByUrl( state, url ) {
+		/** @type {Dataset[]} */
+		const datasets = Object.values( state.datasets );
+		return datasets.find( ( dataset ) => dataset.url === url ) || null;
+	},
+};
 
+const store = createReduxStore( 'csv-datasets', {
+	// This line can be removed when only supporting WordPress 6.0 or later.
+	__experimentalUseThunks: true,
+	reducer,
+	actions,
+	selectors,
+	controls,
 	resolvers,
 } );
 

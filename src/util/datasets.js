@@ -12,17 +12,13 @@ const getPostDatasetsRoute = () => {
 	const postId = select( 'core/editor' ).getCurrentPostId();
 	const postType = select( 'core/editor' ).getCurrentPostType();
 	if ( ! postId || ! postType ) {
-		console.log( 'NOT LOADED YET' ); // eslint-disable-line
 		return '';
 	}
 
 	const postTypeObject = select( 'core' ).getEntity( 'postType', postType );
 	if ( ! postTypeObject ) {
-		console.log( 'NOT LOADED YET' ); // eslint-disable-line
 		return '';
 	}
-
-	console.log( { baseURL: postTypeObject.baseURL } ); // eslint-disable-line
 
 	return [ postTypeObject.baseURL, postId, 'datasets' ].join( '/' );
 };
