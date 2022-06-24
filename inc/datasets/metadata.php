@@ -120,7 +120,7 @@ function update_dataset( int $post_id, string $filename, string $content ) : boo
  *
  * @param int    $post_id  ID of post for which to edit meta.
  * @param string $filename String filename of dataset to delete.
- * @param bool True on successful delete, false on failure.
+ * @return bool True on successful delete, false on failure.
  */
 function delete_dataset( int $post_id, string $filename ) : bool {
 	$meta_value = get_dataset_meta( $post_id );

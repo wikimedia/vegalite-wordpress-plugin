@@ -14,6 +14,9 @@ function bootstrap() : void {
 	add_action( 'init', __NAMESPACE__ . '\\register_dataset_post_type_support' );
 }
 
+/**
+ * Register the datasets post type supports value on the appropriate post types.
+ */
 function register_dataset_post_type_support() : void {
 	/**
 	 * Allow dataset support to be extended to additional post types beyond the defaults.
