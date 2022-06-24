@@ -233,8 +233,10 @@ function update_dataset_item( WP_REST_Request $request ) {
 		return $error;
 	}
 
-	// Respond with the object as it was saved.
-	return rest_ensure_response( Metadata\get_dataset( $post_id, $request['filename'] ) );
+	// Respond with the object as it was saved, plus computed properties.
+	$saved_dataset = Metadata\get_dataset( $post_id, $request['filename'] );
+	$saved_dataset = array_merge( get_computed_dataset_properties( $saved_dataset, $request ), $saved_dataset );
+	return rest_ensure_response( $saved_dataset );
 }
 
 /**
