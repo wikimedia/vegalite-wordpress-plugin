@@ -5,8 +5,6 @@
 
 namespace Datavis_Block\Blocks;
 
-use Datavis_Block\Vega_Lite\Specification;
-
 /**
  * Connect namespace functions to actions & hooks.
  */
@@ -21,15 +19,11 @@ function register_blocks() : void {
 	register_block_type(
 		'datavis-block/datavis-block',
 		[
-			'render_callback' => __NAMESPACE__ . '\\render_callback',
+			'render_callback' => __NAMESPACE__ . '\\render_datavis_block',
 			'attributes' => [
-				'blockId' => [
-					'type'    => 'string',
-					'default' => '',
-				],
 				'json' => [
-						'type'    => 'object',
-						'default' => [],
+					'type'    => 'object',
+					'default' => [],
 				]
 			],
 		]
@@ -43,34 +37,28 @@ function register_blocks() : void {
  *
  * @return string
  */
-function render_callback( array $attributes ) : string {
-	$json      = $attributes['json'] ?? false;
-	$block_id  = $attributes['blockId'] ?? false;
-
-	if ( empty( $block_id ) ) {
-		return '';
-	}
-
-	$datavis = sprintf( '%1$s-datavis', $block_id );
-	$config   = sprintf( '%1$s-config', $block_id );
+function render_datavis_block( array $attributes ) : string {
+	$json     = $attributes['json'] ?? false;
+	$chart_id = uniqid( 'chart-' );
 
 	// Do not continue if we do not have a json string.
 	if ( empty( $json ) ) {
 		return '';
 	}
 
+	$datavis = sprintf( '%1$s-datavis', $chart_id );
+	$config   = sprintf( '%1$s-config', $chart_id );
+
 	ob_start();
 	?>
 	<div
-			class="datavis-block"
-			data-datavis="<?php echo esc_attr( $datavis ); ?>"
-			data-config="<?php echo esc_attr( $config ); ?>"
+		class="datavis-block"
+		data-datavis="<?php echo esc_attr( $datavis ); ?>"
+		data-config="<?php echo esc_attr( $config ); ?>"
 	>
 		<script id="<?php echo esc_attr( $config ); ?>" type="application/json"><?php echo wp_kses_post( wp_json_encode( $json ) ); ?></script>
 		<div id="<?php echo esc_attr( $datavis ); ?>"></div>
 	</div>
 	<?php
-	$output = ob_get_contents();
-	ob_end_clean();
-	return $output;
+	return (string) ob_get_clean();
 }

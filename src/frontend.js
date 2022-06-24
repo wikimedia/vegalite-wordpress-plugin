@@ -1,6 +1,7 @@
 /**
  * Front-end functionality for datavis blocks.
  */
+import vegaEmbed from 'vega-embed';
 
 import './styles.scss';
 
@@ -15,7 +16,7 @@ let _instances = [];
 /**
  * Entry function to initialize all datavis blocks to render the blocks datavis model.
  */
-export function setupDatavisBlocks() {
+function setupDatavisBlocks() {
 	// Get all datavis block ids.
 	_instances = [ ...document.querySelectorAll( '[data-datavis]' ) ];
 	_instances.map( initializeDatavisBlock );
@@ -27,12 +28,8 @@ export function setupDatavisBlocks() {
  * @param {Element} element Datavis block element.
  */
 function initializeDatavisBlock( element ) {
-	const config = element.dataset.config,
-		datavis = element.dataset.datavis;
-
-	if ( typeof vegaEmbed === 'undefined' ) {
-		return;
-	}
+	const config = element.dataset.config;
+	const datavis = element.dataset.datavis;
 
 	if ( ! config || ! datavis ) {
 		return;
@@ -43,17 +40,10 @@ function initializeDatavisBlock( element ) {
 		return;
 	}
 
-	/* eslint-disable-next-line no-undef */
-	vegaEmbed( '#'+element.dataset.datavis, JSON.parse( jsonElement.textContent ) );
+	if ( typeof vegaEmbed === 'function' ) {
+		vegaEmbed( document.getElementById( element.dataset.datavis ), JSON.parse( jsonElement.textContent ) );
+	}
 }
 
-/**
- * Kick things off after load.
- */
-window.onload = function() {
-	setupDatavisBlocks();
-};
-
-if ( module.hot ) {
-	module.hot.accept();
-}
+// Kick things off after load.
+window.addEventListener( 'load', setupDatavisBlocks );
