@@ -2,9 +2,8 @@
 	position: relative;
 
 	&::before {
-		display: none;
 		content: '';
-		// pointer-events: none;
+		pointer-events: none;
 		display: block;
 		position: absolute;
 		top: 0;
@@ -36,7 +35,6 @@
 	}
 
 	&.file-drop-zone-active::before {
-		display: block;
 		background: rgba( 255, 255, 255, 0.8 );
 		transition: background 200ms;
 	}

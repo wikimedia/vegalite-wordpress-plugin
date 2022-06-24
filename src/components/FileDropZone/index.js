@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import React, { useState, useCallback, useRef, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 
 import './file-drop-zone.scss';
 
@@ -19,18 +19,22 @@ const FileDropZone = ( {
 	message = null,
 	children = null,
 } ) => {
-	const dropRef = useRef( null );
 	const [ isDragOver, setIsDragOver ] = useState( false );
+	const dropRef = useRef( null );
 
-	const onDragOver = useCallback( ( evt ) => {
+	const onDragStart = useCallback( ( evt ) => {
 		evt.stopPropagation();
 		evt.preventDefault();
 		evt.dataTransfer.dropEffect = 'copy';
 		evt.dataTransfer.setData( 'text/plain', evt.target.id );
 		setIsDragOver( true );
-	}, [] );
+	}, [ setIsDragOver ] );
 
-	const onDragEnd = useCallback( ( evt ) => setIsDragOver( false ), [] );
+	const onDragEnd = useCallback( ( evt ) => {
+		evt.stopPropagation();
+		evt.preventDefault();
+		setIsDragOver( false );
+	}, [ setIsDragOver ] );
 
 	// Support drag and drop CSV onto text field.
 	const onFileDrop = useCallback( ( evt ) => {
@@ -52,26 +56,23 @@ const FileDropZone = ( {
 		if ( ! dropRef.current ) {
 			return;
 		}
-
 		const currentRef = dropRef.current;
 		currentRef.addEventListener( 'drop', onFileDrop );
-		currentRef.addEventListener( 'dragenter', onDragOver );
-		currentRef.addEventListener( 'dragend', onDragEnd );
-		currentRef.addEventListener( 'dragleave', onDragEnd );
 
 		/** Clean up event listeners on unmount. */
 		return () => {
 			currentRef.removeEventListener( 'drop', onFileDrop );
-			currentRef.removeEventListener( 'dragenter', onDragOver );
-			currentRef.removeEventListener( 'dragleave', onDragEnd );
-			currentRef.removeEventListener( 'dragend', onDragEnd );
 		};
-	}, [ dropRef.current ] ); // eslint-disable-line react-hooks/exhaustive-deps
+	}, [ dropRef, onFileDrop ] );
 
 	return (
 		<div
 			className={ classNames( 'file-drop-zone', className, { 'file-drop-zone-active': isDragOver } ) }
 			ref={ dropRef }
+			onDragOver={ onDragStart }
+			onDragEnter={ onDragStart }
+			onDragLeave={ onDragEnd }
+			onDragEnd={ onDragEnd }
 			data-message={ message }
 		>
 			{ children }
