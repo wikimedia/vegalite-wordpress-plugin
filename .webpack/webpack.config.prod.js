@@ -11,7 +11,7 @@ module.exports = presets.production( {
 	},
     entry: {
         'datavis-block-editor': filePath( 'src/editor.js' ),
-        'datavis-block-frontend': filePath( 'src/index.js' ),
+        'datavis-block-frontend': filePath( 'src/frontend.js' ),
     },
     plugins: [
         plugins.clean(),

@@ -29,7 +29,7 @@ module.exports = choosePort( 9090 ).then( ( port ) => [
 		name: 'datavis-block-frontend',
 		externals: vegaExternals,
 		entry: {
-			'datavis-block-frontend': filePath( 'src/index.js' ),
+			'datavis-block-frontend': filePath( 'src/frontend.js' ),
 		},
 	} ),
 ] ).then( configs => {
