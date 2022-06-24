@@ -18,7 +18,7 @@ function bootstrap() : void {
 
 	add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\\enqueue_editor_assets' );
 	add_action( 'enqueue_block_assets', __NAMESPACE__ . '\\enqueue_vega' );
-	add_action( 'wp_scripts', __NAMESPACE__ . '\\enqueue_frontend_assets' );
+	add_action( 'wp_enqueue_scripts', __NAMESPACE__ . '\\enqueue_frontend_assets' );
 }
 
 /**
