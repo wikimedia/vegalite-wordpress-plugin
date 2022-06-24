@@ -80,3 +80,31 @@ function csv_to_json( string $csv, ?int $row_limit = null ) : array {
 		[]
 	);
 }
+
+/**
+ * Roughly infer the field types of an array of JSON objects given its first row of data.
+ *
+ * @param array|string $data Data, as CSV string or JSON array.
+ * @return array
+ */
+function infer_field_types( $data ) : array {
+	if ( is_string( $data ) ) {
+		$data = csv_to_json( $data, 1 );
+	}
+
+	$fields = [];
+	foreach ( $data[0] as $field => $value ) {
+		$field = [
+			'field' => $field,
+		];
+		// Roughly infer whether this is NOT a nominal field. (Nominal is the default.)
+		// See https://vega.github.io/vega-lite/docs/type.html for more details.
+		if ( is_numeric( $value ) || is_numeric( preg_replace( '/%$/', '', $value ) ) ) {
+			$field['type'] = 'quantitative';
+		} else if ( strtotime( $value ) !== false ) {
+			$field['type'] = 'temporal';
+		}
+		$fields[] = $field;
+	}
+	return $fields;
+}

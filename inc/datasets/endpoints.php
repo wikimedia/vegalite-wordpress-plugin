@@ -172,6 +172,7 @@ function get_computed_dataset_properties( array $dataset, WP_REST_Request $reque
 		'filename' => $dataset['filename'],
 		'url'      => get_rest_url( null, $rest_route_url ),
 		'rows'     => count( explode( "\n", $dataset['content'] ) ) - 1,
+		'fields'   => Datasets\infer_field_types( $dataset['content'] ),
 	];
 }
 
