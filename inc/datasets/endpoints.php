@@ -103,6 +103,12 @@ function register_dataset_routes() : void {
 							'default'     => 'csv',
 							'required'    => false,
 						],
+						'data_limit' => [
+							'description' => __( 'Cap the number of rows returned in the JSON data property.' ),
+							'type'        => 'integer',
+							'minimum'     => 1,
+							'required'    => false,
+						],
 					],
 				],
 				[
@@ -259,7 +265,7 @@ function get_dataset_item( WP_REST_Request $request ) {
 	$dataset = array_merge( get_computed_dataset_properties( $dataset, $request ), $dataset );
 
 	if ( $request['format'] === 'json' ) {
-		$dataset['data'] = Datasets\csv_to_json( $dataset['content'] );
+		$dataset['data'] = Datasets\csv_to_json( $dataset['content'], $request['data_limit'] );
 	}
 
 	return rest_ensure_response( $dataset );

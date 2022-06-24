@@ -50,12 +50,20 @@ function get_supported_post_types() : array {
  *
  * @todo Is there a more robust existing solution to this problem?
  *
- * @param string $csv String CSV content.
+ * @param string $csv       String CSV content.
+ * @param int    $row_limit Maximum number of rows to return.
  * @return array Array of field details.
  */
-function csv_to_json( string $csv ) : array {
+function csv_to_json( string $csv, ?int $row_limit = null ) : array {
 	/** @var array rows -- fix in-editor type hinting. */
-	$rows = array_map( 'str_getcsv', array_filter( explode( "\n", $csv ) ) );
+	$rows = array_map(
+		'str_getcsv',
+		array_slice(
+			array_filter( explode( "\n", $csv ) ),
+			0,
+			is_int( $row_limit ) ? $row_limit + 1 : null
+		)
+	);
 	$headers = $rows[0];
 	$data = array_slice( $rows, 1 );
 	return array_reduce(
