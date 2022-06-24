@@ -150,6 +150,26 @@ function get_post( $post_id ) {
 }
 
 /**
+ * Compute generated properties for datasets before fulfilling the request.
+ *
+ * @param array           $dataset Dataset array
+ * @param WP_REST_Request $request Full details about the request.
+ * @return array Array of computed dataset properties (includes original filename).
+ */
+function get_computed_dataset_properties( array $dataset, WP_REST_Request $request ) : array {
+	$rest_route_url = untrailingslashit( $request->get_route() );
+	// Handle requests to both /datasets/ and /datasets/:filename.
+	if ( substr( $rest_route_url, -9 ) === '/datasets' ) {
+		$rest_route_url = $rest_route_url . '/' . $dataset['filename'];
+	}
+	return [
+		'filename' => $dataset['filename'],
+		'url'      => get_rest_url( null, $rest_route_url ),
+		'rows'     => count( explode( "\n", $dataset['content'] ) ) - 1,
+	];
+}
+
+/**
  * Serve a list of available datasets.
  *
  * @param WP_REST_Request $request Full details about the request.
@@ -173,11 +193,7 @@ function get_datasets( WP_REST_Request $request ) {
 		array_map(
 			function( $dataset ) use ( $request ) : array {
 				// Return a no-content version of the dataset.
-				return [
-					'filename'  => $dataset['filename'],
-					'url' => get_rest_url( null, trailingslashit( $request->get_route() ) . $dataset['filename'] ),
-					'rows' => count( explode( "\n", $dataset['content'] ) ) - 1,
-				];
+				return get_computed_dataset_properties( $dataset, $request );
 			},
 			$datasets
 		)
@@ -239,6 +255,8 @@ function get_dataset_item( WP_REST_Request $request ) {
 	if ( $request['filename'] !== $dataset['filename'] || empty( $dataset ) ) {
 		return $error;
 	}
+
+	$dataset = array_merge( get_computed_dataset_properties( $dataset, $request ), $dataset );
 
 	if ( $request['format'] === 'json' ) {
 		$dataset['data'] = Datasets\csv_to_json( $dataset['content'] );
