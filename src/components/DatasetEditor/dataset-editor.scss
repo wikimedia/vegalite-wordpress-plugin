@@ -13,6 +13,15 @@
 	> :last-child {
 		margin-right: 0;
 	}
+
+	.components-text-control__input {
+		min-height: unset;
+	}
+
+	&.components-panel__row label {
+		line-height: normal;
+		margin-bottom: 4px;
+	}
 }
 
 .dataset-control-button {
