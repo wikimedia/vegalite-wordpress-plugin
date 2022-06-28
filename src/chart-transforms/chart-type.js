@@ -36,13 +36,13 @@ const options = [
 				if ( ! json.encoding?.x ) {
 					json.encoding.x = {
 						field: 'unknown',
-						...fields[0]?.field,
+						...fields[0],
 					};
 				}
 				if ( ! json.encoding?.y ) {
 					json.encoding.y = {
 						field: 'unknown',
-						...fields[1]?.field,
+						...fields[1],
 					};
 				}
 			}
