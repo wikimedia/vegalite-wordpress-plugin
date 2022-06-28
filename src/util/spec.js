@@ -9,7 +9,6 @@
  * @returns {Dataset|object} Selected dataset, or first option in list.
  */
 export const getSelectedDatasetFromSpec = ( datasets, json, defaultOption = null ) => {
-	console.log( json?.data?.url, datasets ); // eslint-disable-line
 	if ( json?.data?.url ) {
 		const activeDataset = datasets.find( ( { url } ) => url === json.data.url );
 		if ( activeDataset ) {

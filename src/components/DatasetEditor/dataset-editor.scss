@@ -14,6 +14,15 @@
 		margin-right: 0;
 	}
 
+	select {
+		max-width: unset;
+	}
+
+	textarea {
+		min-width: 100%;
+		min-height: 300px;
+	}
+
 	.components-text-control__input {
 		min-height: unset;
 	}
