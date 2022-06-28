@@ -1,13 +1,11 @@
 import React, { useCallback, useMemo } from 'react';
 
-/* eslint-disable no-unused-vars */
-import { PanelBody, SelectControl } from '@wordpress/components';
+import { SelectControl } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
 
 import deepCopy from '../util/deep-copy';
 import { getSelectedDatasetFromSpec } from '../util/spec';
-// import toDictionary from '../util/to-dictionary';
 
 import { chartTypes } from './chart-type';
 
@@ -233,7 +231,6 @@ export const SelectEncodingField = ( { setAttributes, json, field, label } ) => 
 		} ) );
 	}, [ selectedDataset, field ] );
 
-	// TODO: The selected field isn't determined correctly at all.
 	const onChangeField = useCallback( ( fieldName ) => {
 		const selectedOption = fieldOptions.find( ( { value } ) => value === fieldName );
 		if ( selectedOption && ! selectedOption.isActive( json ) ) {
@@ -242,8 +239,6 @@ export const SelectEncodingField = ( { setAttributes, json, field, label } ) => 
 		}
 	}, [ fieldOptions, json, setAttributes ] );
 
-	// TODO: This is not picking up the value of the selected field. Might be using
-	// the wrong references.
 	const onChangeFieldType = useCallback( ( fieldType ) => {
 		const selectedOption = fieldTypeOptions.find( ( { value } ) => value === fieldType );
 		if ( selectedOption && ! selectedOption.isActive( json, field ) ) {
