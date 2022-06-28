@@ -71,7 +71,7 @@ const CSVEditor = ( { filename, onSave = noop } ) => {
 				rows="10"
 			/>
 			<Button className="is-primary" onClick={ onSaveButton }>
-				{ __( 'Save', 'datavis' ) }
+				{ __( 'Save dataset', 'datavis' ) }
 			</Button>
 		</FileDropZone>
 	);
@@ -279,12 +279,10 @@ const DatasetEditor = ( { json, setAttributes } ) => {
 							{ __( 'New dataset', 'datavis' ) }
 						</Button>
 					</PanelRow>
-					<PanelRow>
-						<CSVEditor
-							filename={ selectedDataset?.filename || INLINE }
-							onSave={ forceChartUpdate }
-						/>
-					</PanelRow>
+					<CSVEditor
+						filename={ selectedDataset?.filename || INLINE }
+						onSave={ forceChartUpdate }
+					/>
 				</>
 			) }
 		</div>
