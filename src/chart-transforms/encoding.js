@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
 
-import { SelectControl } from '@wordpress/components';
+import { SelectControl, ToggleControl } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
 
@@ -90,6 +90,8 @@ export const SelectMark = ( { setAttributes, json } ) => {
 			setAttributes( { json: updatedSpec } );
 		}
 	}, [ json, setAttributes ] );
+
+	console.log( chartTypes.xy.isActive( json ) );
 
 	if ( ! chartTypes.xy.isActive( json ) ) {
 		return null;
@@ -221,9 +223,7 @@ export const SelectEncodingField = ( { setAttributes, json, field, label } ) => 
 						[ field ]: {
 							...currentFieldEncoding,
 							field: fieldOption.field,
-							...( fieldOption.type ? {
-								type: fieldOption.type,
-							} : null ),
+							type: fieldOption.type || 'nominal',
 						},
 					},
 				};
@@ -333,6 +333,25 @@ export const SelectThetaField = ( { setAttributes, json } ) => {
 };
 
 /**
+ * Render the control to set the Color field.
+ *
+ * @param {object} props               React component props.
+ * @param {object} props.json          Vega spec being edited.
+ * @param {object} props.setAttributes Block editor setAttributes method.
+ * @returns {React.ReactNode} Rendered chart type selector.
+ */
+export const SelectColorField = ( { setAttributes, json } ) => {
+	return (
+		<SelectEncodingField
+			json={ json }
+			setAttributes={ setAttributes }
+			field="color"
+			label={ __( 'Color field', 'datavis' ) }
+		/>
+	);
+};
+
+/**
  * Render all available encoding fields, which selectively show based on the current spec.
  *
  * @param {object} props               React component props.
@@ -342,8 +361,10 @@ export const SelectThetaField = ( { setAttributes, json } ) => {
  */
 export const ConditionalEncodingFields = ( { setAttributes, json } ) => (
 	<>
+		<SelectMark json={ json } setAttributes={ setAttributes } />
 		<SelectXField json={ json } setAttributes={ setAttributes } />
 		<SelectYField json={ json } setAttributes={ setAttributes } />
 		<SelectThetaField json={ json } setAttributes={ setAttributes } />
+		<SelectColorField json={ json } setAttributes={ setAttributes } />
 	</>
 );

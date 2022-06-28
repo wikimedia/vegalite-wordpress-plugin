@@ -1,7 +1,7 @@
 /**
  * Edit function for Datavis block.
  */
-import React, { useState, useCallback, useMemo, useEffect } from 'react';
+import React from 'react';
 
 import {
 	useBlockProps,
@@ -11,7 +11,6 @@ import {
 	TabPanel,
 	TextControl,
 	PanelBody,
-	SelectControl,
 } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
@@ -20,7 +19,6 @@ import { ConditionalEncodingFields } from '../../chart-transforms/encoding';
 import ControlledJsonEditor from '../../components/ControlledJsonEditor';
 import DatasetEditor from '../../components/DatasetEditor';
 import VegaChart from '../../components/VegaChart';
-import { getDatasetByUrl } from '../../util/datasets';
 
 import defaultSpecification from './specification.json';
 import './edit-datavis-block.scss';
@@ -34,32 +32,7 @@ import './edit-datavis-block.scss';
  * @returns {React.ReactNode} Rendered sidebar panel.
  */
 const SidebarEditor = ( { json, setAttributes } ) => {
-
-	const [ data, setData ] = useState( [] );
-
-	useEffect( () => {
-		if ( ! json?.data?.url ) {
-			return;
-		}
-
-		getDatasetByUrl( json.data.url ).then( setData );
-	}, [ json?.data?.url, setData ] );
-
-	const fieldOptions = useMemo( () => {
-		return ( Array.isArray( data ) && data.length > 1 )
-			? Object.keys( data[0] ).map( ( field ) => ( {
-				label: field,
-				value: field,
-				field,
-				type: ! isNaN( parseFloat( data[1][field] ) ) ? 'quantitative' : 'nominal',
-			} ) )
-			: [];
-	}, [ data ] );
-
-	const getType = useCallback( ( field ) => {
-		const matchingField = fieldOptions.find( ( option ) => option.field === field );
-		return matchingField?.type || 'quantitative';
-	}, [ fieldOptions ] );
+	// TODO: Load a dataset into the store by URL if the URL in the json isn't in our store already.
 
 	return (
 		<InspectorControls>
@@ -84,34 +57,6 @@ const SidebarEditor = ( { json, setAttributes } ) => {
 			</PanelBody>
 			<PanelBody title={ __( 'Layout', 'datavis' ) }>
 				<ConditionalEncodingFields json={ json } setAttributes={ setAttributes } />
-				{ data.length < 1 ? null : (
-					<SelectControl
-						label={ __( 'Color', 'datavis' ) }
-						value={ json?.encoding?.color?.field || 'none' }
-						options={ [ {
-							label: 'None',
-							value: 'none',
-						} ].concat( fieldOptions ) }
-						onChange={ ( field ) => {
-							setAttributes( {
-								json: {
-									...json,
-									encoding: {
-										...json.encoding,
-										color: field !== 'none'
-											? {
-												...json.color,
-												field,
-												type: getType( field ),
-												legend: null,
-											}
-											: undefined,
-									},
-								},
-							} );
-						} }
-					/>
-				) }
 			</PanelBody>
 		</InspectorControls>
 	);
