@@ -91,8 +91,6 @@ export const SelectMark = ( { setAttributes, json } ) => {
 		}
 	}, [ json, setAttributes ] );
 
-	console.log( chartTypes.xy.isActive( json ) );
-
 	if ( ! chartTypes.xy.isActive( json ) ) {
 		return null;
 	}
