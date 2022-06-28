@@ -16,6 +16,7 @@ import {
 import { __ } from '@wordpress/i18n';
 
 import SelectChartType from '../../chart-transforms/chart-type';
+import { ConditionalEncodingFields } from '../../chart-transforms/encoding';
 import ControlledJsonEditor from '../../components/ControlledJsonEditor';
 import DatasetEditor from '../../components/DatasetEditor';
 import VegaChart from '../../components/VegaChart';
@@ -123,107 +124,36 @@ const SidebarEditor = ( { json, setAttributes } ) => {
 					help={ __( 'Title for the plot.', 'datavis' ) }
 				/>
 				<SelectChartType json={ json } setAttributes={ setAttributes } />
-				<TextControl
-					label={ __( 'Description', 'datavis' ) }
-					value={ json['description'] }
-					onChange={ ( description ) => {
-						setAttributes( {
-							json: {
-								...json,
-								description,
-							},
-						} );
-					} }
-					help={ __( 'Description of this mark for commenting purpose.', 'datavis' ) }
-				/>
 			</PanelBody>
 			<PanelBody title={ __( 'Layout', 'datavis' ) }>
-				<SelectControl
-					label={ __( 'Mark', 'datavis' ) }
-					value={ json.mark?.type || json.mark }
-					options={ markOptions }
-					onChange={ ( mark ) => {
-						setAttributes( {
-							json: {
-								...json,
-								mark: {
-									...( typeof json.mark === 'object' ? json.mark : {} ),
-									type: mark,
-									tooltip: true,
-								},
-							},
-						} );
-					} }
-				/>
+				<ConditionalEncodingFields json={ json } setAttributes={ setAttributes } />
 				{ data.length < 1 ? null : (
-					<>
-						<SelectControl
-							label={ __( 'X Axis Field', 'datavis' ) }
-							value={ json?.encoding?.x?.field }
-							options={ fieldOptions }
-							onChange={ ( field ) => {
-								setAttributes( {
-									json: {
-										...json,
-										encoding: {
-											...json.encoding,
-											x: {
-												...json.x,
+					<SelectControl
+						label={ __( 'Color', 'datavis' ) }
+						value={ json?.encoding?.color?.field || 'none' }
+						options={ [ {
+							label: 'None',
+							value: 'none',
+						} ].concat( fieldOptions ) }
+						onChange={ ( field ) => {
+							setAttributes( {
+								json: {
+									...json,
+									encoding: {
+										...json.encoding,
+										color: field !== 'none'
+											? {
+												...json.color,
 												field,
 												type: getType( field ),
-											},
-										},
+												legend: null,
+											}
+											: undefined,
 									},
-								} );
-							} }
-						/>
-						<SelectControl
-							label={ __( 'Y Axis Field', 'datavis' ) }
-							value={ json?.encoding?.y?.field }
-							options={ fieldOptions }
-							onChange={ ( field ) => {
-								setAttributes( {
-									json: {
-										...json,
-										encoding: {
-											...json.encoding,
-											y: {
-												...json.y,
-												field,
-												type: getType( field ),
-											},
-										},
-									},
-								} );
-							} }
-						/>
-						<SelectControl
-							label={ __( 'Color', 'datavis' ) }
-							value={ json?.encoding?.color?.field || 'none' }
-							options={ [ {
-								label: 'None',
-								value: 'none',
-							} ].concat( fieldOptions ) }
-							onChange={ ( field ) => {
-								setAttributes( {
-									json: {
-										...json,
-										encoding: {
-											...json.encoding,
-											color: field !== 'none'
-												? {
-													...json.color,
-													field,
-													type: getType( field ),
-													legend: null,
-												}
-												: undefined,
-										},
-									},
-								} );
-							} }
-						/>
-					</>
+								},
+							} );
+						} }
+					/>
 				) }
 			</PanelBody>
 		</InspectorControls>

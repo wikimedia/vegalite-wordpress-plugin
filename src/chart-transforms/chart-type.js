@@ -105,7 +105,7 @@ const options = [
 
 			return json;
 		},
-		isActive: ( json ) => ( json.mark?.type || json?.mark ) === 'arc',
+		isActive: ( json ) => ( json?.mark?.type || json?.mark ) === 'arc',
 	},
 ];
 
