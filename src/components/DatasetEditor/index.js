@@ -1,5 +1,3 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-console */
 import React, { useCallback, useEffect, useState, useMemo } from 'react';
 
 import { Icon, TextControl, Button, PanelRow, SelectControl, TextareaControl } from '@wordpress/components';
@@ -23,20 +21,24 @@ const noop = () => {};
 /**
  * Render an editor for a specific CSV file.
  *
- * TODO: Refactor to receive a full dataset object instead of only the content string.
- *
  * @param {object}   props          React component props.
  * @param {string}   props.filename Filename of CSV being edited.
  * @param {Function} props.onSave   Callback to run when CSV changes.
  * @returns {React.ReactNode} Rendered react UI.
  */
 const CSVEditor = ( { filename, onSave = noop } ) => {
-	const dataset = useSelect(
-		( select ) => filename !== INLINE ? select( 'csv-datasets' ).getDataset( filename ) : null,
-		[ filename ]
-	);
+	// The balance between redux store data and local state data is tricky.
+	// Test with caution when editing this component.
+	const dataset = useSelect( ( select ) => select( 'csv-datasets' ).getDataset( filename ) );
 	const { updateDataset } = useDispatch( 'csv-datasets' );
-	const [ content, setCsvContent ] = useState( dataset?.content || '' );
+	const [ content, setCsvContent ] = useState( dataset?.content !== undefined ? dataset.content : 'loading' );
+
+	useEffect( () => {
+		// If content has loaded, update the store value.
+		if ( content === 'loading' && filename !== INLINE && dataset.content !== undefined ) {
+			setCsvContent( dataset.content );
+		}
+	}, [ filename, dataset, content, setCsvContent ] );
 
 	const onDrop = useCallback( ( { content } ) => {
 		setCsvContent( content );
@@ -51,7 +53,7 @@ const CSVEditor = ( { filename, onSave = noop } ) => {
 		}
 	}, [ filename, content, updateDataset, onSave ] );
 
-	if ( filename === INLINE || ! dataset ) {
+	if ( filename === INLINE ) {
 		return (
 			<p>{ __( 'Edit data values as JSON in the Chart Specification tab.', 'datavis' ) }</p>
 		);
@@ -280,10 +282,7 @@ const DatasetEditor = ( { json, setAttributes } ) => {
 					<PanelRow>
 						<CSVEditor
 							filename={ selectedDataset?.filename || INLINE }
-							onSave={ function() {
-								console.log( 'dataset updated', arguments );
-								forceChartUpdate();
-							} }
+							onSave={ forceChartUpdate }
 						/>
 					</PanelRow>
 				</>

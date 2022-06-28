@@ -135,6 +135,16 @@ const resolvers = {
 		return actions.setDataset( dataset );
 	},
 	/**
+	 * Sequence the actions necessary to request a dataset's content by filename.
+	 *
+	 * @param {string} filename Filename of a dataset to retrieve.
+	 */
+	*getDatasetContent( filename ) {
+		/** @type {Dataset} */
+		const dataset = yield actions.getDataset( filename );
+		return actions.setDataset( dataset );
+	},
+	/**
 	 * Sequence the actions necessary to request a dataset by URL.
 	 *
 	 * @param {string} url Public URL of a dataset to retrieve.
@@ -250,11 +260,28 @@ const selectors = {
 	 * Retrieve a dataset by filename string.
 	 *
 	 * @param {DatasetStore} state    State tree.
-	 * @param {string}       filename Filename of requested dataset..
+	 * @param {string}       filename Filename of requested dataset.
 	 * @returns {?Dataset} Dataset object, or null if not found.
 	 */
 	getDataset( state, filename ) {
+		if ( filename === 'inline' ) {
+			return null;
+		}
 		return state.datasets[ filename ] || null;
+	},
+
+	/**
+	 * Retrieve a dataset's CSV content by filename string.
+	 *
+	 * @param {DatasetStore} state    State tree.
+	 * @param {string}       filename Filename of requested dataset.
+	 * @returns {string} Dataset CSV content string, or empty string if not found.
+	 */
+	getDatasetContent( state, filename ) {
+		if ( filename === 'inline' ) {
+			return '';
+		}
+		return state.datasets[ filename ]?.content || '';
 	},
 
 	/**
