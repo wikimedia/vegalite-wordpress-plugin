@@ -25,49 +25,6 @@ import { getDatasetByUrl } from '../../util/datasets';
 import defaultSpecification from './specification.json';
 import './edit-datavis-block.scss';
 
-const markOptions = [
-	{
-		label: __( 'Area', 'datavis' ),
-		value: 'area',
-	},
-	{
-		label: __( 'Bar', 'datavis' ),
-		value: 'bar',
-	},
-	{
-		label: __( 'Circle', 'datavis' ),
-		value: 'circle',
-	},
-	{
-		label: __( 'Line', 'datavis' ),
-		value: 'line',
-	},
-	{
-		label: __( 'Point', 'datavis' ),
-		value: 'point',
-	},
-	{
-		label: __( 'Rect', 'datavis' ),
-		value: 'rect',
-	},
-	{
-		label: __( 'Rule', 'datavis' ),
-		value: 'rule',
-	},
-	{
-		label: __( 'Square', 'datavis' ),
-		value: 'square',
-	},
-	{
-		label: __( 'Text', 'datavis' ),
-		value: 'text',
-	},
-	{
-		label: __( 'Tick', 'datavis' ),
-		value: 'tick',
-	},
-];
-
 /**
  * Sidebar panels
  *
