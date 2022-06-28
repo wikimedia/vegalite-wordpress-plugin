@@ -15,6 +15,7 @@ import {
 } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
+import SelectChartType from '../../chart-transforms/chart-type';
 import ControlledJsonEditor from '../../components/ControlledJsonEditor';
 import DatasetEditor from '../../components/DatasetEditor';
 import VegaChart from '../../components/VegaChart';
@@ -109,19 +110,6 @@ const SidebarEditor = ( { json, setAttributes } ) => {
 				title={ __( 'General', 'datavis' ) }
 			>
 				<TextControl
-					label={ __( 'Name', 'datavis' ) }
-					value={ json['name'] }
-					onChange={ ( name ) => {
-						setAttributes( {
-							json: {
-								...json,
-								name,
-							},
-						} );
-					} }
-					help={ __( 'Name of the visualization for later reference.', 'datavis' ) }
-				/>
-				<TextControl
 					label={ __( 'Title', 'datavis' ) }
 					value={ json['title'] }
 					onChange={ ( title ) => {
@@ -134,6 +122,7 @@ const SidebarEditor = ( { json, setAttributes } ) => {
 					} }
 					help={ __( 'Title for the plot.', 'datavis' ) }
 				/>
+				<SelectChartType json={ json } setAttributes={ setAttributes } />
 				<TextControl
 					label={ __( 'Description', 'datavis' ) }
 					value={ json['description'] }
