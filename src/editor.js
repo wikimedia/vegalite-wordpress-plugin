@@ -6,8 +6,8 @@
 import { autoloadBlocks } from '@humanmade/webpack-helpers/hmr';
 
 import './store';
-
 import './styles.scss';
+import './type-definitions';
 
 /**
  * Callback function to handle DevServer hot updates.
