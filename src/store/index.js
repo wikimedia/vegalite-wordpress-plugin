@@ -130,6 +130,9 @@ const resolvers = {
 	 * @param {string} filename Filename of a dataset to retrieve.
 	 */
 	*getDataset( filename ) {
+		if ( filename === 'inline' ) {
+			return null;
+		}
 		/** @type {Dataset} */
 		const dataset = yield actions.getDataset( filename );
 		return actions.setDataset( dataset );
@@ -140,6 +143,9 @@ const resolvers = {
 	 * @param {string} filename Filename of a dataset to retrieve.
 	 */
 	*getDatasetContent( filename ) {
+		if ( filename === 'inline' ) {
+			return '';
+		}
 		/** @type {Dataset} */
 		const dataset = yield actions.getDataset( filename );
 		return actions.setDataset( dataset );
@@ -264,9 +270,6 @@ const selectors = {
 	 * @returns {?Dataset} Dataset object, or null if not found.
 	 */
 	getDataset( state, filename ) {
-		if ( filename === 'inline' ) {
-			return null;
-		}
 		return state.datasets[ filename ] || null;
 	},
 
@@ -278,9 +281,6 @@ const selectors = {
 	 * @returns {string} Dataset CSV content string, or empty string if not found.
 	 */
 	getDatasetContent( state, filename ) {
-		if ( filename === 'inline' ) {
-			return '';
-		}
 		return state.datasets[ filename ]?.content || '';
 	},
 
