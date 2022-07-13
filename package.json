@@ -23,7 +23,7 @@
     "block-editor"
   ],
   "scripts": {
-    "install": "npm install --legacy-peer-deps --ignore-scripts",
+    "preinstall": "npm install --legacy-peer-deps --ignore-scripts",
     "test": "jest",
     "lint": "npm run eslint; npm run phpcs",
     "eslint": "eslint src .eslintrc.js",
