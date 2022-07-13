@@ -46,11 +46,19 @@ Even when bumping a major version, if the blocks provided by this plugin change 
 
 ### Publishing a Release
 
-Release management is done using GitHub's built-in Releases functionality. Each release is tagged using the according version number, for example, the version 1.2.3 of this plugin would have the tag name `v1.2.3`.
-
-To generate a release, ensure the `main` branch is clean and up to date, and then tag it in the format `v#.#.#`.
-Once that tag is pushed, the GitHub actions release workflow creates a new built release based on the contents of the tag you just created.
-It will copy the tag's current state to a new tag of `original/v.*.*.*` and then build the project and push the built version to the original tag name `v*.*.*`.
+Release management is done using GitHub's built-in Releases functionality. When you tag a commit on the `main` branch with a version number in the format `v#.#.#`, a release action will trigger when that tag is pushed to GitHub.
+The GitHub actions release workflow creates a new built release based on the contents of the tag you created.
+It copies the tag's current state to a new tag of `original/v.*.*.*`, then builds the project and pushes the built version to the original tag name `v*.*.*`.
 This allows composer to pull in a built version of the project without the need to run webpack to use it.
+
+To prepare a release, follow these steps:
+
+0. Ensure you are on the `main` branch and that there are no uncommitted local changes.
+1. Depending on whether you are preparing a major, minor, or patch release (see [Versioning](#versioning) above), run one of these three NPM actions to update the version number throughout the project:
+  - `npm run bump:patch`: Update the project's version number to the next patch release number.
+  - `npm run bump:minor`: Update the project's version number to the next minor release number.
+  - `npm run bump:major`: Update the project's version number to the next major release number.
+2. Create a tag with the same number as the updated project version number, e.g. `v1.2.3`.
+3. Push the updated `main` branch and tag to GitHub.
 
 Once a release has been created, update the release's description using GitHub's interface to add patch notes. Release notes should be high-level but complete, detailing all _New Features_, _Enhancements_, _Bug Fixes_ and potential other changes included in the according version.
