@@ -23,13 +23,13 @@
     "block-editor"
   ],
   "scripts": {
+    "install": "npm install --legacy-peer-deps --ignore-scripts",
     "test": "jest",
     "lint": "npm run eslint; npm run phpcs",
     "eslint": "eslint src .eslintrc.js",
     "phpcs": "composer lint",
     "start": "webpack-dev-server --config=.webpack/webpack.config.dev.js",
     "build": "webpack --config=.webpack/webpack.config.prod.js",
-    "build:release": "npm install --legacy-peer-deps && npm run build",
     "bump:patch": "bump patch --commit 'Prepare v%s release' package.json README.md plugin.php",
     "bump:minor": "bump minor --commit 'Prepare v%s release' package.json README.md plugin.php",
     "bump:major": "bump major --commit 'Prepare v%s release' package.json README.md plugin.php"

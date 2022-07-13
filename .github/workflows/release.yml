@@ -21,7 +21,7 @@ jobs:
       - name: Create Release
         uses: technote-space/release-github-actions@v7
         with:
-          BUILD_COMMAND_TARGET: "build:release"
+          BUILD_COMMAND_TARGET: 'build'
           CLEAN_TEST_TAG: true
           CLEAN_TARGETS: .[!.]*,__tests__,src,package.json,package-lock.json,node_modules,tests,*.xml.dist
           COMMIT_MESSAGE: "Built release for ${{ steps.get_version.outputs.VERSION }}. For a full change log look at the notes within the original/${{ steps.get_version.outputs.VERSION }} release."
