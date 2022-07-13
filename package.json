@@ -1,6 +1,6 @@
 {
   "name": "datavis-block",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "private": true,
   "description": "A general-purpose WordPress data visualization block using the Vega visualization grammar",
   "engines": {
