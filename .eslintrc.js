@@ -1,9 +1,7 @@
 /* eslint quote-props: [ 'error', 'always' ] */// This file only.
 module.exports = {
 	'extends': [
-		// '@humanmade/eslint-config',
 		'eslint:recommended',
-		'react-app',
 		'plugin:import/errors',
 		'plugin:jsdoc/recommended',
 		'plugin:react-hooks/recommended',
