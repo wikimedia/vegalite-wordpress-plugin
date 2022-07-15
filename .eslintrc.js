@@ -209,10 +209,6 @@ module.exports = {
 		'react-hooks/rules-of-hooks': 'error',
 		'react-hooks/exhaustive-deps': 'warn',
 		'jsdoc/valid-types': 'warn',
-		'import/named': [ 2 ],
-		'import/namespace': [ 2 ],
-		'import/default': [ 2 ],
-		'import/export': [ 2 ],
 		'array-callback-return': 'warn',
 		'default-case': [ 'warn', {
 			'commentPattern': '^no default$',
