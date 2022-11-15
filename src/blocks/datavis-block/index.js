@@ -1,5 +1,5 @@
 /**
- * Implement Datavis block.
+ * Export registration information for Vega Lite block.
  */
 import blockData from './block.json';
 import EditDatavisBlock from './EditDatavisBlock';

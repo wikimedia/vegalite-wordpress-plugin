@@ -1,9 +1,9 @@
 <?php
 /**
- * Plugin Name: Datavis Block
+ * Plugin Name: Vega Lite WordPress Plugin
  * Description: Provide a block to render graphics using Vega Lite.
- * Author: Human Made
- * Author URI: https://humanmade.com
+ * Author: Human Made and the Wikimedia Foundation
+ * Author URI: https://github.com/wikimedia/vegalite-wordpress-plugin/graphs/contributors
  * Version: 0.1.0
  */
 

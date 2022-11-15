@@ -9,13 +9,13 @@
   "main": "index.js",
   "author": "Human Made",
   "license": "GPL-2.0-or-later",
-  "homepage": "https://github.com/humanmade/datavis-block#readme",
+  "homepage": "https://github.com/wikimedia/vegalite-wordpress-plugin#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/humanmade/datavis-block.git"
+    "url": "git+https://github.com/wikimedia/vegalite-wordpress-plugin.git"
   },
   "bugs": {
-    "url": "https://github.com/humanmade/datavis-block/issues"
+    "url": "https://github.com/wikimedia/vegalite-wordpress-plugin/issues"
   },
   "keywords": [
     "wordpress",

@@ -1,5 +1,5 @@
 /**
- * Edit function for Datavis block.
+ * Edit function for Vega-Lite block.
  */
 import React from 'react';
 
@@ -77,7 +77,7 @@ const tabs = [
 ];
 
 /**
- * Editor UI component for the datavis block.
+ * Editor UI component for the Vega-Lite block.
  *
  * @param {object}   props               React component props.
  * @param {object}   props.attributes    The attributes for the selected block.
