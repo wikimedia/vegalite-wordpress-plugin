@@ -1,5 +1,7 @@
 # Datavis Block
 
+Developed by [Human Made](https://humanmade.com) and the [Wikimedia Foundation](https://wikimediafoundation.org).
+
 Stable tag: 0.1.0
 
 This plugin provides a flexible data visualization block using the [Vega-Lite](https://vega.github.io/) declarative JSON visualization grammar.
