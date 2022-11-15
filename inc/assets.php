@@ -12,7 +12,7 @@ use Asset_Loader;
  */
 function bootstrap() : void {
 	if ( ! function_exists( 'Asset_Loader\\enqueue_asset' ) ) {
-		trigger_error( 'Datavis Block expects humanmade/asset-loader to be installed and active' );
+		trigger_error( 'Vega Lite WordPress Plugin expects humanmade/asset-loader to be installed and active' );
 		return;
 	}
 

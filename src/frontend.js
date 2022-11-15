@@ -1,12 +1,12 @@
 /**
- * Front-end functionality for datavis blocks.
+* Front-end functionality for vega-lite blocks.
  */
 import vegaEmbed from 'vega-embed';
 
 import './styles.scss';
 
 /**
- * A collection of all datavis blocks on the page.
+ * A collection of all vega-lite blocks on the page.
  *
  * @type {Element[]}
  * @private
@@ -14,18 +14,18 @@ import './styles.scss';
 let _instances = [];
 
 /**
- * Entry function to initialize all datavis blocks to render the blocks datavis model.
+ * Entry function to initialize all vega-lite blocks to render the blocks datavis model.
  */
 function setupDatavisBlocks() {
-	// Get all datavis block ids.
+	// Get all vega-lite block ids.
 	_instances = [ ...document.querySelectorAll( '[data-datavis]' ) ];
 	_instances.map( initializeDatavisBlock );
 }
 
 /**
- * Callback to initialize a datavis block to render its model.
+ * Callback to initialize a vega-lite block to render its model.
  *
- * @param {Element} element Datavis block element.
+ * @param {Element} element Vega-Lite block element.
  */
 function initializeDatavisBlock( element ) {
 	const config = element.dataset.config;
