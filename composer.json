@@ -1,5 +1,5 @@
 {
-    "name": "humanmade/datavis-block",
+    "name": "wikimedia/vegalite-wordpress-plugin",
     "description": "Flexible data visualization using Vega Lite and per-post dataset management.",
     "type": "wordpress-plugin",
     "license": "GPL-2.0-or-later",
