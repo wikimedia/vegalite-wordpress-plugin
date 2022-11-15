@@ -1,4 +1,4 @@
-# Datavis Block
+# Vega Lite WordPress Plugin
 
 Developed by [Human Made](https://humanmade.com) and the [Wikimedia Foundation](https://wikimediafoundation.org).
 
