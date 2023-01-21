@@ -15,10 +15,10 @@ import {
 import { __ } from '@wordpress/i18n';
 
 import SelectChartType from '../../chart-transforms/chart-type';
+import { ResizableChartPreview } from '../../chart-transforms/dimensions';
 import { ConditionalEncodingFields } from '../../chart-transforms/encoding';
 import ControlledJsonEditor from '../../components/ControlledJsonEditor';
 import DatasetEditor from '../../components/DatasetEditor';
-import VegaChart from '../../components/VegaChart';
 
 import defaultSpecification from './specification.json';
 import './edit-visualization.scss';
@@ -92,7 +92,12 @@ const EditDatavisBlock = ( { attributes, setAttributes, isSelected } ) => {
 
 	return (
 		<div { ...blockProps }>
-			<VegaChart spec={ json } />
+			<ResizableChartPreview
+				json={ json }
+				setAttributes={ setAttributes }
+				showHandles={ isSelected }
+			/>
+
 			{ isSelected ? (
 				<>
 					<TabPanel
