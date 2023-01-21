@@ -17,9 +17,9 @@ function bootstrap() : void {
  */
 function register_blocks() : void {
 	register_block_type(
-		'datavis-block/datavis-block',
+		'vegalite-plugin/visualization',
 		[
-			'render_callback' => __NAMESPACE__ . '\\render_datavis_block',
+			'render_callback' => __NAMESPACE__ . '\\render_visualization_block',
 			'attributes' => [
 				'json' => [
 					'type'    => 'object',
@@ -37,7 +37,7 @@ function register_blocks() : void {
  *
  * @return string
  */
-function render_datavis_block( array $attributes ) : string {
+function render_visualization_block( array $attributes ) : string {
 	$json     = $attributes['json'] ?? false;
 	$chart_id = uniqid( 'chart-' );
 
@@ -52,7 +52,7 @@ function render_datavis_block( array $attributes ) : string {
 	ob_start();
 	?>
 	<div
-		class="datavis-block"
+		class="visualization-block"
 		data-datavis="<?php echo esc_attr( $datavis ); ?>"
 		data-config="<?php echo esc_attr( $config ); ?>"
 	>

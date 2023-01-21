@@ -21,7 +21,7 @@ import DatasetEditor from '../../components/DatasetEditor';
 import VegaChart from '../../components/VegaChart';
 
 import defaultSpecification from './specification.json';
-import './edit-datavis-block.scss';
+import './edit-visualization.scss';
 
 /**
  * Sidebar panels
@@ -96,7 +96,7 @@ const EditDatavisBlock = ( { attributes, setAttributes, isSelected } ) => {
 			{ isSelected ? (
 				<>
 					<TabPanel
-						className="datavis-block-tabs"
+						className="visualization-block-tabs"
 						activeClass="active-tab"
 						tabs={ tabs }
 					>

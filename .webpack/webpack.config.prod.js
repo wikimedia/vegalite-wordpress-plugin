@@ -4,14 +4,14 @@ const vegaExternals = require( './vega-externals' );
 const { filePath } = helpers;
 
 module.exports = presets.production( {
-    name: 'datavis-block',
+    name: 'vegalite-plugin',
     externals: {
 		...externals,
 		...vegaExternals,
 	},
     entry: {
-        'datavis-block-editor': filePath( 'src/editor.js' ),
-        'datavis-block-frontend': filePath( 'src/frontend.js' ),
+        'vegalite-plugin-editor': filePath( 'src/editor.js' ),
+        'vegalite-plugin-frontend': filePath( 'src/frontend.js' ),
     },
     plugins: [
         plugins.clean(),

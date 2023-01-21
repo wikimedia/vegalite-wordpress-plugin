@@ -62,8 +62,8 @@ function enqueue_build_asset( $handle, $asset, $dependencies = [] ) : void {
  */
 function enqueue_editor_assets() : void {
 	enqueue_build_asset(
-		'datavis-block-editor',
-		'datavis-block-editor.js',
+		'vegalite-plugin-editor',
+		'vegalite-plugin-editor.js',
 		[
 			'wp-blocks',
 			'wp-components',
@@ -73,7 +73,7 @@ function enqueue_editor_assets() : void {
 			'vega-embed',
 		]
 	);
-	enqueue_build_asset( 'datavis-block-editor', 'datavis-block-editor.css' );
+	enqueue_build_asset( 'vegalite-plugin-editor', 'vegalite-plugin-editor.css' );
 }
 
 /**
@@ -81,12 +81,12 @@ function enqueue_editor_assets() : void {
  */
 function enqueue_frontend_assets() : void {
 	enqueue_build_asset(
-		'datavis-block-frontend',
-		'datavis-block-frontend.js',
+		'vegalite-plugin-frontend',
+		'vegalite-plugin-frontend.js',
 		[ 'vega-embed' ]
 	);
 	enqueue_build_asset(
-		'datavis-block-frontend',
-		'datavis-block-frontend.css'
+		'vegalite-plugin-frontend',
+		'vegalite-plugin-frontend.css'
 	);
 }

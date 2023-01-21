@@ -8,7 +8,7 @@ cleanOnExit( [
 ] );
 
 module.exports = choosePort( 9090 ).then( ( port ) => presets.development( {
-	name: 'datavis-block-editor',
+	name: 'vegalite-plugin-editor',
 	devServer: {
 		server: 'https',
 		port,
@@ -18,7 +18,7 @@ module.exports = choosePort( 9090 ).then( ( port ) => presets.development( {
 		...vegaExternals,
 	},
 	entry: {
-		'datavis-block-editor': filePath( 'src/editor.js' ),
-		'datavis-block-frontend': filePath( 'src/frontend.js' ),
+		'vegalite-plugin-editor': filePath( 'src/editor.js' ),
+		'vegalite-plugin-frontend': filePath( 'src/frontend.js' ),
 	},
 } ) );

@@ -2,7 +2,7 @@
  * Export registration information for Vega Lite block.
  */
 import blockData from './block.json';
-import EditDatavisBlock from './EditDatavisBlock';
+import EditVisualization from './EditVisualization';
 
 export const name = blockData.name;
 
@@ -15,7 +15,7 @@ export const settings = {
 	 *
 	 * @returns {React.ReactNode} Editorial interface to display in block editor.
 	 */
-	edit: EditDatavisBlock,
+	edit: EditVisualization,
 
 	/**
 	 * Return null on save so rendering can be done in PHP.
