@@ -3,7 +3,7 @@
  * Handle enqueuing block assets.
  */
 
-namespace Datavis_Block\Assets;
+namespace Vegalite_Plugin\Assets;
 
 use Asset_Loader;
 

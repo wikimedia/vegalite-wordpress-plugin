@@ -3,7 +3,7 @@
  * Register blocks on the PHP side.
  */
 
-namespace Datavis_Block\Blocks;
+namespace Vegalite_Plugin\Blocks;
 
 /**
  * Connect namespace functions to actions & hooks.
