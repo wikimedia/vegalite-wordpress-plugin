@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 
 import { SelectControl } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
@@ -244,6 +244,22 @@ export const SelectEncodingField = ( { setAttributes, json, field, label } ) => 
 			setAttributes( { json: updatedSpec } );
 		}
 	}, [ field, json, setAttributes ] );
+
+	const encodingField = getEncodingField( json, field );
+
+	// If the selected field is not available in the field options, pick one
+	// that is valid. This means that changing dataset will clear previous
+	// field settings in your chart.
+	useEffect( () => {
+		if ( ! fieldOptions.length || ! fieldOptions[0].value ) {
+			return;
+		}
+
+		const selectedOptionExists = ! ! fieldOptions.find( ( { value } ) => encodingField === value );
+		if ( ! selectedOptionExists ) {
+			onChangeField( fieldOptions[0].value );
+		}
+	}, [ encodingField, fieldOptions, onChangeField ] );
 
 	return (
 		<>
