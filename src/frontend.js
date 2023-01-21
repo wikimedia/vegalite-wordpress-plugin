@@ -1,5 +1,5 @@
 /**
-* Front-end functionality for vega-lite blocks.
+ * Front-end functionality for vega-lite blocks.
  */
 import vegaEmbed from 'vega-embed';
 
