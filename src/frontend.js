@@ -41,7 +41,11 @@ function initializeDatavisBlock( element ) {
 	}
 
 	if ( typeof vegaEmbed === 'function' ) {
-		vegaEmbed( document.getElementById( element.dataset.datavis ), JSON.parse( jsonElement.textContent ) );
+		vegaEmbed(
+			document.getElementById( element.dataset.datavis ),
+			JSON.parse( jsonElement.textContent ),
+			{ actions: false }
+		);
 	}
 }
 
