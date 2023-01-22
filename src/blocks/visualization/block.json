@@ -12,5 +12,8 @@
 	  "json": {
 		"type": "object"
 	  }
-	}
+	},
+	"usesContext": [
+		"vegalite-plugin/datasetUrl"
+	]
 }

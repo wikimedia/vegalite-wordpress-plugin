@@ -1,0 +1,20 @@
+{
+	"apiVersion": 2,
+	"name": "vegalite-plugin/responsive-container",
+	"title": "Responsive Visualization Container",
+	"textdomain": "vegalite-plugin",
+	"category": "widgets",
+	"icon": "smartphone",
+	"attributes": {
+		"blockId": {
+			"type": "string"
+		},
+		"datasetUrl": {
+			"type": "string",
+			"default": ""
+		}
+	},
+	"providesContext": {
+		"vegalite-plugin/datasetUrl": "datasetUrl"
+	}
+}
