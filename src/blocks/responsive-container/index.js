@@ -114,13 +114,14 @@ const EditResponsiveVisualizationContainer = ( { attributes, setAttributes, isSe
 				[ newVariant.attributes.chartId ]: ( isNaN( maxMinWidth ) ? 0 : maxMinWidth ) + 320,
 			},
 		} );
+		setActivePanel( innerBlocks.length );
 	}, [ clientId, innerBlocks, breakpoints, setAttributes ] );
 
 	const removeSizeVariant = useCallback( ( blockToRemove ) => {
 		const block = innerBlocks.find( ( { clientId } ) => clientId === blockToRemove );
 		const index = innerBlocks.indexOf( block );
 
-		const chartIds = innerBlocks.map( ( { chartId } ) => chartId );
+		const chartIds = innerBlocks.map( ( { attributes } ) => attributes.chartId );
 		const updatedBreakpoints = Object.keys( breakpoints ).reduce(
 			( memo, chartId ) => {
 				if ( chartId !== block.attributes.chartId && chartIds.includes( chartId ) ) {
