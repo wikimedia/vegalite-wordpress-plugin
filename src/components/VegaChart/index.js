@@ -15,20 +15,17 @@ const VegaChart = ( { spec, id = sufficientlyUniqueId() } ) => {
 	const container = useRef( null );
 
 	useEffect( () => {
-		vegaEmbed(
-			`#${ id }`,
-			{
-				$schema: 'https://vega.github.io/schema/vega-lite/v5.json',
-				...spec,
-			},
-			{ actions: false }
-		);
+		if ( ! container.current ) {
+			return;
+		}
+		vegaEmbed( container.current, {
+			$schema: 'https://vega.github.io/schema/vega-lite/v5.json',
+			...spec,
+		} );
 	}, [ container, id, spec ] );
 
 	return (
-		<div ref={ container }>
-			<div id={ id }></div>
-		</div>
+		<div ref={ container } id={ id }></div>
 	);
 };
 
