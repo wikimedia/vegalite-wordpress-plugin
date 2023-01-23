@@ -6,7 +6,7 @@
 	"category": "widgets",
 	"icon": "chart-line",
 	"attributes": {
-	  "blockId": {
+	  "chartId": {
 		"type": "string"
 	  },
 	  "json": {

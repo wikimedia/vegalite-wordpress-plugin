@@ -39,7 +39,7 @@ function register_blocks() : void {
  */
 function render_visualization_block( array $attributes ) : string {
 	$json     = $attributes['json'] ?? false;
-	$chart_id = uniqid( 'chart-' );
+	$chart_id = $attributes['chartId'] ?? uniqid( 'chart-' );
 
 	// Do not continue if we do not have a json string.
 	if ( empty( $json ) ) {

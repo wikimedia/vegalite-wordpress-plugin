@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import vegaEmbed from 'vega-embed';
 
 import sufficientlyUniqueId from '../../util/sufficiently-unique-id';
@@ -8,12 +8,11 @@ import sufficientlyUniqueId from '../../util/sufficiently-unique-id';
  *
  * @param {object} props      React component props.
  * @param {object} props.spec Vega Lite specification object.
+ * @param {object} props.id   ID attribute for chart container.
  * @returns {React.ReactNode} Node for a container into which chart will be rendered.
  */
-const VegaChart = ( { spec } ) => {
+const VegaChart = ( { spec, id = sufficientlyUniqueId() } ) => {
 	const container = useRef( null );
-
-	const id = useMemo( () => sufficientlyUniqueId(), [] );
 
 	useEffect( () => {
 		vegaEmbed( `#${ id }`, {
