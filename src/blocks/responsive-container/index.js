@@ -182,17 +182,17 @@ const EditResponsiveVisualizationContainer = ( { attributes, setAttributes, isSe
 													display: block !important;
 												}` }
 											</style>
+											<InnerBlocks
+												allowedBlocks={ [ 'vegalite-plugin/visualization' ] }
+												template={ BLOCK_TEMPLATE }
+												renderAppender={ false }
+											/>
 										</PanelRow>
 									</>
 								) : null }
 							</PanelBody>
 						);
 					} ) }
-					<InnerBlocks
-						allowedBlocks={ [ 'vegalite-plugin/visualization' ] }
-						template={ BLOCK_TEMPLATE }
-						renderAppender={ false }
-					/>
 					<PanelRow>
 						<Button
 							className="is-tertiary responsive-visualization-container-add-new"
