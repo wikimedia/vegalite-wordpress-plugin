@@ -1,7 +1,7 @@
 /**
  * Edit function for Vega-Lite block.
  */
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import {
 	useBlockProps,
@@ -19,6 +19,7 @@ import { ResizableChartPreview } from '../../chart-transforms/dimensions';
 import { ConditionalEncodingFields } from '../../chart-transforms/encoding';
 import ControlledJsonEditor from '../../components/ControlledJsonEditor';
 import DatasetEditor from '../../components/DatasetEditor';
+import sufficientlyUniqueId from '../../util/sufficiently-unique-id';
 
 import defaultSpecification from './specification.json';
 import './edit-visualization.scss';
@@ -90,9 +91,20 @@ const EditDatavisBlock = ( { attributes, setAttributes, isSelected } ) => {
 	const blockProps = useBlockProps();
 	const json = attributes.json || defaultSpecification;
 
+	// Ensure every visualization gets a unique chart ID.
+	useEffect( () => {
+		if ( attributes.chartId ) {
+			return;
+		}
+		setAttributes( {
+			chartId: sufficientlyUniqueId(),
+		} );
+	}, [ attributes.chartId, setAttributes ] );
+
 	return (
 		<div { ...blockProps }>
 			<ResizableChartPreview
+				id={ attributes.id }
 				json={ json }
 				setAttributes={ setAttributes }
 				showHandles={ isSelected }

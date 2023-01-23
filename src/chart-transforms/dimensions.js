@@ -39,12 +39,13 @@ const transformDimensions = ( json, width, height ) => {
  * Render a chart preview and provide drag handles to resize the chart.
  *
  * @param {object}  props               React component props.
+ * @param {string}  props.id            Unique ID for this visualization.
  * @param {object}  props.json          Vega spec being edited.
  * @param {object}  props.setAttributes Block editor setAttributes method.
  * @param {boolean} props.showHandles   Whether to display the drag handles (resize UI).
  * @returns {React.ReactNode} Rendered chart type selector.
  */
-export const ResizableChartPreview = ( { json, setAttributes, showHandles } ) => {
+export const ResizableChartPreview = ( { id, json, setAttributes, showHandles } ) => {
 	if ( ! showHandles ) {
 		return (
 			<VegaChart spec={ json } />
@@ -91,7 +92,7 @@ export const ResizableChartPreview = ( { json, setAttributes, showHandles } ) =>
 				} );
 			} }
 		>
-			<VegaChart spec={ json } />
+			<VegaChart id={ id } spec={ json } />
 		</ResizableBox>
 	);
 };

@@ -6,11 +6,14 @@
 	"category": "widgets",
 	"icon": "chart-line",
 	"attributes": {
-	  "blockId": {
+	  "chartId": {
 		"type": "string"
 	  },
 	  "json": {
 		"type": "object"
 	  }
-	}
+	},
+	"usesContext": [
+		"vegalite-plugin/breakpoints"
+	]
 }
