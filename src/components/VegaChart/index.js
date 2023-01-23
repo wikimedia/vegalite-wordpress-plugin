@@ -18,10 +18,14 @@ const VegaChart = ( { spec, id = sufficientlyUniqueId() } ) => {
 		if ( ! container.current ) {
 			return;
 		}
-		vegaEmbed( container.current, {
-			$schema: 'https://vega.github.io/schema/vega-lite/v5.json',
-			...spec,
-		} );
+		vegaEmbed(
+			container.current,
+			{
+				$schema: 'https://vega.github.io/schema/vega-lite/v5.json',
+				...spec,
+			},
+			{ actions: false }
+		);
 	}, [ container, id, spec ] );
 
 	return (
