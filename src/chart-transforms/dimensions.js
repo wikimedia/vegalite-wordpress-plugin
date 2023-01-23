@@ -39,7 +39,7 @@ const transformDimensions = ( json, width, height ) => {
  * Render a chart preview and provide drag handles to resize the chart.
  *
  * @param {object}  props               React component props.
- * @param {string}  props.id            Unique ID for this visualization.
+ * @param {number}  props.id            Unique chart ID.
  * @param {object}  props.json          Vega spec being edited.
  * @param {object}  props.setAttributes Block editor setAttributes method.
  * @param {boolean} props.showHandles   Whether to display the drag handles (resize UI).
