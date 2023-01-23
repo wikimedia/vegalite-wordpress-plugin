@@ -6,6 +6,8 @@ import { Button, Icon, PanelBody, PanelRow, TextControl } from '@wordpress/compo
 import { dispatch, useSelect } from '@wordpress/data';
 import { __, _n, sprintf } from '@wordpress/i18n';
 
+import sufficientlyUniqueId from '../../util/sufficiently-unique-id';
+
 /**
  * Export registration information for Responsive Container block.
  */
@@ -27,34 +29,32 @@ const BLOCK_TEMPLATE = [
  * the same specified minimum size.
  *
  * @param {number[]} breakpoints Array of breakpoint min-width values (in px).
- * @param {number}   index       Index of currently-active block's breakpoint.
+ * @param {number}   chartId     ID of block for which to generate description.
  * @returns {string} Rendered label for the specified breakpoint.
  */
-const getBreakpointDescription = ( breakpoints, index ) => {
+const getBreakpointDescription = ( breakpoints, chartId ) => {
 	if ( breakpoints.length === 1 ) {
 		return __( 'Default visualization', 'vegalite-plugin' );
 	}
 
-	const sortedBreakpoints = breakpoints.sort( ( a, b ) => {
+	const lowerBound = breakpoints[ chartId ] || 0;
+	const sortedBreakpoints = Object.values( breakpoints ).sort( ( a, b ) => {
 		return +a < +b ? -1 : 1;
 	} );
-	const sortedIndex = sortedBreakpoints.indexOf( breakpoints[ index ] );
-
-	const lowerBound = sortedBreakpoints[ sortedIndex ];
-	const upperBound = sortedBreakpoints[ sortedIndex + 1 ] || null;
+	const upperBound = sortedBreakpoints.find( ( minWidth ) => lowerBound < minWidth ) || 0;
 
 	if ( lowerBound && upperBound ) {
 		return sprintf(
-			__( 'Display between %1$dpx and %2$dpx', 'vegalite-plugin' ),
+			__( 'Displays between %1$dpx and %2$dpx', 'vegalite-plugin' ),
 			lowerBound,
 			upperBound
 		);
 	}
 	if ( lowerBound ) {
-		return sprintf( __( 'Display above %dpx', 'vegalite-plugin' ), lowerBound );
+		return sprintf( __( 'Displays above %dpx', 'vegalite-plugin' ), lowerBound );
 	}
 	if ( upperBound ) {
-		return sprintf( __( 'Display below %dpx', 'vegalite-plugin' ), upperBound );
+		return sprintf( __( 'Displays below %dpx', 'vegalite-plugin' ), upperBound );
 	}
 	return __( 'Default visualization', 'vegalite-plugin' );
 };
@@ -80,57 +80,62 @@ const EditResponsiveVisualizationContainer = ( { attributes, setAttributes, isSe
 	const { breakpoints } = attributes;
 	const [ activePanel, setActivePanel ] = useState( 0 );
 
-	const updateBreakpoint = useCallback( ( blockIndex, newMinWidth ) => {
-		const sortedCharts = innerBlocks
-			.map( ( block, idx ) => ( {
-				active: idx === activePanel,
-				breakpoint: ( idx === blockIndex ) ? newMinWidth : breakpoints[ idx ],
-				block,
-			} ) )
-			.sort( ( a, b ) => {
-				return a.breakpoint < b.breakpoint ? -1 : 1;
-			} );
-
-		const reorderedInnerBlocks = sortedCharts.map( ( { block } ) => block );
-		const reorderedBreakpoints = sortedCharts.map( ( { breakpoint } ) => breakpoint );
-
-		setAttributes( { breakpoints: reorderedBreakpoints } );
-
-		const blockOrderChanged = reorderedInnerBlocks.reduce(
-			( mismatch, block, idx ) => {
-				return mismatch || ( innerBlocks[ idx ].clientId !== block.clientId );
+	const updateBreakpoint = useCallback( ( chartId, newMinWidth ) => {
+		setAttributes( {
+			breakpoints: {
+				...breakpoints,
+				[ chartId ]: newMinWidth,
 			},
-			false
-		);
-
-		if ( blockOrderChanged ) {
-			const { replaceInnerBlocks } = dispatch( 'core/block-editor' );
-			replaceInnerBlocks( clientId, reorderedInnerBlocks );
-			setActivePanel( sortedCharts.findIndex( ( { active } ) => active ) );
-		}
-	}, [ innerBlocks, breakpoints, activePanel, clientId, setAttributes, setActivePanel ] );
+		} );
+	}, [ breakpoints, setAttributes ] );
 
 	const addSizeVariant = useCallback( () => {
-		const { insertBlock } = dispatch( 'core/block-editor' );
-		insertBlock(
-			createBlock( 'vegalite-plugin/visualization', innerBlocks[ innerBlocks.length - 1 ].attributes ),
+		const newVariant = createBlock(
+			'vegalite-plugin/visualization',
+			{
+				...( innerBlocks[ innerBlocks.length - 1 ]?.attributes || {} ),
+				// Do not copy existing chart IDs.
+				chartId: sufficientlyUniqueId(),
+			}
+		);
+		dispatch( 'core/block-editor' ).insertBlock(
+			newVariant,
 			innerBlocks.length,
 			clientId
 		);
+
+		// Give the new chart a progressively bigger breakpoint.
+		const maxMinWidth = Math.max( ...Object.values( breakpoints ).sort( ( a, b ) => {
+			return +a < +b ? -1 : 1;
+		} ) ) || 0;
 		setAttributes( {
-			breakpoints: [ ...breakpoints, ( +breakpoints[ breakpoints.length - 1 ] + 320 ) ],
+			breakpoints: {
+				...breakpoints,
+				[ newVariant.attributes.chartId ]: ( isNaN( maxMinWidth ) ? 0 : maxMinWidth ) + 320,
+			},
 		} );
 	}, [ clientId, innerBlocks, breakpoints, setAttributes ] );
 
-	const removeSizeVariant = useCallback( ( blockIdToRemove ) => {
-		const { removeBlock } = dispatch( 'core/block-editor' );
-		const indexOfBlock = innerBlocks.findIndex( ( { clientId } ) => clientId === blockIdToRemove );
-		console.log( { blockIdToRemove, indexOfBlock, innerBlocks, breakpoints } ); // eslint-disable-line
-		removeBlock( blockIdToRemove );
+	const removeSizeVariant = useCallback( ( blockToRemove ) => {
+		const block = innerBlocks.find( ( { clientId } ) => clientId === blockToRemove );
+		const index = innerBlocks.indexOf( block );
+
+		const chartIds = innerBlocks.map( ( { chartId } ) => chartId );
+		const updatedBreakpoints = Object.keys( breakpoints ).reduce(
+			( memo, chartId ) => {
+				if ( chartId !== block.attributes.chartId && chartIds.includes( chartId ) ) {
+					memo[ chartId ] = breakpoints[ chartId ];
+				}
+				return memo;
+			},
+			{}
+		);
+
+		dispatch( 'core/block-editor' ).removeBlock( blockToRemove );
 		setAttributes( {
-			breakpoints: breakpoints.filter( ( breakpoint, idx ) => idx === indexOfBlock ),
+			breakpoints: updatedBreakpoints,
 		} );
-		setActivePanel( indexOfBlock > 0 ? indexOfBlock - 1 : 0 );
+		setActivePanel( index > 0 ? index - 1 : 0 );
 	}, [ innerBlocks, breakpoints, setActivePanel, setAttributes ] );
 
 	return (
@@ -144,7 +149,7 @@ const EditResponsiveVisualizationContainer = ( { attributes, setAttributes, isSe
 					{
 						sprintf(
 							// Translators: %s - Number of responsive chart variations.
-							_n( '%s chart variation', '%d chart variations', innerBlocks.length, 'vegalite-plugin' ),
+							_n( '%s variant', '%d responsive variants', innerBlocks.length, 'vegalite-plugin' ),
 							innerBlocks.length
 						)
 					}
@@ -156,7 +161,7 @@ const EditResponsiveVisualizationContainer = ( { attributes, setAttributes, isSe
 						return (
 							<PanelBody
 								opened={ activePanel === idx }
-								title={ getBreakpointDescription( breakpoints, idx ) }
+								title={ getBreakpointDescription( breakpoints, block.attributes.chartId ) }
 								onToggle={ () => setActivePanel( idx ) }
 							>
 								{ activePanel === idx ? (
@@ -164,9 +169,11 @@ const EditResponsiveVisualizationContainer = ( { attributes, setAttributes, isSe
 										<PanelRow>
 											<TextControl
 												label={ __( 'Minimum width (px)', 'vegalite-plugin' ) }
-												value={ +breakpoints[idx] }
+												value={ breakpoints[block.attributes.chartId] || '' }
 												type="number"
-												onChange={ ( minWidth ) => updateBreakpoint( idx, +minWidth ) }
+												onChange={ ( minWidth ) => {
+													updateBreakpoint( block.attributes.chartId, +minWidth );
+												} }
 											/>
 											<Button
 												className="is-tertiary is-destructive"

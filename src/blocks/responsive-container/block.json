@@ -6,19 +6,12 @@
 	"category": "widgets",
 	"icon": "smartphone",
 	"attributes": {
-		"blockId": {
-			"type": "string"
-		},
 		"breakpoints": {
-			"type": "array",
-			"default": [ 0 ]
-		},
-		"datasetUrl": {
-			"type": "string",
-			"default": ""
+			"type": "object",
+			"default": {}
 		}
 	},
 	"providesContext": {
-		"vegalite-plugin/datasetUrl": "datasetUrl"
+		"vegalite-plugin/breakpoints": "breakpoints"
 	}
 }
