@@ -4,6 +4,6 @@
  *
  * @returns {string} Unique-ish ID string.
  */
-const sufficientlyUniqueId = () => `_${ Math.random().toString( 36 ).substring( 2, 9 ) }`;
+const sufficientlyUniqueId = () => `_${ Math.random().toString( 36 ).substring( 2, 18 ) }`;
 
 export default sufficientlyUniqueId;
