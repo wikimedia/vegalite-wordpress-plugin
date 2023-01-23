@@ -236,12 +236,8 @@ const EditResponsiveVisualizationContainer = ( { attributes, setAttributes, isSe
  * @returns {React.ReactNode} Rendered editorial UI.
  */
 const SaveResponsiveVisualizationContainer = ( props ) => {
-	const blockProps = useBlockProps.save();
-
 	return (
-		<div { ...blockProps }>
-			<InnerBlocks.Content />
-		</div>
+		<InnerBlocks.Content />
 	);
 };
 

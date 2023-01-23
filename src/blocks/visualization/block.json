@@ -14,6 +14,6 @@
 	  }
 	},
 	"usesContext": [
-		"vegalite-plugin/datasetUrl"
+		"vegalite-plugin/breakpoints"
 	]
 }
