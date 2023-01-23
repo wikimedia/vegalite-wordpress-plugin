@@ -9,6 +9,10 @@
 		"blockId": {
 			"type": "string"
 		},
+		"breakpoints": {
+			"type": "array",
+			"default": [ 0 ]
+		},
 		"datasetUrl": {
 			"type": "string",
 			"default": ""
