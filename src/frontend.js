@@ -59,7 +59,11 @@ function initializeDatavisBlock( element ) {
 
 	// Render if possible and necessary.
 	if ( typeof vegaEmbed === 'function' && ! jsonElement.classList.contains( 'vega-embed' ) ) {
-		vegaEmbed( document.getElementById( element.dataset.datavis ), JSON.parse( jsonElement.textContent ) );
+		vegaEmbed(
+			document.getElementById( element.dataset.datavis ),
+			JSON.parse( jsonElement.textContent ),
+			{ actions: false }
+		);
 	}
 }
 
