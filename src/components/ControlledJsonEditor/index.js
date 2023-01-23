@@ -52,6 +52,11 @@ export const ControlledJsonEditor = ( { value, onChange } ) => {
 				value={ value }
 				onChange={ onChange }
 			/>
+			<p>
+				<a href="https://vega.github.io/vega-lite/" target="_blank" rel="noreferrer">
+					{ __( 'To create more complicated or interactive graphics, refer to the Vega Lite documentation site.', 'vegalite-plugin' ) }
+				</a>
+			</p>
 		</>
 	);
 };
