@@ -66,12 +66,12 @@ function compute_breakpoint( string $chart_id, array $breakpoints ) : array {
 /**
  * Render a data-attribute with a specified value, IF that value is present.
  *
- * @param string $attribute_name Name of data-attribute, e.g. max-width.
+ * @param string $attribute_name Name of attribute, e.g. data-max-width.
  * @param any    $value          Value of attribute.
  */
-function maybe_render_data_attribute( string $attribute_name, $value ) : void {
+function maybe_render_attribute( string $attribute_name, $value ) : void {
 	if ( ! empty( $value ) ) {
-		echo sprintf( 'data-%s="%s"', $attribute_name, $value );
+		echo sprintf( '%s="%s"', $attribute_name, $value );
 	}
 }
 
@@ -98,17 +98,27 @@ function render_visualization_block( array $attributes, $content, $block ) : str
 	$datavis = sprintf( '%1$s-datavis', $chart_id );
 	$config  = sprintf( '%1$s-config', $chart_id );
 
+	// If we know the target dimensions, set those on the container to minimize CLS.
+	$inline_style = [];
+	if ( isset( $json['width'] ) && is_numeric( $json['width'] ) ) {
+		$inline_style[] = sprintf( 'width:%dpx', $json['width'] );
+	}
+	if ( isset( $json['height'] ) && is_numeric( $json['height'] ) ) {
+		$inline_style[] = sprintf( 'height:%dpx', $json['height'] );
+	}
+	$inline_style = implode( ';', $inline_style );
+
 	ob_start();
 	?>
 	<div
 		class="visualization-block"
 		data-datavis="<?php echo esc_attr( $datavis ); ?>"
 		data-config="<?php echo esc_attr( $config ); ?>"
-		<?php maybe_render_data_attribute( 'min-width', $breakpoints['min_width'] ?? 0 ); ?>
-		<?php maybe_render_data_attribute( 'max-width', $breakpoints['max_width'] ?? 0 ); ?>
+		<?php maybe_render_attribute( 'data-min-width', $breakpoints['min_width'] ?? 0 ); ?>
+		<?php maybe_render_attribute( 'data-max-width', $breakpoints['max_width'] ?? 0 ); ?>
 	>
 		<script id="<?php echo esc_attr( $config ); ?>" type="application/json"><?php echo wp_kses_post( wp_json_encode( $json ) ); ?></script>
-		<div id="<?php echo esc_attr( $datavis ); ?>"></div>
+		<div id="<?php echo esc_attr( $datavis ); ?>" <?php maybe_render_attribute( 'style', $inline_style ); ?>></div>
 	</div>
 	<?php
 	return (string) ob_get_clean();
