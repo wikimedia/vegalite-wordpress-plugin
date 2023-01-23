@@ -122,6 +122,17 @@ const EditResponsiveVisualizationContainer = ( { attributes, setAttributes, isSe
 		} );
 	}, [ clientId, innerBlocks, breakpoints, setAttributes ] );
 
+	const removeSizeVariant = useCallback( ( blockIdToRemove ) => {
+		const { removeBlock } = dispatch( 'core/block-editor' );
+		const indexOfBlock = innerBlocks.findIndex( ( { clientId } ) => clientId === blockIdToRemove );
+		console.log( { blockIdToRemove, indexOfBlock, innerBlocks, breakpoints } ); // eslint-disable-line
+		removeBlock( blockIdToRemove );
+		setAttributes( {
+			breakpoints: breakpoints.filter( ( breakpoint, idx ) => idx === indexOfBlock ),
+		} );
+		setActivePanel( indexOfBlock > 0 ? indexOfBlock - 1 : 0 );
+	}, [ innerBlocks, breakpoints, setActivePanel, setAttributes ] );
+
 	return (
 		<div { ...blockProps }>
 			<PanelRow>
@@ -157,6 +168,13 @@ const EditResponsiveVisualizationContainer = ( { attributes, setAttributes, isSe
 												type="number"
 												onChange={ ( minWidth ) => updateBreakpoint( idx, +minWidth ) }
 											/>
+											<Button
+												className="is-tertiary is-destructive"
+												icon="trash"
+												onClick={ () => removeSizeVariant( block.clientId ) }
+											>
+												{ __( 'Delete variant', 'vegalite-plugin' ) }
+											</Button>
 										</PanelRow>
 										<PanelRow>
 											<style type="text/css">
