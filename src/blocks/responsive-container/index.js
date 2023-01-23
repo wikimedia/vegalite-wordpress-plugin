@@ -184,18 +184,16 @@ const EditResponsiveVisualizationContainer = ( { attributes, setAttributes, isSe
 												{ __( 'Delete variant', 'vegalite-plugin' ) }
 											</Button>
 										</PanelRow>
-										<PanelRow>
-											<style type="text/css">
-												{ `[data-block="${ block.clientId }"] {
-													display: block !important;
-												}` }
-											</style>
-											<InnerBlocks
-												allowedBlocks={ [ 'vegalite-plugin/visualization' ] }
-												template={ BLOCK_TEMPLATE }
-												renderAppender={ false }
-											/>
-										</PanelRow>
+										<style type="text/css">
+											{ `[data-block="${ block.clientId }"] {
+												display: block !important;
+											}` }
+										</style>
+										<InnerBlocks
+											allowedBlocks={ [ 'vegalite-plugin/visualization' ] }
+											template={ BLOCK_TEMPLATE }
+											renderAppender={ false }
+										/>
 									</>
 								) : null }
 							</PanelBody>
