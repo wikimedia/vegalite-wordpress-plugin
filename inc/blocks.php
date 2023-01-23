@@ -16,7 +16,7 @@ function bootstrap() : void {
  * Register our block with the PHP framework.
  */
 function register_blocks() : void {
-	$blocks_folder = dirname( __FILE__, 2 ) . '/src/blocks';
+	$blocks_folder = dirname( __DIR__ ) . '/src/blocks';
 
 	register_block_type_from_metadata( $blocks_folder . '/responsive-container' );
 	register_block_type_from_metadata(
