@@ -1,7 +1,7 @@
 {
-  "datavis-block-editor.css": "datavis-block-editor.f583f5aacf0f9ebeef25.css",
-  "datavis-block-editor.js": "datavis-block-editor.9c9ceb66f2bf8cb2f3b0.js",
-  "datavis-block-frontend.css": "datavis-block-frontend.6130804bb719a2d24db6.css",
-  "datavis-block-frontend.js": "datavis-block-frontend.fd37c70a300abfa40585.js",
+  "vegalite-plugin-editor.css": "vegalite-plugin-editor.3a24070b54a1a85ffe96.css",
+  "vegalite-plugin-editor.js": "vegalite-plugin-editor.f2810ea46874036804cb.js",
+  "vegalite-plugin-frontend.css": "vegalite-plugin-frontend.83a0d46488aef8a0610c.css",
+  "vegalite-plugin-frontend.js": "vegalite-plugin-frontend.598b54e21bfc35efcf69.js",
   "jsoneditor-icons.svg": "15f2789dd231f36d43a4.svg"
 }

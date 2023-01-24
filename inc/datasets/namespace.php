@@ -3,7 +3,7 @@
  * Handle registration and management of dataset feature support.
  */
 
-namespace Datavis_Block\Datasets;
+namespace Vegalite_Plugin\Datasets;
 
 const FEATURE_NAME = 'datasets';
 

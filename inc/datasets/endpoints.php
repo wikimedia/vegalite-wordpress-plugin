@@ -3,11 +3,11 @@
  * Define our custom CSV endpoint.
  */
 
-namespace Datavis_Block\Datasets\Endpoints;
+namespace Vegalite_Plugin\Datasets\Endpoints;
 
-use Datavis_Block\Datasets;
+use Vegalite_Plugin\Datasets;
 
-use Datavis_Block\Datasets\Metadata;
+use Vegalite_Plugin\Datasets\Metadata;
 use WP_Error;
 use WP_REST_Request;
 use WP_REST_Server;

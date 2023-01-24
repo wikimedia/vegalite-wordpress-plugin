@@ -3,9 +3,9 @@
  * Registration and management of the post-meta storage for datasets.
  */
 
-namespace Datavis_Block\Datasets\Metadata;
+namespace Vegalite_Plugin\Datasets\Metadata;
 
-use Datavis_Block\Datasets;
+use Vegalite_Plugin\Datasets;
 
 const META_KEY = 'csv_datasets';
 
