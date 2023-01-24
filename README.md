@@ -2,7 +2,7 @@
 
 Developed by [Human Made](https://humanmade.com) and the [Wikimedia Foundation](https://wikimediafoundation.org).
 
-Stable tag: 0.1.0
+Stable tag: 0.2.0
 
 This plugin provides a flexible data visualization block using the [Vega-Lite](https://vega.github.io/) declarative JSON visualization grammar.
 
@@ -64,3 +64,19 @@ To prepare a release, follow these steps:
 3. Push the updated `main` branch and tag to GitHub.
 
 Once a release has been created, update the release's description using GitHub's interface to add patch notes. Release notes should be high-level but complete, detailing all _New Features_, _Enhancements_, _Bug Fixes_ and potential other changes included in the according version.
+
+### Development testing
+
+Any code merged into the `develop` branch will be build and committed to the `release-develop` branch. This branch can be used in non-production applications to validate and test proposed changes.
+
+### Changelog
+
+**0.2.0**
+
+- Introduce Responsive Visualization Container block.
+- UI overhaul for Data Visualization block.
+- Fix bug where field dropdowns could de-sync with available fields in dataset.
+
+**0.1.0**
+
+- Initial release. Introduce "Data Visualization" block.
