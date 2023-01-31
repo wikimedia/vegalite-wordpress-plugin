@@ -17,7 +17,7 @@ function bootstrap() : void {
 	}
 
 	add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\\enqueue_editor_assets' );
-	add_action( 'enqueue_block_assets', __NAMESPACE__ . '\\enqueue_vega' );
+	add_action( 'enqueue_block_assets', __NAMESPACE__ . '\\register_vega' );
 	add_action( 'wp_enqueue_scripts', __NAMESPACE__ . '\\enqueue_frontend_assets' );
 }
 
@@ -29,7 +29,7 @@ function bootstrap() : void {
  *
  * @return void
  */
-function enqueue_vega() : void {
+function register_vega() : void {
 	$plugin_assets_dir = plugin_dir_url( __DIR__ ) . 'assets/';
 	wp_register_script( 'vega', $plugin_assets_dir . 'vega.5.21.0.js' );
 	wp_register_script( 'vega-lite', $plugin_assets_dir . 'vega-lite.5.2.0.js', [ 'vega' ] );
