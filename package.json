@@ -4,7 +4,7 @@
   "private": true,
   "description": "A general-purpose WordPress data visualization block using the Vega visualization grammar",
   "engines": {
-    "node": ">18.0.0"
+    "node": ">=16.0.0"
   },
   "main": "index.js",
   "author": "Human Made",
@@ -39,7 +39,7 @@
     "jsoneditor": "^9.9.0",
     "jsoneditor-react": "^3.1.2",
     "reselect": "^4.1.6",
-    "vega": "^5.25.0",
+    "vega": "^5.22.1",
     "vega-embed": "^6.21.0",
     "vega-lite": "^5.2.0"
   },
