@@ -1,6 +1,6 @@
 {
   "name": "vegalite-plugin",
-  "version": "0.2.1",
+  "version": "0.2.3",
   "private": true,
   "description": "A general-purpose WordPress data visualization block using the Vega visualization grammar",
   "engines": {
