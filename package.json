@@ -4,7 +4,7 @@
   "private": true,
   "description": "A general-purpose WordPress data visualization block using the Vega visualization grammar",
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=18.0.0"
   },
   "main": "index.js",
   "author": "Human Made",
