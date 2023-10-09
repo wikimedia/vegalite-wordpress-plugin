@@ -16,15 +16,15 @@ on:
 jobs:
   build:
     name: PHP Coding Standards
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v1
+        uses: actions/checkout@v4
 
       - name: Install PHP
-        uses: shivammathur/setup-php@2.7.0
+        uses: shivammathur/setup-php@v2
         with:
-          php-version: '7.4'
+          php-version: '8.1'
           coverage: none
 
       - name: Echo PHP & Composer versions
@@ -40,7 +40,7 @@ jobs:
 
       - name: Cache PHP Dependencies
         id: composer-cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ${{ steps.composer-cache-dir.outputs.dir }}
           key: ${{ runner.os }}-composer-7.2-${{ hashFiles('composer.lock') }}
@@ -50,7 +50,7 @@ jobs:
           composer install --prefer-dist --no-progress --no-suggest --no-interaction
 
       - name: PHPCS cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: tests/cache
           key: ${{ runner.os }}-phpcs-7.2-${{ hashFiles('plugin.php') }}
