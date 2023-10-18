@@ -10,7 +10,7 @@ jobs:
     name: Create Release
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: '16'
 
@@ -19,7 +19,7 @@ jobs:
         run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
 
       - name: Create Release
-        uses: technote-space/release-github-actions@v7
+        uses: technote-space/release-github-actions@v8
         with:
           BUILD_COMMAND_TARGET: 'build'
           CLEAN_TEST_TAG: true
