@@ -74,6 +74,12 @@ Any code merged into the `develop` branch will be build and committed to the `re
 **0.2.4**
 
 - Upgrade build dependencies for security and performance.
+- Pin the specific SHA1 commits of the GH actions
+- Update build actions to use Node.js version 18
+
+**0.2.3**
+
+- Upgrade build dependencies for security and performance.
 
 **0.2.2**
 
