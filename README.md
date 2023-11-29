@@ -73,6 +73,11 @@ Any code merged into the `develop` branch will be build and committed to the `re
 
 **0.2.4**
 
+- Upgrade dependencies for security and performance.
+- Set to use `bumpversion` instead of `bump` for versioning as issues on GNU/Linux were found (@see https://github.com/guilhem/bump/issues/7)
+
+**0.2.3**
+
 - Upgrade build dependencies for security and performance.
 
 **0.2.2**
