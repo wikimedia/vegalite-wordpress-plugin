@@ -2,7 +2,7 @@
 
 Developed by [Human Made](https://humanmade.com) and the [Wikimedia Foundation](https://wikimediafoundation.org).
 
-Stable tag: 0.2.3
+Stable tag: 0.2.4
 
 This plugin provides a flexible data visualization block using the [Vega-Lite](https://vega.github.io/) declarative JSON visualization grammar.
 
@@ -70,6 +70,12 @@ Once a release has been created, update the release's description using GitHub's
 Any code merged into the `develop` branch will be build and committed to the `release-develop` branch. This branch can be used in non-production applications to validate and test proposed changes.
 
 ### Changelog
+
+**0.2.4**
+
+- Upgrade build dependencies for security and performance.
+- Pin the specific SHA1 commits of the GH actions
+- Update build actions to use Node.js version 18
 
 **0.2.3**
 
