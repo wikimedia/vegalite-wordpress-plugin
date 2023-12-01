@@ -31,9 +31,9 @@ function bootstrap() : void {
  */
 function register_vega() : void {
 	$plugin_assets_dir = plugin_dir_url( __DIR__ ) . 'assets/';
-	wp_register_script( 'vega', $plugin_assets_dir . 'vega.5.21.0.js' );
-	wp_register_script( 'vega-lite', $plugin_assets_dir . 'vega-lite.5.2.0.js', [ 'vega' ] );
-	wp_register_script( 'vega-embed', $plugin_assets_dir . 'vega-embed.6.20.2.js', [ 'vega-lite' ] );
+	wp_register_script( 'vega', $plugin_assets_dir . 'vega.5.26.1.js', '5.26.1' );
+	wp_register_script( 'vega-lite', $plugin_assets_dir . 'vega-lite.5.16.3.js', [ 'vega' ], '5.16.3' );
+	wp_register_script( 'vega-embed', $plugin_assets_dir . 'vega-embed.6.23.0.js', [ 'vega-lite' ], '6.23.0' );
 }
 
 /**
