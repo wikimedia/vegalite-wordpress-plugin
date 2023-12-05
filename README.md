@@ -73,6 +73,10 @@ Any code merged into the `develop` branch will be build and committed to the `re
 
 **0.3.0**
 
+- Upgrade [`vega-embed`](https://github.com/vega/vega-embed/releases) from 6.20.2 to 6.23.0; upgrade [`vega-lite`](https://github.com/vega/vega-lite/releases) from 5.2.0 to 5.16.3; upgrade [`vega`](https://github.com/vega/vega/releases) from 5.21.0 to 5.26.1
+
+**0.2.4**
+
 - Upgrade build dependencies for security and performance.
 - Pin the specific SHA1 commits of the GH actions
 - Update build actions to use Node.js version 18
