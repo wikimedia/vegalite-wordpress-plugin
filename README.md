@@ -2,7 +2,7 @@
 
 Developed by [Human Made](https://humanmade.com) and the [Wikimedia Foundation](https://wikimediafoundation.org).
 
-Stable tag: 0.2.4
+Stable tag: 0.3.0
 
 This plugin provides a flexible data visualization block using the [Vega-Lite](https://vega.github.io/) declarative JSON visualization grammar.
 
@@ -70,6 +70,10 @@ Once a release has been created, update the release's description using GitHub's
 Any code merged into the `develop` branch will be build and committed to the `release-develop` branch. This branch can be used in non-production applications to validate and test proposed changes.
 
 ### Changelog
+
+**0.3.0**
+
+- Upgrade [`vega-embed`](https://github.com/vega/vega-embed/releases) from 6.20.2 to 6.23.0; upgrade [`vega-lite`](https://github.com/vega/vega-lite/releases) from 5.2.0 to 5.16.3; upgrade [`vega`](https://github.com/vega/vega/releases) from 5.21.0 to 5.26.1
 
 **0.2.4**
 
