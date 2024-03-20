@@ -1,4 +1,5 @@
 node_modules/
 src/vendor/
+assets/
 vendor/
 *.min.js

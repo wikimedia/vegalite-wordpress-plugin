@@ -11,14 +11,14 @@ use Asset_Loader;
  * Connect namespace functions to actions & hooks.
  */
 function bootstrap() : void {
-	if ( ! function_exists( 'Asset_Loader\\enqueue_asset' ) ) {
-		trigger_error( 'Vega Lite WordPress Plugin expects humanmade/asset-loader to be installed and active' );
-		return;
-	}
+	// if ( ! function_exists( 'Asset_Loader\\enqueue_asset' ) ) {
+	// 	trigger_error( 'Vega Lite WordPress Plugin expects humanmade/asset-loader to be installed and active' );
+	// 	return;
+	// }
 
-	add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\\enqueue_editor_assets' );
+	// add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\\enqueue_editor_assets' );
 	add_action( 'enqueue_block_assets', __NAMESPACE__ . '\\register_vega' );
-	add_action( 'wp_enqueue_scripts', __NAMESPACE__ . '\\enqueue_frontend_assets' );
+	// add_action( 'wp_enqueue_scripts', __NAMESPACE__ . '\\enqueue_frontend_assets' );
 }
 
 /**
@@ -31,67 +31,67 @@ function bootstrap() : void {
  */
 function register_vega() : void {
 	$plugin_assets_dir = plugin_dir_url( __DIR__ ) . 'assets/';
-	wp_register_script( 'vega', $plugin_assets_dir . 'vega.5.26.1.js', '5.26.1' );
-	wp_register_script( 'vega-lite', $plugin_assets_dir . 'vega-lite.5.16.3.js', [ 'vega' ], '5.16.3' );
-	wp_register_script( 'vega-embed', $plugin_assets_dir . 'vega-embed.6.23.0.js', [ 'vega-lite' ], '6.23.0' );
+	wp_register_script( 'vega', $plugin_assets_dir . 'vega.5.27.0.js', '5.27.0' );
+	wp_register_script( 'vega-lite', $plugin_assets_dir . 'vega-lite.5.17.0.js', [ 'vega' ], '5.17.0' );
+	wp_register_script( 'vega-embed', $plugin_assets_dir . 'vega-embed.6.24.0.js', [ 'vega-lite' ], '6.24.0' );
 }
 
-/**
- * Helper function to wrap Asset_Loader in a function with arguments matching wp_enqueue_script.
- *
- * @param string   $handle       Script handle.
- * @param string   $asset        Name of script in asset manifest.
- * @param string[] $dependencies Array of script dependencies.
- */
-function register_build_asset( $handle, $asset, $dependencies = [] ) : void {
-	$plugin_path = trailingslashit( plugin_dir_path( dirname( __FILE__, 1 ) ) );
+// /**
+//  * Helper function to wrap Asset_Loader in a function with arguments matching wp_enqueue_script.
+//  *
+//  * @param string   $handle       Script handle.
+//  * @param string   $asset        Name of script in asset manifest.
+//  * @param string[] $dependencies Array of script dependencies.
+//  */
+// function register_build_asset( $handle, $asset, $dependencies = [] ) : void {
+// 	$plugin_path = trailingslashit( plugin_dir_path( dirname( __FILE__, 1 ) ) );
 
-	$manifest = Asset_Loader\Manifest\get_active_manifest( [
-		$plugin_path . 'build/development-asset-manifest.json',
-		$plugin_path . 'build/production-asset-manifest.json',
-	] );
+// 	$manifest = Asset_Loader\Manifest\get_active_manifest( [
+// 		$plugin_path . 'build/development-asset-manifest.json',
+// 		$plugin_path . 'build/production-asset-manifest.json',
+// 	] );
 
-	if ( empty( $manifest ) ) {
-		trigger_error( "No manifest available for $asset", E_USER_WARNING );
-		return;
-	}
+// 	if ( empty( $manifest ) ) {
+// 		trigger_error( "No manifest available for $asset", E_USER_WARNING );
+// 		return;
+// 	}
 
-	Asset_Loader\register_asset( $manifest, $asset, [
-		'handle' => $handle,
-		'dependencies' => $dependencies,
-	] );
-}
+// 	Asset_Loader\register_asset( $manifest, $asset, [
+// 		'handle' => $handle,
+// 		'dependencies' => $dependencies,
+// 	] );
+// }
 
-/**
- * Enqueue these assets in the block editor.
- */
-function enqueue_editor_assets() : void {
-	register_build_asset(
-		'vegalite-plugin-editor',
-		'vegalite-plugin-editor.js',
-		[
-			'wp-blocks',
-			'wp-components',
-			'wp-edit-post',
-			'wp-element',
-			'wp-i18n',
-			'vega-embed',
-		]
-	);
-	register_build_asset( 'vegalite-plugin-editor', 'vegalite-plugin-editor.css' );
-}
+// /**
+//  * Enqueue these assets in the block editor.
+//  */
+// function enqueue_editor_assets() : void {
+// 	register_build_asset(
+// 		'vegalite-plugin-editor',
+// 		'vegalite-plugin-editor.js',
+// 		[
+// 			'wp-blocks',
+// 			'wp-components',
+// 			'wp-edit-post',
+// 			'wp-element',
+// 			'wp-i18n',
+// 			'vega-embed',
+// 		]
+// 	);
+// 	register_build_asset( 'vegalite-plugin-editor', 'vegalite-plugin-editor.css' );
+// }
 
-/**
- * Enqueue these assets only on the frontend.
- */
-function enqueue_frontend_assets() : void {
-	register_build_asset(
-		'vegalite-plugin-frontend',
-		'vegalite-plugin-frontend.js',
-		[ 'vega-embed' ]
-	);
-	register_build_asset(
-		'vegalite-plugin-frontend',
-		'vegalite-plugin-frontend.css'
-	);
-}
+// /**
+//  * Enqueue these assets only on the frontend.
+//  */
+// function enqueue_frontend_assets() : void {
+// 	register_build_asset(
+// 		'vegalite-plugin-frontend',
+// 		'vegalite-plugin-frontend.js',
+// 		[ 'vega-embed' ]
+// 	);
+// 	register_build_asset(
+// 		'vegalite-plugin-frontend',
+// 		'vegalite-plugin-frontend.css'
+// 	);
+// }
