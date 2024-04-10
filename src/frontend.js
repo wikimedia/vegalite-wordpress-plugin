@@ -57,12 +57,19 @@ function initializeDatavisBlock( element ) {
 		return;
 	}
 
+	const embedOptions = element.dataset.embedOptions
+		? JSON.parse( element.dataset.embedOptions )
+		: {};
+
 	// Render if possible and necessary.
 	if ( typeof vegaEmbed === 'function' && ! jsonElement.classList.contains( 'vega-embed' ) ) {
 		vegaEmbed(
 			document.getElementById( element.dataset.datavis ),
 			JSON.parse( jsonElement.textContent ),
-			{ actions: false }
+			{
+				actions: false,
+				...embedOptions,
+			}
 		);
 	}
 }
