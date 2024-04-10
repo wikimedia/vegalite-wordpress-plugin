@@ -4,7 +4,7 @@
  * Description: Provide a block to render graphics using Vega Lite.
  * Author: Human Made and the Wikimedia Foundation
  * Author URI: https://github.com/wikimedia/vegalite-wordpress-plugin/graphs/contributors
- * Version: 0.3.0
+ * Version: 0.4.0
  */
 
 namespace Vegalite_Plugin;
