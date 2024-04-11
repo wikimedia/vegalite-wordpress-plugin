@@ -5,6 +5,9 @@ import vegaEmbed from 'vega-embed';
 
 import './styles.scss';
 
+window.vegaLitePlugin = window.vegaLitePlugin || {};
+window.vegaLitePlugin.visualizations = new Map();
+
 /**
  * A collection of all vega-lite blocks on the page.
  *
@@ -63,14 +66,25 @@ function initializeDatavisBlock( element ) {
 
 	// Render if possible and necessary.
 	if ( typeof vegaEmbed === 'function' && ! jsonElement.classList.contains( 'vega-embed' ) ) {
+		const spec = JSON.parse( jsonElement.textContent );
 		vegaEmbed(
 			document.getElementById( element.dataset.datavis ),
-			JSON.parse( jsonElement.textContent ),
+			spec,
 			{
 				actions: false,
 				...embedOptions,
 			}
-		);
+		).then( ( { view } ) => {
+			// Add initialized visualization to Map, keyed by parent DOM node.
+			window.vegaLitePlugin.visualizations.set(
+				document.getElementById( element.dataset.datavis ),
+				{
+					id: element.dataset.datavis,
+					view,
+					spec,
+				}
+			);
+		} );
 	}
 }
 
