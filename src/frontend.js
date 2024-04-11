@@ -74,7 +74,11 @@ function initializeDatavisBlock( element ) {
 				...embedOptions,
 			}
 		).then( ( { view } ) => {
-			window.vegaLitePlugin.visualizations.set( element.dataset.datavis, view );
+			// Add initialized visualization to Map, keyed by parent DOM node.
+			window.vegaLitePlugin.visualizations.set(
+				document.getElementById( element.dataset.datavis ),
+				view
+			);
 		} );
 	}
 }
