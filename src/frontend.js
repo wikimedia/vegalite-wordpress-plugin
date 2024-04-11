@@ -66,9 +66,10 @@ function initializeDatavisBlock( element ) {
 
 	// Render if possible and necessary.
 	if ( typeof vegaEmbed === 'function' && ! jsonElement.classList.contains( 'vega-embed' ) ) {
+		const spec = JSON.parse( jsonElement.textContent );
 		vegaEmbed(
 			document.getElementById( element.dataset.datavis ),
-			JSON.parse( jsonElement.textContent ),
+			spec,
 			{
 				actions: false,
 				...embedOptions,
@@ -77,7 +78,11 @@ function initializeDatavisBlock( element ) {
 			// Add initialized visualization to Map, keyed by parent DOM node.
 			window.vegaLitePlugin.visualizations.set(
 				document.getElementById( element.dataset.datavis ),
-				view
+				{
+					id: element.dataset.datavis,
+					view,
+					spec,
+				}
 			);
 		} );
 	}
