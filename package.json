@@ -34,10 +34,7 @@
     "bump:major": "bump major --commit 'Prepare v%s release' package.json README.md plugin.php"
   },
   "dependencies": {
-    "ajv": "^8.11.0",
     "classnames": "^2.3.1",
-    "jsoneditor": "^9.9.0",
-    "jsoneditor-react": "^3.1.2",
     "reselect": "^4.1.6",
     "vega": "^5.23.0",
     "vega-embed": "^6.21.0",
