@@ -1,6 +1,6 @@
 {
   "name": "vegalite-plugin",
-  "version": "0.3.0",
+  "version": "0.5.0",
   "private": true,
   "description": "A general-purpose WordPress data visualization block using the Vega visualization grammar",
   "engines": {
@@ -34,10 +34,7 @@
     "bump:major": "bump major --commit 'Prepare v%s release' package.json README.md plugin.php"
   },
   "dependencies": {
-    "ajv": "^8.11.0",
     "classnames": "^2.3.1",
-    "jsoneditor": "^9.9.0",
-    "jsoneditor-react": "^3.1.2",
     "reselect": "^4.1.6",
     "vega": "^5.27.0",
     "vega-embed": "^6.24.0",
