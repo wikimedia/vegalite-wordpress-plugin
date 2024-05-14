@@ -1,14 +1,15 @@
 {
+	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 2,
 	"name": "vegalite-plugin/visualization",
 	"title": "Data Visualization",
 	"textdomain": "vegalite-plugin",
 	"category": "widgets",
 	"icon": "chart-line",
-	"editorScript": "vegalite-plugin-editor",
-	"editorStyle": "vegalite-plugin-editor",
-	"viewScript": "vegalite-plugin-frontend",
-	"style": "vegalite-plugin-frontend",
+	"editorScript": [ "file:./index.js", "vega-embed" ],
+	"editorStyle": "file:./editor.css",
+	"viewScript": [ "file:./view.js", "vega-embed" ],
+	"style": "file:./styles.css",
 	"attributes": {
 	  "chartId": {
 		"type": "string"

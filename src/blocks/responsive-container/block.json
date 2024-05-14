@@ -1,4 +1,5 @@
 {
+	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 2,
 	"name": "vegalite-plugin/responsive-container",
 	"title": "Responsive Visualization Container",
@@ -13,5 +14,6 @@
 	},
 	"providesContext": {
 		"vegalite-plugin/breakpoints": "breakpoints"
-	}
+	},
+	"editorScript": "file:./index.js"
 }
