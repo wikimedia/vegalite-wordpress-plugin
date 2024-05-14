@@ -22,7 +22,6 @@ import DatasetEditor from '../../components/DatasetEditor';
 import sufficientlyUniqueId from '../../util/sufficiently-unique-id';
 
 import defaultSpecification from './specification.json';
-import './edit-visualization.scss';
 
 /**
  * Sidebar panels
