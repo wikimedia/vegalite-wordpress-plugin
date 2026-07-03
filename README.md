@@ -9,6 +9,50 @@ This plugin provides a flexible data visualization block using the [Vega-Lite](h
 - [Getting Started with Vega-Lite](https://vega.github.io/vega-lite/tutorials/getting_started.html)
 - [Documentation for Vega-Lite](https://vega.github.io/vega-lite/docs/)
 
+## Frontend Events
+
+The plugin dispatches DOM events on the `.visualization-block` element so external code can respond to chart interactions without polling or coupling to the Vega View API.
+
+### `vegalite:ready`
+
+Fired once after a chart finishes rendering.
+
+```js
+document.addEventListener( 'vegalite:ready', ( event ) => {
+	const { id, view, spec } = event.detail;
+	// id  — the chart's DOM id string
+	// view — the Vega View instance (full Vega API available)
+	// spec — the Vega-Lite specification object
+} );
+```
+
+### `vegalite:click`
+
+Fired when a user clicks on a chart element (e.g. a pie/arc segment). The `datum` object contains the data fields defined in the Vega-Lite spec for the clicked mark.
+
+```js
+document.addEventListener( 'vegalite:click', ( event ) => {
+	const { id, datum } = event.detail;
+	// id    — the chart's DOM id string
+	// datum — the data record for the clicked mark (e.g. { category, className, color, … })
+} );
+```
+
+Both events bubble, so you can listen on `document` or scope the listener to a specific container.
+
+**Connecting a chart to an accordion via `className`:**
+
+Add a `className` field to each data record in your Vega-Lite spec, then apply the same class to the matching accordion item in your markup. The listener below opens the accordion whose class matches the clicked segment:
+
+```js
+document.addEventListener( 'vegalite:click', ( event ) => {
+	const { datum } = event.detail;
+	if ( ! datum.className ) return;
+	const accordion = document.querySelector( `.${ datum.className }` );
+	accordion?.querySelector( 'button' )?.click();
+} );
+```
+
 ## Development
 
 This project expects Node 16 and Composer 2. We recommend managing the installed version of Node using [nvm](https://github.com/nvm-sh/nvm), in which case you can select the version of node specified in this project's [`.nvmrc` file](https://github.com/nvm-sh/nvm#nvmrc) by running `nvm use` in your terminal.
