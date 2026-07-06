@@ -35,10 +35,7 @@
   "dependencies": {
     "classnames": "^2.3.1",
     "lodash.throttle": "^4.1.1",
-    "reselect": "^4.1.6",
-    "vega": "^6.2.0",
-    "vega-embed": "^7.1.0",
-    "vega-lite": "^6.4.3"
+    "reselect": "^4.1.6"
   },
   "devDependencies": {
     "@wordpress/scripts": "^32.0.0",
