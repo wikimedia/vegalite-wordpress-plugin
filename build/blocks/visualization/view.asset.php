@@ -1,1 +1,1 @@
-<?php return array('dependencies' => array('vega-embed'), 'version' => 'd96076e19492d4c803d3');
+<?php return array('dependencies' => array('vega-embed'), 'version' => '26da7d761d088c4e0b8a');
