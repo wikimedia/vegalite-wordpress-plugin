@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 
 import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
-import { createBlock } from '@wordpress/blocks';
+import { createBlock, registerBlockType } from '@wordpress/blocks';
 import { Button, Icon, PanelBody, PanelRow, TextControl } from '@wordpress/components';
 import { dispatch, useSelect } from '@wordpress/data';
 import { __, _n, sprintf } from '@wordpress/i18n';
@@ -14,8 +14,6 @@ import sufficientlyUniqueId from '../../util/sufficiently-unique-id';
 import blockData from './block.json';
 
 import './edit-responsive-container.scss';
-
-export const name = blockData.name;
 
 const BLOCK_TEMPLATE = [
 	[ 'vegalite-plugin/visualization', {} ],
@@ -240,10 +238,7 @@ const SaveResponsiveVisualizationContainer = ( props ) => {
 	);
 };
 
-export const settings = {
-	// Apply the block settings from the JSON configuration file.
-	...blockData,
-
+registerBlockType( blockData.name, {
 	transforms: {
 		from: [
 			{
@@ -264,4 +259,4 @@ export const settings = {
 	edit: EditResponsiveVisualizationContainer,
 
 	save: SaveResponsiveVisualizationContainer,
-};
+} );
