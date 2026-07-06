@@ -71,7 +71,7 @@ function compute_breakpoint( string $chart_id, array $breakpoints ) : array {
  */
 function maybe_render_attribute( string $attribute_name, $value ) : void {
 	if ( ! empty( $value ) ) {
-		echo sprintf( '%s="%s"', $attribute_name, $value );
+		echo sprintf( '%s="%s"', esc_attr( $attribute_name ), esc_attr( $value ) );
 	}
 }
 
