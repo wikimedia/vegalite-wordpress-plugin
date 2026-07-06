@@ -26,7 +26,6 @@ npm start
 
 Other useful commands
 
-- `npm run test`: Use Jest to run JS unit tests.
 - `npm run lint`: Use ESLint to check src code for errors.
 
 ----

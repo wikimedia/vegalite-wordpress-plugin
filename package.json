@@ -23,7 +23,6 @@
     "block-editor"
   ],
   "scripts": {
-    "test": "jest",
     "lint": "npm run eslint; npm run phpcs",
     "eslint": "eslint src .eslintrc.js",
     "phpcs": "composer lint",
@@ -52,7 +51,6 @@
     "eslint-plugin-react": "^7.30.0",
     "eslint-plugin-react-hooks": "^4.5.0",
     "eslint-plugin-sort-destructure-keys": "^1.4.0",
-    "jest": "^28.1.0",
     "version-bump-prompt": "^6.1.0"
   }
 }
