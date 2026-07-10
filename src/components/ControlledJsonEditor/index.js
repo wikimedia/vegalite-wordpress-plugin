@@ -1,62 +1,61 @@
-import { JsonEditor } from 'jsoneditor-react';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 
-import { ToggleControl } from '@wordpress/components';
+import { TextareaControl } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
-import 'jsoneditor-react/es/editor.min.css';
 import './jsoneditor.css';
 
 /**
- * Create a JSONEditor where the reference is tracked in order to update the editor component value outside of the editor.
+ * Wrap a textarea with logic to pass valid JSON back up to the parent.
+ *
+ * If JSON errors are detected, show a notice below the text area and permit
+ * continued editing so the user may address the error.
+ *
+ * Reset textarea content if the JSON spec changes externally to this control.
  *
  * @param {object}   props          React component props.
- * @param {object}   props.value    Value to use in the JSON Editor.
+ * @param {object}   props.value    Value to use in the JSON editor textarea.
  * @param {Function} props.onChange Callback.
  * @returns {Element} JSONEditor component where the reference is tracked.
  */
 export const ControlledJsonEditor = ( { value, onChange } ) => {
-	const jsonEditorRef = useRef();
+	const stringifiedJson = useMemo( () => JSON.stringify( value, null, 2 ), [ value ] );
+	const [ localValue, setLocalValue ] = useState( stringifiedJson );
+	const [ jsonError, setJsonError ] = useState( null );
 
-	const [ isJsonMode, setIsJsonMode ] = useState( false );
+	useEffect( () => {
+		// Update local reference when parent string changes so that UI
+		// controlled changes get reflected in the JSON spec text.
+		setLocalValue( stringifiedJson );
+	}, [ setLocalValue, stringifiedJson ] );
 
-	useEffect(
-		() => {
-			const editor = jsonEditorRef?.current?.jsonEditor;
-			if ( editor && value ) {
-				editor.update( value );
+	const localOnChange = useCallback( ( updatedJson ) => {
+		setLocalValue( updatedJson );
+
+		let objectValue;
+		try {
+			objectValue = JSON.parse( updatedJson );
+			setJsonError( null );
+
+			if ( updatedJson !== stringifiedJson ) {
+				// Only pass valid and changed JSON values back upwards.
+				onChange( objectValue );
 			}
-		},
-		[ jsonEditorRef, value ]
-	);
-
-	useEffect(
-		() => {
-			const editor = jsonEditorRef?.current?.jsonEditor;
-			if ( editor ) {
-				editor.setMode( isJsonMode ? 'tree' : 'text' );
-			}
-		},
-		[ jsonEditorRef, isJsonMode ]
-	);
+		} catch ( e ) {
+			setJsonError( e.message );
+		}
+	}, [ setJsonError, stringifiedJson, onChange ] );
 
 	return (
 		<>
-			<ToggleControl
-				label={ __( 'Use JSON tree editor', 'datavis' ) }
-				checked={ isJsonMode }
-				onChange={ () => setIsJsonMode( ! isJsonMode ) }
+			<TextareaControl
+				className="json-editor"
+				label={ __( 'JSON chart specification', 'vegalite-plugin' ) }
+				help={ jsonError }
+				value={ localValue }
+				onChange={ localOnChange }
+				height={ 400 }
 			/>
-			<JsonEditor
-				ref={ jsonEditorRef }
-				value={ value }
-				onChange={ onChange }
-			/>
-			<p>
-				<a href="https://vega.github.io/vega-lite/" target="_blank" rel="noreferrer">
-					{ __( 'To create more complicated or interactive graphics, refer to the Vega Lite documentation site.', 'vegalite-plugin' ) }
-				</a>
-			</p>
 		</>
 	);
 };

@@ -2,16 +2,60 @@
 
 Developed by [Human Made](https://humanmade.com) and the [Wikimedia Foundation](https://wikimediafoundation.org).
 
-Stable tag: 0.5.0
+Stable tag: 0.6.0
 
 This plugin provides a flexible data visualization block using the [Vega-Lite](https://vega.github.io/) declarative JSON visualization grammar.
 
 - [Getting Started with Vega-Lite](https://vega.github.io/vega-lite/tutorials/getting_started.html)
 - [Documentation for Vega-Lite](https://vega.github.io/vega-lite/docs/)
 
+## Frontend Events
+
+The plugin dispatches DOM events on the `.visualization-block` element so external code can respond to chart interactions without polling or coupling to the Vega View API.
+
+### `vegalite:ready`
+
+Fired once after a chart finishes rendering.
+
+```js
+document.addEventListener( 'vegalite:ready', ( event ) => {
+	const { id, view, spec } = event.detail;
+	// id  — the chart's DOM id string
+	// view — the Vega View instance (full Vega API available)
+	// spec — the Vega-Lite specification object
+} );
+```
+
+### `vegalite:click`
+
+Fired when a user clicks on a chart element (e.g. a pie/arc segment). The `datum` object contains the data fields defined in the Vega-Lite spec for the clicked mark.
+
+```js
+document.addEventListener( 'vegalite:click', ( event ) => {
+	const { id, datum } = event.detail;
+	// id    — the chart's DOM id string
+	// datum — the data record for the clicked mark (e.g. { category, className, color, … })
+} );
+```
+
+Both events bubble, so you can listen on `document` or scope the listener to a specific container.
+
+**Connecting a chart to an accordion via `className`:**
+
+Add a `className` field to each data record in your Vega-Lite spec, then apply the same class to the matching accordion item in your markup. The listener below opens the accordion whose class matches the clicked segment:
+
+```js
+document.addEventListener( 'vegalite:click', ( event ) => {
+	const { datum } = event.detail;
+	if ( ! datum.className ) return;
+	const accordion = document.querySelector( `.${ datum.className }` );
+	accordion?.querySelector( 'button' )?.click();
+} );
+```
+
 ## Development
 
-This project expects Node 16 and Composer 2. We recommend managing the installed version of Node using [nvm](https://github.com/nvm-sh/nvm), in which case you can select the version of node specified in this project's [`.nvmrc` file](https://github.com/nvm-sh/nvm#nvmrc) by running `nvm use` in your terminal.
+This project expects Node 24 or later and Composer 2. We recommend managing the installed version of Node using [nvm](https://github.com/nvm-sh/nvm), in which case you can select the version of node specified in this project's [`.nvmrc` file](https://github.com/nvm-sh/nvm#nvmrc) by running `nvm use` in your terminal.
 
 ```sh
 npm install
@@ -26,7 +70,6 @@ npm start
 
 Other useful commands
 
-- `npm run test`: Use Jest to run JS unit tests.
 - `npm run lint`: Use ESLint to check src code for errors.
 
 ----
@@ -69,7 +112,24 @@ Once a release has been created, update the release's description using GitHub's
 
 Any code merged into the `develop` branch will be build and committed to the `release-develop` branch. This branch can be used in non-production applications to validate and test proposed changes.
 
-### Changelog
+## License
+
+This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+## Changelog
+
+**0.6.0**
+
+- Upgrade [`vega-embed`](https://github.com/vega/vega-embed/releases) from 6.23.0 to 7.1.0; upgrade [`vega-lite`](https://github.com/vega/vega-lite/releases) from 5.16.3 to 6.4.3; upgrade [`vega`](https://github.com/vega/vega/releases) from 5.26.1 to 6.2.0
+- Introduce `vegalite:ready` and `vegalite:click` event dispatch system to bind external functionality to chart interactions
+- Improve sanitization of data-attribute output
+
+Internal:
+
+- Modify and upgrade the plugin's build infrastructure and CI actions
+- Make GPL-v2-or-later license explicit in repository
 
 **0.5.0**
 

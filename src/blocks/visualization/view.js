@@ -3,8 +3,6 @@
  */
 import vegaEmbed from 'vega-embed';
 
-import './styles.scss';
-
 window.vegaLitePlugin = window.vegaLitePlugin || {};
 window.vegaLitePlugin.visualizations = new Map();
 
@@ -75,15 +73,44 @@ function initializeDatavisBlock( element ) {
 				...embedOptions,
 			}
 		).then( ( { view } ) => {
+			const visNode = document.getElementById( element.dataset.datavis );
+
 			// Add initialized visualization to Map, keyed by parent DOM node.
-			window.vegaLitePlugin.visualizations.set(
-				document.getElementById( element.dataset.datavis ),
-				{
-					id: element.dataset.datavis,
-					view,
-					spec,
-				}
+			window.vegaLitePlugin.visualizations.set( visNode, {
+				id: element.dataset.datavis,
+				view,
+				spec,
+			} );
+
+			// Notify the page that this chart is ready. External code can
+			// listen for this event instead of polling the visualizations Map.
+			element.dispatchEvent(
+				new CustomEvent( 'vegalite:ready', {
+					bubbles: true,
+					detail: {
+						id: element.dataset.datavis,
+						view,
+						spec,
+					},
+				} )
 			);
+
+			// Forward Vega click events as DOM events so external code can
+			// respond to segment clicks without coupling to the Vega View API.
+			view.addEventListener( 'click', ( _event, item ) => {
+				if ( ! item?.datum ) {
+					return;
+				}
+				element.dispatchEvent(
+					new CustomEvent( 'vegalite:click', {
+						bubbles: true,
+						detail: {
+							id: element.dataset.datavis,
+							datum: item.datum,
+						},
+					} )
+				);
+			} );
 		} );
 	}
 }
