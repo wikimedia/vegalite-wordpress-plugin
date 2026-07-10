@@ -357,6 +357,7 @@ function deliver_dataset_as_csv( $served, $result, $request, $server ) {
 		$server->send_header( 'Content-Type', 'text/csv; charset=' . get_option( 'blog_charset' ) );
 	}
 
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Raw CSV response body, not HTML.
 	echo $csv_data['content'];
 
 	return true;

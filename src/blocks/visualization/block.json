@@ -1,14 +1,14 @@
 {
-	"apiVersion": 2,
+	"apiVersion": 3,
 	"name": "vegalite-plugin/visualization",
 	"title": "Data Visualization",
 	"textdomain": "vegalite-plugin",
 	"category": "widgets",
 	"icon": "chart-line",
-	"editorScript": "vegalite-plugin-editor",
-	"editorStyle": "vegalite-plugin-editor",
-	"viewScript": "vegalite-plugin-frontend",
-	"style": "vegalite-plugin-frontend",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"viewScript": "file:./view.js",
+	"style": "file:./style-index.css",
 	"attributes": {
 	  "chartId": {
 		"type": "string"
