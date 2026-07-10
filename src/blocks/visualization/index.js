@@ -1,15 +1,17 @@
 /**
- * Export registration information for Vega Lite block.
+ * Register the Vega Lite visualization block.
  */
+import { registerBlockType } from '@wordpress/blocks';
+
+import '../../store';
+import '../../type-definitions';
+
 import blockData from './block.json';
 import EditVisualization from './EditVisualization';
 
-export const name = blockData.name;
+import './style.scss';
 
-export const settings = {
-	// Apply the block settings from the JSON configuration file.
-	...blockData,
-
+registerBlockType( blockData.name, {
 	/**
 	 * Render the editor UI for this block.
 	 *
@@ -25,4 +27,4 @@ export const settings = {
 	save() {
 		return null;
 	},
-};
+} );
