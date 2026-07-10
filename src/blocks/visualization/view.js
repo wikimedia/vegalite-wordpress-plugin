@@ -3,8 +3,6 @@
  */
 import vegaEmbed from 'vega-embed';
 
-import './styles.scss';
-
 window.vegaLitePlugin = window.vegaLitePlugin || {};
 window.vegaLitePlugin.visualizations = new Map();
 
