@@ -87,7 +87,11 @@ function initializeDatavisBlock( element ) {
 			element.dispatchEvent(
 				new CustomEvent( 'vegalite:ready', {
 					bubbles: true,
-					detail: { id: element.dataset.datavis, view, spec },
+					detail: {
+						id: element.dataset.datavis,
+						view,
+						spec,
+					},
 				} )
 			);
 
@@ -100,7 +104,10 @@ function initializeDatavisBlock( element ) {
 				element.dispatchEvent(
 					new CustomEvent( 'vegalite:click', {
 						bubbles: true,
-						detail: { id: element.dataset.datavis, datum: item.datum },
+						detail: {
+							id: element.dataset.datavis,
+							datum: item.datum,
+						},
 					} )
 				);
 			} );
