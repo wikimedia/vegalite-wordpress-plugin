@@ -143,7 +143,17 @@ function render_visualization_block( array $attributes, $content, $block ) : str
 		<?php maybe_render_attribute( 'data-min-width', $breakpoints['min_width'] ?? 0 ); ?>
 		<?php maybe_render_attribute( 'data-max-width', $breakpoints['max_width'] ?? 0 ); ?>
 	>
-		<script id="<?php echo esc_attr( $config ); ?>" type="application/json"><?php echo wp_kses_post( wp_json_encode( $json ) ); ?></script>
+		<script id="<?php echo esc_attr( $config ); ?>" type="application/json">
+			<?php
+			/*
+			 * Escape <, >, & and quotes as JSON \u sequences rather than HTML entities:
+			 * this prevents a </script> breakout without corrupting expressions such as
+			 * "datum.value >= 1000", which the browser does not decode inside a script
+			 * element's text content.
+			 */
+			echo wp_json_encode( $json, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT );
+			?>
+		</script>
 		<div id="<?php echo esc_attr( $datavis ); ?>" <?php maybe_render_attribute( 'style', $inline_style ); ?>></div>
 	</div>
 	<?php
