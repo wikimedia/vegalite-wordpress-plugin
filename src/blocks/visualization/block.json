@@ -13,6 +13,9 @@
 	  "chartId": {
 		"type": "string"
 	  },
+	  "chartSpec": {
+		"type": "string"
+	  },
 	  "json": {
 		"type": "object"
 	  }
