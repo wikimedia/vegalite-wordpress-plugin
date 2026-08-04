@@ -76,6 +76,32 @@ function maybe_render_attribute( string $attribute_name, $value ) : void {
 }
 
 /**
+ * Read the Vega Lite specification out of a block's attributes.
+ *
+ * Specs are stored base64-encoded so that content filters don't mess up chars
+ * like '>' within vega specifications.
+ *
+ * Blocks saved before 0.7 load the spec as a plain JSON object and remain
+ * readable until the post is migrated to the new format with a deprecation.
+ *
+ * @param array $attributes Block attributes.
+ * @return array|null Vega Lite specification, or null if none could be read.
+ */
+function get_chart_spec( array $attributes ) : ?array {
+	if ( ! empty( $attributes['chartSpec'] ) ) {
+		$decoded = base64_decode( $attributes['chartSpec'], true );
+		if ( $decoded === false ) {
+			return null;
+		}
+
+		$spec = json_decode( $decoded, true );
+		return is_array( $spec ) ? $spec : null;
+	}
+
+	return $attributes['json'] ?? null;
+}
+
+/**
  * Render function for block.
  *
  * @param array     $attributes Block attributes.
@@ -85,7 +111,7 @@ function maybe_render_attribute( string $attribute_name, $value ) : void {
  * @return string
  */
 function render_visualization_block( array $attributes, $content, $block ) : string {
-	$json     = $attributes['json'] ?? false;
+	$json     = get_chart_spec( $attributes );
 	$chart_id = $attributes['chartId'] ?? uniqid( 'chart-' );
 
 	$breakpoints = compute_breakpoint( $chart_id, $block->context['vegalite-plugin/breakpoints'] ?? [] );
