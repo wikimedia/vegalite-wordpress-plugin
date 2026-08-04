@@ -2,7 +2,7 @@
 
 Developed by [Human Made](https://humanmade.com) and the [Wikimedia Foundation](https://wikimediafoundation.org).
 
-Stable tag: 0.5.0
+Stable tag: 0.6.0
 
 This plugin provides a flexible data visualization block using the [Vega-Lite](https://vega.github.io/) declarative JSON visualization grammar.
 
@@ -112,7 +112,24 @@ Once a release has been created, update the release's description using GitHub's
 
 Any code merged into the `develop` branch will be build and committed to the `release-develop` branch. This branch can be used in non-production applications to validate and test proposed changes.
 
-### Changelog
+## License
+
+This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+## Changelog
+
+**0.6.0**
+
+- Upgrade [`vega-embed`](https://github.com/vega/vega-embed/releases) from 6.23.0 to 7.1.0; upgrade [`vega-lite`](https://github.com/vega/vega-lite/releases) from 5.16.3 to 6.4.3; upgrade [`vega`](https://github.com/vega/vega/releases) from 5.26.1 to 6.2.0
+- Introduce `vegalite:ready` and `vegalite:click` event dispatch system to bind external functionality to chart interactions
+- Improve sanitization of data-attribute output
+
+Internal:
+
+- Modify and upgrade the plugin's build infrastructure and CI actions
+- Make GPL-v2-or-later license explicit in repository
 
 **0.5.0**
 
