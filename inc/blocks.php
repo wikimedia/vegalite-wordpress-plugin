@@ -76,6 +76,32 @@ function maybe_render_attribute( string $attribute_name, $value ) : void {
 }
 
 /**
+ * Read the Vega Lite specification out of a block's attributes.
+ *
+ * Specs are stored base64-encoded so that content filters don't mess up chars
+ * like '>' within vega specifications.
+ *
+ * Blocks saved before 0.7 load the spec as a plain JSON object and remain
+ * readable until the post is migrated to the new format with a deprecation.
+ *
+ * @param array $attributes Block attributes.
+ * @return array|null Vega Lite specification, or null if none could be read.
+ */
+function get_chart_spec( array $attributes ) : ?array {
+	if ( ! empty( $attributes['chartSpec'] ) ) {
+		$decoded = base64_decode( $attributes['chartSpec'], true );
+		if ( $decoded === false ) {
+			return null;
+		}
+
+		$spec = json_decode( $decoded, true );
+		return is_array( $spec ) ? $spec : null;
+	}
+
+	return $attributes['json'] ?? null;
+}
+
+/**
  * Render function for block.
  *
  * @param array     $attributes Block attributes.
@@ -85,7 +111,7 @@ function maybe_render_attribute( string $attribute_name, $value ) : void {
  * @return string
  */
 function render_visualization_block( array $attributes, $content, $block ) : string {
-	$json     = $attributes['json'] ?? false;
+	$json     = get_chart_spec( $attributes );
 	$chart_id = $attributes['chartId'] ?? uniqid( 'chart-' );
 
 	$breakpoints = compute_breakpoint( $chart_id, $block->context['vegalite-plugin/breakpoints'] ?? [] );
@@ -117,7 +143,17 @@ function render_visualization_block( array $attributes, $content, $block ) : str
 		<?php maybe_render_attribute( 'data-min-width', $breakpoints['min_width'] ?? 0 ); ?>
 		<?php maybe_render_attribute( 'data-max-width', $breakpoints['max_width'] ?? 0 ); ?>
 	>
-		<script id="<?php echo esc_attr( $config ); ?>" type="application/json"><?php echo wp_kses_post( wp_json_encode( $json ) ); ?></script>
+		<script id="<?php echo esc_attr( $config ); ?>" type="application/json">
+			<?php
+			/*
+			 * Escape <, >, & and quotes as JSON \u sequences rather than HTML entities:
+			 * this prevents a </script> breakout without corrupting expressions such as
+			 * "datum.value >= 1000", which the browser does not decode inside a script
+			 * element's text content.
+			 */
+			echo wp_json_encode( $json, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT );
+			?>
+		</script>
 		<div id="<?php echo esc_attr( $datavis ); ?>" <?php maybe_render_attribute( 'style', $inline_style ); ?>></div>
 	</div>
 	<?php
