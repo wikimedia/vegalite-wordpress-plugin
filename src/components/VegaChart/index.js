@@ -21,7 +21,7 @@ const VegaChart = ( { spec, id = sufficientlyUniqueId() } ) => {
 		vegaEmbed(
 			container.current,
 			{
-				$schema: 'https://vega.github.io/schema/vega-lite/v5.json',
+				$schema: 'https://vega.github.io/schema/vega-lite/v6.json',
 				...spec,
 			},
 			{ actions: false }
