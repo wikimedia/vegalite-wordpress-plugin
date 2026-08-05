@@ -7,7 +7,7 @@ import { decodeSpec, encodeSpec } from './spec';
  * @type {object}
  */
 const multiByteSpec = {
-	'$schema': 'https://vega.github.io/schema/vega-lite/v6.json',
+	$schema: 'https://vega.github.io/schema/vega-lite/v6.json',
 	data: { url: 'data/movies.json' },
 	width: 200,
 	height: 100,
