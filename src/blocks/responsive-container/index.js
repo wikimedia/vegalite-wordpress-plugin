@@ -43,16 +43,25 @@ const getBreakpointDescription = ( breakpoints, chartId ) => {
 
 	if ( lowerBound && upperBound ) {
 		return sprintf(
+			// Translators: %1$d - lower viewport width bound in pixels, %2$d - upper viewport width bound in pixels.
 			__( 'Displays between %1$dpx and %2$dpx', 'vegalite-plugin' ),
 			lowerBound,
 			upperBound
 		);
 	}
 	if ( lowerBound ) {
-		return sprintf( __( 'Displays above %dpx', 'vegalite-plugin' ), lowerBound );
+		return sprintf(
+			// Translators: %d - minimum viewport width in pixels.
+			__( 'Displays above %dpx', 'vegalite-plugin' ),
+			lowerBound
+		);
 	}
 	if ( upperBound ) {
-		return sprintf( __( 'Displays below %dpx', 'vegalite-plugin' ), upperBound );
+		return sprintf(
+			// Translators: %d - maximum viewport width in pixels.
+			__( 'Displays below %dpx', 'vegalite-plugin' ),
+			upperBound
+		);
 	}
 	return __( 'Default visualization', 'vegalite-plugin' );
 };
@@ -67,7 +76,7 @@ const getBreakpointDescription = ( breakpoints, chartId ) => {
  * @param {string}   props.clientId      Editor client ID for the container block.
  * @returns {React.ReactNode} Rendered editorial UI.
  */
-const EditResponsiveVisualizationContainer = ( { attributes, setAttributes, isSelected, clientId, ...rest } ) => {
+const EditResponsiveVisualizationContainer = ( { attributes, setAttributes, isSelected, clientId } ) => {
 	const blockProps = useBlockProps( {
 		className: 'responsive-visualization-container',
 	} );
@@ -116,10 +125,10 @@ const EditResponsiveVisualizationContainer = ( { attributes, setAttributes, isSe
 	}, [ clientId, innerBlocks, breakpoints, setAttributes ] );
 
 	const removeSizeVariant = useCallback( ( blockToRemove ) => {
-		const block = innerBlocks.find( ( { clientId } ) => clientId === blockToRemove );
+		const block = innerBlocks.find( ( { clientId: blockClientId } ) => blockClientId === blockToRemove );
 		const index = innerBlocks.indexOf( block );
 
-		const chartIds = innerBlocks.map( ( { attributes } ) => attributes.chartId );
+		const chartIds = innerBlocks.map( ( { attributes: blockAttributes } ) => blockAttributes.chartId );
 		const updatedBreakpoints = Object.keys( breakpoints ).reduce(
 			( memo, chartId ) => {
 				if ( chartId !== block.attributes.chartId && chartIds.includes( chartId ) ) {
@@ -147,8 +156,8 @@ const EditResponsiveVisualizationContainer = ( { attributes, setAttributes, isSe
 					{ ' ' }
 					{
 						sprintf(
-							// Translators: %s - Number of responsive chart variations.
-							_n( '%s variant', '%d responsive variants', innerBlocks.length, 'vegalite-plugin' ),
+							// Translators: %d - Number of responsive chart variations.
+							_n( '%d variant', '%d responsive variants', innerBlocks.length, 'vegalite-plugin' ),
 							innerBlocks.length
 						)
 					}
@@ -159,6 +168,7 @@ const EditResponsiveVisualizationContainer = ( { attributes, setAttributes, isSe
 					{ innerBlocks.map( ( block, idx ) => {
 						return (
 							<PanelBody
+								key={ block.clientId }
 								opened={ activePanel === idx }
 								title={ getBreakpointDescription( breakpoints, block.attributes.chartId ) }
 								onToggle={ () => setActivePanel( idx ) }
@@ -228,11 +238,9 @@ const EditResponsiveVisualizationContainer = ( { attributes, setAttributes, isSe
 /**
  * Render the responsive visualization container for saving in post content.
  *
- * @param {object}   props               React component props.
- * @param {object}   props.attributes    The attributes for the selected block.
  * @returns {React.ReactNode} Rendered editorial UI.
  */
-const SaveResponsiveVisualizationContainer = ( props ) => {
+const SaveResponsiveVisualizationContainer = () => {
 	return (
 		<InnerBlocks.Content />
 	);

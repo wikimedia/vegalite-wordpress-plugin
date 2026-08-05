@@ -206,18 +206,18 @@ export const SelectEncodingField = ( { setAttributes, json, field, label } ) => 
 		return ( selectedDataset?.fields || [] ).map( ( fieldOption ) => ( {
 			label: fieldOption.field,
 			value: fieldOption.field,
-			isActive: ( json ) => {
-				if ( json?.encoding && json.encoding[ field ] ) {
-					return json.encoding[ field ].field === fieldOption.field;
+			isActive: ( spec ) => {
+				if ( spec?.encoding && spec.encoding[ field ] ) {
+					return spec.encoding[ field ].field === fieldOption.field;
 				}
 				return false;
 			},
-			transform: ( json ) => {
-				const currentFieldEncoding = ( json?.encoding || {} )[ field ] || {};
+			transform: ( spec ) => {
+				const currentFieldEncoding = ( spec?.encoding || {} )[ field ] || {};
 				return {
-					...json,
+					...spec,
 					encoding: {
-						...( json?.encoding || {} ),
+						...( spec?.encoding || {} ),
 						[ field ]: {
 							...currentFieldEncoding,
 							field: fieldOption.field,
