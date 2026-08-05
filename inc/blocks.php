@@ -124,13 +124,19 @@ function render_visualization_block( array $attributes, $content, $block ) : str
 	$datavis = sprintf( '%1$s-datavis', $chart_id );
 	$config  = sprintf( '%1$s-config', $chart_id );
 
-	// If we know the target dimensions, set those on the container to minimize CLS.
+	// Reserve space for the container, to minimize CLS. Write a max-width and aspect
+	// ratio so browser reserve space properly even when chart is capped in width.
+	$width  = isset( $json['width'] ) && is_numeric( $json['width'] ) ? (int) $json['width'] : 0;
+	$height = isset( $json['height'] ) && is_numeric( $json['height'] ) ? (int) $json['height'] : 0;
+
 	$inline_style = [];
-	if ( isset( $json['width'] ) && is_numeric( $json['width'] ) ) {
-		$inline_style[] = sprintf( 'width:%dpx', $json['width'] );
+	if ( $width ) {
+		$inline_style[] = sprintf( 'max-width:%dpx', $width );
 	}
-	if ( isset( $json['height'] ) && is_numeric( $json['height'] ) ) {
-		$inline_style[] = sprintf( 'height:%dpx', $json['height'] );
+	if ( $width && $height ) {
+		$inline_style[] = sprintf( 'aspect-ratio:%d/%d', $width, $height );
+	} elseif ( $height ) {
+		$inline_style[] = sprintf( 'height:%dpx', $height );
 	}
 	$inline_style = implode( ';', $inline_style );
 
