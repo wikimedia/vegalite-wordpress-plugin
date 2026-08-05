@@ -103,19 +103,16 @@ const actions = {
 // component (using useState) initiates a request for the data on first
 // render, and then gets re-rendered with the fulfilled data once available.
 const controls = {
-	/* eslint-disable jsdoc/require-returns */
 	DATASETS_GET_ALL: () => api.getDatasets(),
 	/** @param {ReduxAction} action Dispatched action */
 	DATASET_GET: ( { filename } ) => api.getDataset( filename ),
 	/** @param {ReduxAction} action Dispatched action */
 	DATASET_GET_BY_URL: ( { url } ) => api.getDatasetByUrl( url ),
-	/* eslint-enable jsdoc/require-returns */
 };
 
 // Resolvers sequence controls and actions to request data asynchronously.
 // These functions allow select methods to trigger async behavior.
 const resolvers = {
-	/* eslint-disable jsdoc/require-returns */
 	/**
 	 * Sequence the actions necessary to request all datasets.
 	 */
@@ -160,7 +157,6 @@ const resolvers = {
 		const dataset = yield actions.getDatasetByUrl( url );
 		return actions.setDataset( dataset );
 	},
-	/* eslint-enable jsdoc/require-returns */
 };
 
 /**
@@ -183,7 +179,6 @@ const DEFAULT_STATE = {
  * @returns {object} Transformed state tree.
  */
 const reducer = ( state = DEFAULT_STATE, action ) => {
-	/* eslint-disable default-case */
 	switch ( action.type ) {
 		case 'DATASETS_SET':
 			return {

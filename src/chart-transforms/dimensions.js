@@ -52,21 +52,12 @@ export const ResizableChartPreview = ( { id, json, setAttributes, showHandles } 
 		);
 	}
 
-	const width = json.width || 400;
-	const height = json.height || 200;
+	// Constrain only the width. Height is left to the box so that it tracks the
+	// chart, which CSS scales down when the authored width does not fit.
 	const dimensionProps = {};
-	if ( json.width && json.height ) {
+	if ( json.width ) {
 		dimensionProps.size = {
-			width,
-			height,
-		};
-	} else if ( json.width ) {
-		dimensionProps.size = {
-			width,
-		};
-	} else if ( json.height ) {
-		dimensionProps.size = {
-			height,
+			width: json.width,
 		};
 	}
 
@@ -77,14 +68,17 @@ export const ResizableChartPreview = ( { id, json, setAttributes, showHandles } 
 			enable={ enableWidthAndHeightOnly }
 			defaultSize="auto"
 			{ ...dimensionProps }
-			onResizeStop={ ( event, direction, elt, delta ) => {
+			onResizeStop={ ( event, direction, elt ) => {
+				// Commit the size the box actually ended up at, not the authored
+				// value plus the drag delta: a chart scaled down to fit its
+				// container must not snap back to its original overflowing size.
 				// Only update a dimension if the user interaction provided a
-				// value for that dimension. (Allows height to remain "auto").
+				// value for it (allows height to remain "auto").
 				const newWidth = [ 'right', 'bottomRight' ].includes( direction )
-					? width + delta.width
+					? elt.offsetWidth
 					: null;
 				const newHeight = [ 'bottom', 'bottomRight' ].includes( direction )
-					? height + delta.height
+					? elt.offsetHeight
 					: null;
 
 				setAttributes( {

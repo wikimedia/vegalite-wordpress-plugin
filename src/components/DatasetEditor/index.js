@@ -40,15 +40,15 @@ const CSVEditor = ( { filename, onSave = noop } ) => {
 		}
 	}, [ filename, dataset, content, setCsvContent ] );
 
-	const onDrop = useCallback( ( { content } ) => {
-		setCsvContent( content );
+	const onDrop = useCallback( ( { content: droppedContent } ) => {
+		setCsvContent( droppedContent );
 	}, [] );
 
 	const onSaveButton = useCallback( () => {
 		if ( filename ) {
 			updateDataset( {
 				filename,
-				content: content,
+				content,
 			} ).then( onSave );
 		}
 	}, [ filename, content, updateDataset, onSave ] );
@@ -123,7 +123,7 @@ const NewDatasetForm = ( { onAddDataset } ) => {
 				>{ __( 'Save dataset', 'dataset' ) }</Button>
 			</PanelRow>
 			{ hasFormError ? (
-				<p class="dataset-form-error"><em>Name is required when creating a dataset.</em></p>
+				<p className="dataset-form-error"><em>Name is required when creating a dataset.</em></p>
 			) : null }
 		</>
 	);
@@ -139,12 +139,9 @@ const NewDatasetForm = ( { onAddDataset } ) => {
 const setSpecDataset = ( json, datasetUrl ) => {
 	if ( datasetUrl && datasetUrl !== INLINE ) {
 		json.data = { url: datasetUrl };
-	} else {
-		// No URL. Switch to inline data.
-		if ( json.data?.url ) {
-			// Wipe out any URL property to set back to inline mode.
-			json.data = [];
-		}
+	} else if ( json.data?.url ) {
+		// No URL: wipe out any URL property to set back to inline mode.
+		json.data = [];
 	}
 	return { ...json };
 };
@@ -166,8 +163,8 @@ const SelectDataset = ( { json, setAttributes } ) => {
 	const options = useMemo( () => [ inlineDataOption ].concat( datasets ), [ datasets ] );
 
 	const onChangeSelected = useCallback( ( filename ) => {
-		const selectedDataset = options.find( ( { value } ) => value === filename );
-		const updatedSpec = setSpecDataset( json, selectedDataset?.url || INLINE );
+		const datasetOption = options.find( ( { value } ) => value === filename );
+		const updatedSpec = setSpecDataset( json, datasetOption?.url || INLINE );
 		setAttributes( { json: updatedSpec } );
 	}, [ options, json, setAttributes ] );
 

@@ -1,3 +1,9 @@
+// The resize box needs to be constrained the same way the chart is, or else
+// its handles won't line up with the chart in the editor.
+.wp-block-vegalite-plugin-visualization .components-resizable-box__container {
+	max-width: 100%;
+}
+
 .visualization-block-tabs {
 
 	[role="tablist"] {

@@ -1,1 +1,1 @@
-.visualization-block{max-width:100%}.chart-wrapper,.chart-wrapper canvas{height:auto!important;max-width:100%}.chart-hidden .vega-embed,.chart-hidden div{display:none}
+.visualization-block{max-width:100%}.chart-wrapper,.chart-wrapper canvas{height:auto!important;max-width:100%}.chart-hidden .vega-embed,.chart-hidden div{display:none}.visualization-block .vega-embed,.wp-block-vegalite-plugin-visualization .vega-embed{max-width:100%}.visualization-block .vega-embed>svg,.wp-block-vegalite-plugin-visualization .vega-embed>svg{height:auto;max-width:100%}
