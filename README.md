@@ -72,8 +72,22 @@ Other useful commands
 
 - `npm run lint`: Use ESLint to check src code for errors.
 
-----
+### Local Environment
 
+This project uses [wp-env](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-env/) to run a lightweight, containerized WordPress instance at [localhost:8343](http://localhost:8343) for testing purposes. (8343 is "vega" on a phone keypad.) The default username for the localhost environment is `admin`, with the password `password`.
+
+These commands can be used to interact with the environment:
+
+Command | Purpose
+---- | ----
+`npm run env:start` | Start the local environment at http://localhost:8343
+`npm run env:stop` | Turn off the local environment
+`npm run env:cli -- wp ...` | Run WP-CLI commands within the environment
+`npm run env:logs` | Open (and tail) the error logs for the application<sup>&ddagger;</sup>
+`npm run env:db` | Open the database in the mysql command line
+`npm run env:destroy` | Fully destroy the local environment (deletes container database)
+
+<sup>&ddagger;</sup> This command deliberately filters out GET/OPTIONS/HEAD/POST/PUT access log entries
 
 ## Release Process
 

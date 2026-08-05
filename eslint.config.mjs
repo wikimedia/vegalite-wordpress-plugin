@@ -67,4 +67,19 @@ export default [
 			'import/no-extraneous-dependencies': 'off',
 		},
 	},
+
+	{
+		files: [
+			'**/*.test.js',
+			'**/*.spec.js',
+			'**/__tests__/**/*.js',
+			'jest.setup.js',
+		],
+		languageOptions: {
+			globals: {
+				...globals.jest,
+				...globals.node,
+			},
+		},
+	},
 ];
