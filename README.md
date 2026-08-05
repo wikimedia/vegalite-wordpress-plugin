@@ -2,7 +2,7 @@
 
 Developed by [Human Made](https://humanmade.com) and the [Wikimedia Foundation](https://wikimediafoundation.org).
 
-Stable tag: 0.6.0
+[Plugin release archive](https://github.com/wikimedia/vegalite-wordpress-plugin/releases)
 
 This plugin provides a flexible data visualization block using the [Vega-Lite](https://vega.github.io/) declarative JSON visualization grammar.
 
@@ -134,9 +134,26 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 ## Changelog
 
+**0.7.0**
+
+- Prevent charts from overflowing their column if used in column block layouts or narrow sidebars
+- Encode chart specification JSON in post content as a Base64 string to keep WordPress sanitization from mangling mathematical operators like > in spec parameters
+- Initialize charts as Vega schema v6 by default
+
+Internal:
+
+- Modify and upgrade the plugin's code quality infrastructure and CI actions
+- Remove unused bundled copy of v5 vega-lite specification JSON
+
 **0.6.0**
 
+**Breaking changes:**
+
 - Upgrade [`vega-embed`](https://github.com/vega/vega-embed/releases) from 6.23.0 to 7.1.0; upgrade [`vega-lite`](https://github.com/vega/vega-lite/releases) from 5.16.3 to 6.4.3; upgrade [`vega`](https://github.com/vega/vega/releases) from 5.26.1 to 6.2.0
+    - Vega 6 does not provide a formal list of breaking changes, but existing charts should be checked in case changes to Vega signals require your specs to be adjusted for this upgrade.
+
+New features:
+
 - Introduce `vegalite:ready` and `vegalite:click` event dispatch system to bind external functionality to chart interactions
 - Improve sanitization of data-attribute output
 
