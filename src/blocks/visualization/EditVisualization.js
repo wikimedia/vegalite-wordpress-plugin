@@ -43,7 +43,7 @@ const SidebarEditor = ( { json, setAttributes } ) => {
 			>
 				<TextControl
 					label={ __( 'Title', 'datavis' ) }
-					value={ json['title'] }
+					value={ json.title }
 					onChange={ ( title ) => {
 						setAttributes( {
 							json: {
@@ -122,7 +122,7 @@ const EditDatavisBlock = ( { attributes, setAttributes, isSelected } ) => {
 								return (
 									<ControlledJsonEditor
 										value={ json }
-										onChange={ ( json ) => setAttributes( { json } ) }
+										onChange={ ( newJson ) => setAttributes( { json: newJson } ) }
 									/>
 								);
 							}
