@@ -27,6 +27,7 @@
     "phpcs": "composer lint",
     "start": "wp-scripts start",
     "build": "wp-scripts build",
+    "test": "wp-scripts test-unit-js",
     "bump:patch": "bump patch --commit 'Prepare v%s release' package.json README.md plugin.php",
     "bump:minor": "bump minor --commit 'Prepare v%s release' package.json README.md plugin.php",
     "bump:major": "bump major --commit 'Prepare v%s release' package.json README.md plugin.php"

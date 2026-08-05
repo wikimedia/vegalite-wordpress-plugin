@@ -1,7 +1,7 @@
 /**
  * Edit function for Vega-Lite block.
  */
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 
 import {
 	useBlockProps,
@@ -19,6 +19,7 @@ import { ResizableChartPreview } from '../../chart-transforms/dimensions';
 import { ConditionalEncodingFields } from '../../chart-transforms/encoding';
 import ControlledJsonEditor from '../../components/ControlledJsonEditor';
 import DatasetEditor from '../../components/DatasetEditor';
+import { decodeSpec, encodeSpec } from '../../util/spec';
 import sufficientlyUniqueId from '../../util/sufficiently-unique-id';
 
 import defaultSpecification from './specification.json';
@@ -89,7 +90,32 @@ const tabs = [
  */
 const EditDatavisBlock = ( { attributes, setAttributes, isSelected } ) => {
 	const blockProps = useBlockProps();
-	const json = attributes.json || defaultSpecification;
+
+	// attributes.json is only reachable if a block hasn't been migrated to the
+	// encoded >= v0.7 format. Prefer it if present so that old specs still load
+	// and allow editing.
+	const json = useMemo(
+		() => decodeSpec( attributes.chartSpec ) || attributes.json || defaultSpecification,
+		[ attributes.chartSpec, attributes.json ]
+	);
+
+	// Every editor component below reads a spec object and writes it back as
+	// setAttributes( { json } ). Encode that object here so consumers do not
+	// need to worry about spec storage format.
+	const setSpecAttributes = useCallback( ( nextAttributes ) => {
+		if ( ! ( 'json' in nextAttributes ) ) {
+			setAttributes( nextAttributes );
+			return;
+		}
+
+		const { json: nextSpec, ...rest } = nextAttributes;
+		setAttributes( {
+			...rest,
+			chartSpec: encodeSpec( nextSpec ),
+			// Discard any legacy attribute this block was still carrying.
+			json: undefined,
+		} );
+	}, [ setAttributes ] );
 
 	// Ensure every visualization gets a unique chart ID.
 	useEffect( () => {
@@ -106,7 +132,7 @@ const EditDatavisBlock = ( { attributes, setAttributes, isSelected } ) => {
 			<ResizableChartPreview
 				id={ attributes.id }
 				json={ json }
-				setAttributes={ setAttributes }
+				setAttributes={ setSpecAttributes }
 				showHandles={ isSelected }
 			/>
 
@@ -122,7 +148,7 @@ const EditDatavisBlock = ( { attributes, setAttributes, isSelected } ) => {
 								return (
 									<ControlledJsonEditor
 										value={ json }
-										onChange={ ( newJson ) => setAttributes( { json: newJson } ) }
+										onChange={ ( newJson ) => setSpecAttributes( { json: newJson } ) }
 									/>
 								);
 							}
@@ -130,14 +156,14 @@ const EditDatavisBlock = ( { attributes, setAttributes, isSelected } ) => {
 								return (
 									<DatasetEditor
 										json={ json }
-										setAttributes={ setAttributes }
+										setAttributes={ setSpecAttributes }
 									/>
 								);
 							}
 							return null;
 						} }
 					</TabPanel>
-					<SidebarEditor json={ json } setAttributes={ setAttributes } />
+					<SidebarEditor json={ json } setAttributes={ setSpecAttributes } />
 				</>
 			) : null }
 		</div>
