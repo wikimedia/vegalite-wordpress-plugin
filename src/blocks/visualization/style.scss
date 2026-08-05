@@ -14,3 +14,18 @@
 .chart-hidden div {
 	display: none;
 }
+
+// Keep charts constained to their content column. Scales proportionally with
+// the viewBox from vega chart output as long as height is set to auto.
+.visualization-block,
+.wp-block-vegalite-plugin-visualization {
+
+	.vega-embed {
+		max-width: 100%;
+	}
+
+	.vega-embed > svg {
+		max-width: 100%;
+		height: auto;
+	}
+}
