@@ -23,7 +23,7 @@
   ],
   "scripts": {
     "lint": "npm run eslint; npm run phpcs",
-    "eslint": "eslint src .eslintrc.js",
+    "eslint": "wp-scripts lint-js",
     "phpcs": "composer lint",
     "start": "wp-scripts start",
     "build": "wp-scripts build",
@@ -38,15 +38,6 @@
   },
   "devDependencies": {
     "@wordpress/scripts": "^34.0.0",
-    "babel-eslint": "^10.1.0",
-    "eslint": "^7.32.0",
-    "eslint-plugin-flowtype": "^3.13.0",
-    "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-jsdoc": "^29.2.0",
-    "eslint-plugin-jsx-a11y": "^6.5.1",
-    "eslint-plugin-react": "^7.30.0",
-    "eslint-plugin-react-hooks": "^4.5.0",
-    "eslint-plugin-sort-destructure-keys": "^1.4.0",
     "version-bump-prompt": "^6.1.0"
   }
 }
